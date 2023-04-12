@@ -5,8 +5,8 @@
 
 <h4 align="center">基于SpringBoot+React+Postgresql前后端分离的数据库实训平台</h4>
 <p align="center">
-	<a href="https://github.com/Open-DBT/open-dbt-web"><img src="https://img.shields.io/badge/opendbt-v2.0.0-brightgreen.svg"></a>
-	<a href="https://github.com/Open-DBT/open-dbt-web/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
+	<a href="https://github.com/OpenDBT/open-dbt-web"><img src="https://img.shields.io/badge/opendbt-v2.0.0-brightgreen.svg"></a>
+	<a href="https://github.com/OpenDBT/open-dbt-web/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
 
 
@@ -21,7 +21,7 @@
 * 后端采用Spring Boot、Mybatis-Plus、Jwt
 * 权限认证使用Jwt安全可控
 * 支持Postgresql数据库
-* 后端地址: https://github.com/Open-DBT/open-dbt
+* 后端地址: https://github.com/OpenDBT/open-dbt
 
 
 ## 内置功能
@@ -44,7 +44,7 @@
 
 * 演示地址：http://124.133.18.222:59005/user/login
 * 账号密码: admin/admin
-* 文档地址：https://github.com/Open-DBT/open-dbt/wiki
+* 文档地址：https://github.com/OpenDBT/open-dbt/wiki
 
 ## 项目结构
 
@@ -87,7 +87,7 @@
 ### 开发环境搭建
 
 * 1.git源码下载
-  <br />&emsp;`git clone git@github.com:Open-DBT/open-dbt-web.git`
+  <br />&emsp;`git clone git@github.com:OpenDBT/open-dbt-web.git`
 * 2.node环境安装(可以安装yarn方便快速下载依赖)
   <br />&emsp;node官网:https://nodejs.org/en/download/
 * 3.yarn安装(用npm安装): 
@@ -104,7 +104,7 @@
 
 ### 访问
 
-* 部署启动后端项目，请参考后端相关文档，后端项目地址：https://github.com/Open-DBT/open-dbt
+* 部署启动后端项目，请参考后端相关文档，后端项目地址：https://github.com/OpenDBT/open-dbt
 * 登录地址: http://XXXX:XX/user/login
 * 账号密码：admin/admin, js/js
 
