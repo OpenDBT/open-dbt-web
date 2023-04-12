@@ -44,7 +44,7 @@
 
 * 演示地址：http://124.133.18.222:59005/user/login
 * 账号密码: admin/admin
-* 文档地址：https://github.com/OpenDBT/open-dbt/wiki
+* 文档地址：https://github.com/OpenDBT/open-dbt-web/wiki
 
 ## 项目结构
 
