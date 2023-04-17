@@ -3,7 +3,7 @@
 </p>
 
 
-<h4 align="center">11基于SpringBoot+React+Postgresql前后端分离的数据库实训平台</h4>
+<h4 align="center">基于SpringBoot+React+Postgresql前后端分离的数据库实训平台</h4>
 <p align="center">
 	<a href="https://github.com/OpenDBT/open-dbt-web"><img src="https://img.shields.io/badge/opendbt-v2.0.0-brightgreen.svg"></a>
 	<a href="https://github.com/OpenDBT/open-dbt-web/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
