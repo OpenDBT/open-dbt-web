@@ -116,7 +116,12 @@ declare namespace QUESTION_BANK {
     prefix: string,//选项
     content: string,//选项内容 "<p>a</p>"
   }
-
+  // 题库习题设置为练习/取消练习
+  type QuestionSettingParam = {
+    ids: number [],
+    exerciseStatus: number,
+    showAnswer: number
+  }
 
 }
 

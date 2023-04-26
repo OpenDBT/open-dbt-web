@@ -1,28 +1,24 @@
 import { useEffect, useState } from 'react';
-import {
-  getStuKnowledgeExerciseInfo,
-  getCourseProgressByStu,
-} from '@/services/student/progress';
-import { Progress, Button, Tooltip } from 'antd';
+import { getStuKnowledgeExerciseInfo, getCourseProgressByStu } from '@/services/student/progress';
+import { Progress, Button, Tooltip, message } from 'antd';
 import './index.less';
 import { RingProgress } from '@ant-design/charts';
 import { history } from 'umi';
 import { API } from '@/common/entity/typings';
+import { exerciseReset } from '@/services/student/progress';
 const hidden_count = 6;
 
 type IProps = {
   courseId: number;
   clazzId: number;
-
-}
+};
 
 /**
  * 课程-习题首页
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const knowledge = (props: IProps) => {
-
   const courseId = props.courseId;
   const clazzId = props.clazzId;
   const [sclassInfo, setSclassInfo] = useState<API.SclassRecord>();
@@ -39,11 +35,30 @@ const knowledge = (props: IProps) => {
   }, []);
 
   const handleMore = (isMore: boolean) => {
-    setHiddenMore(isMore)
-  }
+    setHiddenMore(isMore);
+  };
   const enterExercise = (knowId: number) => {
     history.push(`/stu/course/knowledge/exercise/${courseId}/${clazzId}/${knowId}`);
-  }
+  };
+  /**
+   * 重置
+   */
+  const clickResetAll = () => {
+    exerciseReset(courseId).then((res) => {
+      if (res.success) {
+        console.log(res);
+        message.success('重置成功')
+        getStuKnowledgeExerciseInfo(clazzId, courseId, 0).then((data) => {
+          if (data.obj) setExeriseProcList(data.obj);
+        });
+        getCourseProgressByStu(clazzId, courseId).then((data) => {
+          if (data.obj) setSclassInfo(data.obj);
+        });
+      } else {
+        console.log('失败');
+      }
+    });
+  };
   var bizConfig = {
     height: 77,
     width: 77,
@@ -73,24 +88,42 @@ const knowledge = (props: IProps) => {
             trailColor="#DCDCDC" //未完成分段颜色
             style={{ width: '50%', marginLeft: 14 }}
           />
+              
+        <Button
+          type="primary"
+          className="button"
+          style={{marginLeft: '150px'}}
+          onClick={() => {
+            clickResetAll();
+          }}
+        >
+          重置
+        </Button>
         </div>
       </div>
+ 
       <div className="know-list">
         {exeriseProcList.map((item, index) => {
           let diff, //进度条颜色
             btnName = '已完成', //按钮文字
             className = 'card'; //卡片样式
-          let img = <img src={require('@/img/student/icon-start.svg')} width="11px" height="9px"
-            style={{ margin: '0px 0px 2px 0px' }} />;//箭头图标
+          let img = (
+            <img
+              src={require('@/img/student/icon-start.svg')}
+              width="11px"
+              height="9px"
+              style={{ margin: '0px 0px 2px 0px' }}
+            />
+          ); //箭头图标
           if (item.progress === 0) {
-            btnName = "开始答题"
+            btnName = '开始答题';
             diff = { percent: 0, color: ['#FDDF66', '#E5E5E5'] }; //0 灰色
           } else if (item.progress == 100) {
-            className = "card finish";
-            img = <img src={require('@/img/student/icon-duihao.svg')} width="11px" height="6px" /> //对号图标
+            className = 'card finish';
+            img = <img src={require('@/img/student/icon-duihao.svg')} width="11px" height="6px" />; //对号图标
             diff = { percent: 1, color: ['#FDDF66', '#00CE9B'] }; //100 绿色
           } else {
-            btnName = "继续答题"
+            btnName = '继续答题';
             diff = { percent: item.progress / 100, color: ['#FDDF66', '#FDDF66'] }; //1-99 黄色
           }
           if (hiddenMore && index + 1 > hidden_count) {
@@ -101,13 +134,19 @@ const knowledge = (props: IProps) => {
             <div className={className} key={index}>
               <div className="card-left">
                 <div className="title-3">
-                  {item.name.length >= 8
-                    ? <Tooltip title={item.name}>{item.name.substring(0, 7)}...</Tooltip>
-                    : item.name
-                  }
+                  {item.name.length >= 8 ? (
+                    <Tooltip title={item.name}>{item.name.substring(0, 7)}...</Tooltip>
+                  ) : (
+                    item.name
+                  )}
                 </div>
                 <div style={{ margin: '10px 0px 12px 0' }}>共{item.exerciseNumber}道练习题</div>
-                <Button type="primary" size="small" className="button" onClick={() => enterExercise(item.knowledgeId)}>
+                <Button
+                  type="primary"
+                  size="small"
+                  className="button"
+                  onClick={() => enterExercise(item.knowledgeId)}
+                >
                   {img}
                   &nbsp;&nbsp;{btnName}
                 </Button>
@@ -122,23 +161,41 @@ const knowledge = (props: IProps) => {
       <div style={{ textAlign: 'center' }}>
         {
           //知识点小于6个不显示 底部按钮
-          exeriseProcList.length <= hidden_count ?
-            null :
-            hiddenMore ?
-              <Button type="primary" size="small" className="more-btn title-1"
-                icon={<img src={require('@/img/student/icon-more.svg')} width="14px" height="14px"
+          exeriseProcList.length <= hidden_count ? null : hiddenMore ? (
+            <Button
+              type="primary"
+              size="small"
+              className="more-btn title-1"
+              icon={
+                <img
+                  src={require('@/img/student/icon-more.svg')}
+                  width="14px"
+                  height="14px"
                   style={{ margin: '0 5px 1px 0px' }}
-                />}
-                onClick={() => handleMore(false)}
-              >
-                更多习题</Button>
-              :
-              <Button type="primary" size="small" className="more-btn title-1"
-                icon={<img src={require('@/img/student/icon-less.svg')} width="14px" height="14px"
+                />
+              }
+              onClick={() => handleMore(false)}
+            >
+              更多习题
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              size="small"
+              className="more-btn title-1"
+              icon={
+                <img
+                  src={require('@/img/student/icon-less.svg')}
+                  width="14px"
+                  height="14px"
                   style={{ margin: '0 5px 1px 0px' }}
-                />}
-                onClick={() => handleMore(true)}>
-                收起更多</Button>
+                />
+              }
+              onClick={() => handleMore(true)}
+            >
+              收起更多
+            </Button>
+          )
         }
       </div>
     </div>

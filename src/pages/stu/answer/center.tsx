@@ -2,11 +2,12 @@ import { Card, Button, Tag, Space } from 'antd';
 import { isNotEmptyBraft } from '@/utils/utils';
 import { getKnowledgeColor } from '@/utils/utils';
 import Highlight from 'react-highlight';
-//import 'highlight.js/styles/foundation.css'
 import 'highlight.js/styles/magula.css'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import Judge from './components/questionType/judge'
+import Single from './components/questionType/single'
+import Multiple from './components/questionType/multiple'
 import React from 'react';
-
 interface IProp {
     courseId: number;
     changeExercise: (value: boolean) => void;
@@ -14,7 +15,6 @@ interface IProp {
     topButtonDisabled: boolean;
     nextButtonDisabled: boolean;
 }
-
 const areEqual = (prevProps, nextProps) => {
     //return false 刷新页面
     if (prevProps.exercise === nextProps.exercise
@@ -27,18 +27,17 @@ const areEqual = (prevProps, nextProps) => {
     }
 }
 
-const LeftColumn = (props: IProp) => {
+const CneterColumn = (props: IProp) => {
     const {
         changeExercise,
         exercise,
         topButtonDisabled,
         nextButtonDisabled
     } = props;
-    console.log('LeftColumn props', props)
-    console.log('exerciseelefr:',exercise)
+    console.log('exercise:',exercise)
     return (
-        <div className="left">
-            <div className="flex content-title">
+        <div className='left'>
+             <div className="flex content-title">
                 <div className="title-3">{exercise?.courseName}</div>
                 <div className="tools">
                     <Button
@@ -60,11 +59,13 @@ const LeftColumn = (props: IProp) => {
                     </Button>
                 </div>
             </div>
+
             <div className="markdown-body">
                 <Card bordered={false}>
                     <Space size="middle">
                         <div className="exercise-id">#{exercise?.exerciseId}</div>
                         <div className="title-5">{exercise?.exerciseName}</div>
+                        <span>[ 单选题 ]</span>
                     </Space>
                     <div className="title-3" style={{ marginTop: 20 }}>习题描述</div>
                     {
@@ -73,22 +74,9 @@ const LeftColumn = (props: IProp) => {
                             : <div className="exercise-desc">无</div>
                     }
                     <div style={{ clear: 'both' }}></div>
-
-                    {
-                        isNotEmptyBraft(exercise?.scene.sceneDesc) ?
-                            <div dangerouslySetInnerHTML={{ __html: exercise?.scene.sceneDesc }} />
-                            : '无'
-                    }
-                    <div style={{ clear: 'both' }} />
-                    <div className="shell">
-                        {
-                            exercise?.scene.initShell === '' ? '无' :
-                                <Highlight language="sql">
-                                    {exercise?.scene.initShell}
-                                </Highlight>
-
-                        }
-                    </div>
+                    {/* <Single data={exercise}></Single> */}
+                    <Multiple data={exercise}></Multiple>
+            
                     <div style={{ clear: 'both' }} />
 
                     <div className="title-3" style={{ margin: '30px 0 16px 0' }}>相关知识点</div>
@@ -97,10 +85,17 @@ const LeftColumn = (props: IProp) => {
                             return <Tag key={index} color={getKnowledgeColor()[index]}>{ele}</Tag>
                         })}
                     </div>
+                    <div style={{ clear: 'both', }} />
+                    <Button type="primary" size="small"
+                    style={{float: 'right'}}
+                                className="right-title-button"
+                                onClick={() => {}}
+                            >
+                                提交答案
+                            </Button>
                 </Card>
             </div>
         </div>
     )
 }
-
-export default React.memo(LeftColumn, areEqual)
+export default React.memo(CneterColumn, areEqual)

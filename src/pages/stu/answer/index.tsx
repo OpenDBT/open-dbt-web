@@ -5,6 +5,7 @@ import { submitAnswer, stuTestRunAnswer } from '@/services/teacher/course/score'
 import './index.less';
 import LeftColumn from '@/pages/stu/answer/left';
 import RightColumn from '@/pages/stu/answer/right';
+import CenterColumn from '@/pages/stu/answer/center';
 import { LoadingOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import StudentMenu from '../study/menu';
@@ -42,15 +43,15 @@ const Answer = (props: any) => {
   const [exerciseList, setExerciseList] = useState<API.StuAnswerExerciseInfo[]>([]); //全部习题，用于上下题切换不再重复请求
   const [topButtonDisabled, setTopButtonDisabled] = useState<boolean>(true);
   const [nextButtonDisabled, setNextButtonDisabled] = useState<boolean>(true);
-
   const [isCanAnswer, setIsCanAnswer] = useState<boolean>(false);
 
   let timer: any = useRef(); //计时器
   const [usageTime, setUsageTime] = useState<number>(0);
-
+  // 清除定时器
   const stopTimer = () => {
     clearInterval(timer.current);
   };
+  // 重新统计时间
   const restartTimer = () => {
     stopTimer();
     setUsageTime(0);
@@ -69,6 +70,7 @@ const Answer = (props: any) => {
   useEffect(() => {
     //查询班级信息
     querySclass(clazzId).then((result) => {
+      // ````
       if (result && result.success) {
         if (result.obj.isEnd === 1) {
           //isCanAnswer=false 不可以答题
@@ -100,7 +102,6 @@ const Answer = (props: any) => {
   }, []);
 
   useEffect(() => {
-    console.log('exerciseId', exerciseId);
     change(exerciseId);
   }, [exerciseId]);
 
@@ -269,6 +270,15 @@ const Answer = (props: any) => {
     <div className="flex stu-answer">
       <StudentMenu {...menuProps} />
       <Row className="content">
+    <CenterColumn
+     courseId={courseId}
+     exercise={exercise!}
+     changeExercise={(next: boolean) => changeExercise(next)}
+     topButtonDisabled={topButtonDisabled}
+     nextButtonDisabled={nextButtonDisabled}
+    ></CenterColumn>
+    </Row>
+      <Row className="content">
         <Col span={12} className="page-container">
           <LeftColumn
             courseId={courseId}
@@ -291,7 +301,6 @@ const Answer = (props: any) => {
           />
         </Col>
       </Row>
-
       <Modal
         width={250}
         bodyStyle={{ top: 24, right: 0 }}
