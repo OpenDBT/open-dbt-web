@@ -51,3 +51,8 @@ export async function moveExercise(oid: number, tid: number) {
 export function exportExercise(courseId: number) {
   return request<API.Result<any>>(`/exercise/exportExercise/${courseId}`);
 }
+
+// ddl类型题目根据场景id和习题id查询场景表信息和校验信息
+export async function getDDLExerciseTable(data: {sceneId: number, exerciseId: any}) {
+  return await request<API.Result<QUESTION_BANK.VerificationList>>(`/verificationSetup/getSceneDetailList`,  { method: 'POST', data: data });
+}

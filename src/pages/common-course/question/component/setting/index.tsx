@@ -71,14 +71,14 @@ const ExerciseSetting = (props: IProps) => {
           <Row>
             <Col span={12}>
               <Radio value={true}><span style={{ fontWeight: "bold" }}>练习题</span></Radio>
-              
+
             </Col>
             <Col span={12}>
               <Radio value={false}><span style={{ fontWeight: "bold" }}>非练习题</span></Radio>
             </Col>
           </Row>
         </Radio.Group>
-        <Checkbox onChange={onChangeCheckboxItem} checked={itemVisible} style={{marginTop: '20px'}}>记住登录状态</Checkbox>
+        <Checkbox onChange={onChangeCheckboxItem} checked={itemVisible} style={{marginTop: '20px'}}>显示答案</Checkbox>
         <span className='setting-remark'>设置为练习题时方可设置学生答题完成后是否显示答案和解析</span>
         <div>
           {

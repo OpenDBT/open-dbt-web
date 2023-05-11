@@ -373,7 +373,7 @@ declare namespace API {
     stuNewLearnTime: string;//最后学习时间
     stuNumber: number;//学生数量
     knowledgeNumber: number;//知识点数量
-    exerciseNumber: number;//习题数量 
+    exerciseNumber: number;//习题数量
     overPercentage: number;//超过百分比
 
     //时间控件临时变量
@@ -410,6 +410,8 @@ declare namespace API {
     scene: API.SceneListRecord; //关联的场景
     stuAnswer: string;//上次提交答案
     ct: string;//答题时间
+    exerciseType: number;//习题类型
+    verySql: String;//校验查询sql
   }
   //逐条更新开班学生
   type SclassStuParam = {
@@ -469,7 +471,7 @@ declare namespace API {
     userName: string;//学生姓名
     code: string;//学号
     correctCount: number;//答对次数
-    answerCount: number;//答题次数 
+    answerCount: number;//答题次数
     submitAnswerCount: number;//提交总数
     exerciseCount: number;//总题目数
   }
@@ -489,7 +491,7 @@ declare namespace API {
     userName: string;//学生姓名
     code: string;//学号
     correctCount: number;//答对次数
-    answerCount: number;//答题次数  
+    answerCount: number;//答题次数
     exerciseCount: number;//总题目数
     avgCorrectCount: number;//答对平均数
     avgAnswerCount: number;//做题平均数

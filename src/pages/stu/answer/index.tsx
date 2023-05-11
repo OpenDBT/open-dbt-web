@@ -16,8 +16,8 @@ import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAns
 import { API } from '@/common/entity/typings';
 /**
  * 课程-SQL练习题-开始答题
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const Answer = (props: any) => {
   let courseId = -1;
@@ -201,7 +201,8 @@ const Answer = (props: any) => {
     //显示窗口为测试运行
     setSubmitType(1);
     //测试提交答案
-    stuTestRunAnswer({ ...value, exerciseId: exerciseId }).then((result: any) => {
+
+    stuTestRunAnswer({ ...value, exerciseId: exerciseId, exerciseType: exercise!.exerciseType, verySql: exercise!.verySql, sceneId: exercise!.sceneId }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
         if (result.obj) {
@@ -220,8 +221,8 @@ const Answer = (props: any) => {
   };
   /**
    * 答题结果提示
-   * @param type 
-   * @param scoreRs 
+   * @param type
+   * @param scoreRs
    */
   const openNotification = (type: number, scoreRs: boolean) => {
     // type: -1=>出错,0=>答案错误,1=>答案正确
@@ -243,7 +244,8 @@ const Answer = (props: any) => {
     // 停止计时器
     clearInterval(timer.current);
     //提交答案
-    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId }).then((result: any) => {
+
+    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId, exerciseType: exercise!.exerciseType, verySql: exercise!.verySql, sceneId: exercise!.sceneId }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
         setExecuteResult(result.obj);
@@ -269,38 +271,49 @@ const Answer = (props: any) => {
   return (
     <div className="flex stu-answer">
       <StudentMenu {...menuProps} />
-      <Row className="content">
-    <CenterColumn
-     courseId={courseId}
-     exercise={exercise!}
-     changeExercise={(next: boolean) => changeExercise(next)}
-     topButtonDisabled={topButtonDisabled}
-     nextButtonDisabled={nextButtonDisabled}
-    ></CenterColumn>
-    </Row>
-      <Row className="content">
-        <Col span={12} className="page-container">
-          <LeftColumn
-            courseId={courseId}
-            exercise={exercise!}
-            changeExercise={(next: boolean) => changeExercise(next)}
-            topButtonDisabled={topButtonDisabled}
-            nextButtonDisabled={nextButtonDisabled}
-          />
-        </Col>
-        <Col span={12} className="page-container">
-          <RightColumn
-            testRunAnswer={(value: { answer: string; usageTime: number }) => testRunAnswer(value)}
-            onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
-            submitType={submitType}
-            executeResult={executeResult}
-            usageTime={usageTime}
-            stuAnswer={exercise?.stuAnswer || ''}
-            isCanAnswer={isCanAnswer}
-            exerciseId={exercise?.exerciseId}
-          />
-        </Col>
-      </Row>
+      {(exercise?.exerciseType == 1 || exercise?.exerciseType == 2 || exercise?.exerciseType == 3 || exercise?.exerciseType == 4 || exercise?.exerciseType == 5) ?
+        <Row className="content">
+          <Col span={24} className="page-container">
+            <CenterColumn
+              clazzId={clazzId}
+              courseId={courseId}
+              exercise={exercise!}
+              usageTime={usageTime}
+              onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
+              changeExercise={(next: boolean) => changeExercise(next)}
+              topButtonDisabled={topButtonDisabled}
+              nextButtonDisabled={nextButtonDisabled}
+            ></CenterColumn>
+          </Col>
+        </Row>
+        :
+        <Row className="content">
+          <Col span={12} className="page-container">
+            <LeftColumn
+              courseId={courseId}
+              exercise={exercise!}
+              changeExercise={(next: boolean) => changeExercise(next)}
+              topButtonDisabled={topButtonDisabled}
+              nextButtonDisabled={nextButtonDisabled}
+            />
+          </Col>
+          <Col span={12} className="page-container">
+            <RightColumn
+              testRunAnswer={(value: { answer: string; usageTime: number }) => testRunAnswer(value)}
+              onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
+              submitType={submitType}
+              executeResult={executeResult}
+              usageTime={usageTime}
+              stuAnswer={exercise?.stuAnswer || ''}
+              isCanAnswer={isCanAnswer}
+              exerciseId={exercise?.exerciseId}
+            />
+          </Col>
+        </Row>
+      }
+
+
+
       <Modal
         width={250}
         bodyStyle={{ top: 24, right: 0 }}

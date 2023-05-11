@@ -8,9 +8,11 @@ import Space from '../type/space';
 import Sql from '../type/sql';
 import SingleChoice from '../type/singleChoice';
 import MultipleChoice from '../type/multiple';
-import { Button } from 'antd';
+import type { MenuProps } from 'antd';
+import { Button,Dropdown} from 'antd';
 import { QUESTION_BANK } from '@/common/entity/questionbank'
 import CODE_CONSTANT from '@/common/code'
+import DDLSql from '../type/ddlSql';
 interface IRef extends React.RefObject<HTMLDivElement> {
   clickSave: () => void;
   continueAnswer: () => void;
@@ -49,8 +51,10 @@ const CreateQuestion = (props: any) => {
             <span className='mb-right-20'>题型</span>
             {
               CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
-                return <Button key={index + 'Bt'} className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'} onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>
+
+                { return <Button key={index + 'Bt'} className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'} onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>}
               })
+
             }
           </div>
           {showIndex == 1 && <SingleChoice ref={cRef} onInit={initData} />}
@@ -59,6 +63,7 @@ const CreateQuestion = (props: any) => {
           {showIndex == 4 && <Space ref={cRef} onInit={initData} />}
           {showIndex == 5 && <ShortAnswer ref={cRef} onInit={initData} />}
           {showIndex == 6 && <Sql ref={cRef} onInit={initData} />}
+          {showIndex == 7 && <DDLSql ref={cRef} onInit={initData} />}
         </div>
       </div>
     </>

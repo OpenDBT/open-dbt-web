@@ -123,5 +123,47 @@ declare namespace QUESTION_BANK {
     showAnswer: number
   }
 
+  //学生练习提交
+  type SubmitAnswer={
+    exerciseId: number, 
+    sclassId: number, 
+    exerciseType: number, 
+    verySql: string, 
+    sceneId: number,
+    answer: string,
+    usageTime: number,
+  }
+
+  type TSceneDetail={
+    id: number,
+    sceneId: number,
+    tableName: string,
+    tableDetail: string,
+    tableDesc: string
+  }
+
+  type TCheckDetail={
+    id: number,
+    sceneDetailId: number,
+    exerciseId: number,
+    checkStatus: string,
+    tableName: string,
+    describe: string
+  }
+  type TSceneDetailModel={
+    id: number,
+    sceneId: number,
+    tableName: string,
+    tableDetail: string,
+    tableDesc: string,
+    detail: TCheckDetail
+  }
+//DDL类型题目 表信息查询
+  type VerificationList={
+    sceneDetails: List<TSceneDetail>,
+    checkDetails: List<TCheckDetail>,
+    sceneDetailModels: List<TSceneDetailModel>
+  }
+
 }
 

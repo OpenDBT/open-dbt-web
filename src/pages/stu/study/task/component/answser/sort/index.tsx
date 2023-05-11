@@ -82,7 +82,7 @@ const AnswserBySort = (props: IProps) => {
     }
     /**
      * 测试运行
-     * @returns 
+     * @returns
      */
     const testRun = (answer: string, item: TASK.ReviewSortExercises) => {
         if (answer.length == 0) {
@@ -94,9 +94,9 @@ const AnswserBySort = (props: IProps) => {
     // 测试运行
     const testRunAnswer = async (value: { answer: string; usageTime: number }, item: TASK.ReviewSortExercises) => {
         setIsWaitModalVisible(true);
-
+//TODO 需要修改
         //测试提交答案
-        stuTestRunAnswer({ ...value, exerciseId: item.exerciseId }).then((result: any) => {
+        stuTestRunAnswer({ ...value, exerciseId: item.exerciseId,exerciseType: item.exerciseType }).then((result: any) => {
             setIsWaitModalVisible(false);
             if (result.success) {
                 if (result.obj) {
