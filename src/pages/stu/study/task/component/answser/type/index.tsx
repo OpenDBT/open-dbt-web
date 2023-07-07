@@ -117,9 +117,14 @@ const AnswserByType = (props: IProps) => {
   const testRunAnswer = async (value: { answer: string; usageTime: number }, item: any) => {
     setIsWaitModalVisible(true);
     //测试提交答案
-    stuTestRunAnswer({ ...value, exerciseId: item.exercise_id }).then((result: any) => {
+    stuTestRunAnswer({ ...value, exerciseId: item.exerciseId,exerciseType: item.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
+      debugger;
       if (result.success) {
+        if(!result.obj.select){
+          message.success("运行成功");
+        return;
+        }
         if (result.obj) {
           if (!result.obj.executeRs) {
             message.error(result.obj.log);
@@ -222,7 +227,7 @@ const AnswserByType = (props: IProps) => {
                       cItem.exerciseType == 5 && <BraftEditor className="border" placeholder="请输入正文内容" value={examList[computedIndex(cIndex, index)].exerciseResult} onChange={(val) => onChangeBraft(val, computedIndex(cIndex, index))} />
                     }
                     {
-                      cItem.exerciseType == 6 && <>
+                      (cItem.exerciseType == 6||cItem.exerciseType == 7||cItem.exerciseType == 8||cItem.exerciseType == 9||cItem.exerciseType == 10) && <>
                         <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(cItem.exercise.scene) }}>场景查看</Button>
                         <Button style={{ marginRight: 8 }} type="primary" className="gray-button button-radius" onClick={() => { testRun(examList[computedIndex(cIndex, index)].exerciseResult, cItem) }}>测试运行</Button>
                         <AceEditor

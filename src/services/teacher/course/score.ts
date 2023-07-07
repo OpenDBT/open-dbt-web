@@ -6,7 +6,7 @@ import { API } from '@/common/entity/typings';
  * @param {*} params
  * @returns
  */
-export async function stuTestRunAnswer(params: { answer: string, usageTime: number, exerciseId: number,exerciseType: number,verySql: String,sceneId: number}) {
+export async function stuTestRunAnswer(params: { answer: string, usageTime: number, exerciseId: number,exerciseType: number}) {
     console.log('stuTestRunAnswer params ==', params)
     return await request('/progress/stuTestRunAnswer', { method: 'POST', data: { ...params } });
 }
@@ -16,7 +16,7 @@ export async function stuTestRunAnswer(params: { answer: string, usageTime: numb
  * @param {*} params
  * @returns
  */
-export async function submitAnswer(params: { answer: string, usageTime: number, exerciseId: number,sclassId:number ,exerciseType: number,verySql: String,sceneId: number}) {
+export async function submitAnswer(params: { answer: string, usageTime: number, exerciseId: number,sclassId:number ,exerciseType: number}) {
     console.log('submitAnswer params ==', params)
     return await request('/progress/submitAnswer', {
         method: 'POST', data: { ...params, },

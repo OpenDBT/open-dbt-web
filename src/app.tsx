@@ -111,9 +111,9 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  * @see https://beta-pro.ant.design/docs/request-cn
  */
 // 生产模式
-let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+let prefix = 'http://localhost:8080/open_dbt';
 //开发模式
-if (isDev) prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt'
+if (isDev) prefix = 'http://localhost:8080/open_dbt'
 export const request: RequestConfig = {
   credentials: 'include',
   prefix: prefix,
@@ -154,7 +154,7 @@ export const layoutActionRef = createRef<{ reload: () => void }>();
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-// console.log('initialState ', initialState?.currentUser?.userId,initialState)  
+// console.log('initialState ', initialState?.currentUser?.userId,initialState)
   return {
     actionRef: layoutActionRef,
     disableContentMargin: false,
@@ -200,7 +200,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // childrenRender: (children) => {
     //   if (initialState.loading) return <PageLoading />;
     //   return children;
-    // },    
+    // },
     ...initialState?.settings,
     // headerRender: <a>Ant design</a>,
   };

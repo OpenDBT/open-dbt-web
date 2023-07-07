@@ -80,11 +80,11 @@ const ExerciseSetting = (props: IProps) => {
         </Radio.Group>
         <Checkbox onChange={onChangeCheckboxItem} checked={itemVisible} style={{marginTop: '20px'}}>显示答案</Checkbox>
         <span className='setting-remark'>设置为练习题时方可设置学生答题完成后是否显示答案和解析</span>
-        <div>
+        {/* <div>
           {
             checkList[0]
           }
-        </div>
+        </div> */}
     </Modal>
   );
 };

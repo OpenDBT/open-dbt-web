@@ -626,5 +626,14 @@ declare namespace API {
     examStart?: string; // 作业开始时间
     examEnd?: string; // 作业结束时间
   };
+
+  type TestRunModel={
+    sceneId?: number;
+    exerciseId?: number;
+    standardAnswer?: string;
+    exerciseType?: number;
+    verySql?: string;
+
+  }
 }
 

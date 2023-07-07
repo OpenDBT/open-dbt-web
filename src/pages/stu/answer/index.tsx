@@ -195,17 +195,21 @@ const Answer = (props: any) => {
     }
   };
   // 测试运行
-  const testRunAnswer = async (value: { answer: string; usageTime: number }) => {
+  const testRunAnswer = async (value: { answer: string; usageTime: number; }) => {
     //wait窗口
     setIsWaitModalVisible(true);
     //显示窗口为测试运行
     setSubmitType(1);
     //测试提交答案
 
-    stuTestRunAnswer({ ...value, exerciseId: exerciseId, exerciseType: exercise!.exerciseType, verySql: exercise!.verySql, sceneId: exercise!.sceneId }).then((result: any) => {
+    stuTestRunAnswer({ ...value, exerciseId: exerciseId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
         if (result.obj) {
+          if(!result.obj.select){
+            message.success("运行成功");
+          return;
+          }
           setExecuteResult(result.obj);
           if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
             setColumnList(result.obj.studentResultMap.column);
@@ -245,9 +249,13 @@ const Answer = (props: any) => {
     clearInterval(timer.current);
     //提交答案
 
-    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId, exerciseType: exercise!.exerciseType, verySql: exercise!.verySql, sceneId: exercise!.sceneId }).then((result: any) => {
+    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
+        if(!result.obj.select){
+          message.success("提交成功");
+        return;
+        }
         setExecuteResult(result.obj);
         if (result.obj.scoreRs) {
           openNotification(1, true);

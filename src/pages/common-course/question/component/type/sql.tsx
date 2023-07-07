@@ -217,7 +217,7 @@ const Sql = forwardRef((props: IProps, ref) => {
      * @description 测试运行函数
      */
     const testRunClick = async () => {
-        const values: QUESTION_BANK.QuestionExercise = await form.validateFields();
+        const values = await form.validateFields();
         if (values) {
             if (!values.sceneId) {
                 message.warning(`请选择题目场景`);
@@ -227,7 +227,7 @@ const Sql = forwardRef((props: IProps, ref) => {
                 message.warning(`请填写正确答案内容`);
                 return
             }
-            const result = await testRunAnswer({ sceneId: values.sceneId, answer: values.standardAnswser });
+            const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: -1, standardAnswer: values.standardAnswser, exerciseType: 6 });
             console.log('result == ', result);
             if (result.success) {
                 if (result.obj.isSelect) {
@@ -236,7 +236,7 @@ const Sql = forwardRef((props: IProps, ref) => {
                     setResultSet(result.obj.result);
                     setResultSetModalVisible(true);
                 } else {
-                    message.success(`运行成功，更新行数为${result.obj.result}`);
+                    message.success(`运行成功`);
                 }
             } else {
                 message.error(result.message);

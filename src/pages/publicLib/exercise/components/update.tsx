@@ -61,7 +61,7 @@ const updateIndex = (props: any) => {
   const testRunClick = async () => {
     const values: API.PublicExerciseList = await form.validateFields();
     if (values) {
-      const result = await testRunAnswer({ sceneId: values.sceneId, answer: values.answer });
+      const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, answer: values.answer });
       if (result.success) {
         if (result.obj.isSelect) {
           setColumnList(result.obj.column);

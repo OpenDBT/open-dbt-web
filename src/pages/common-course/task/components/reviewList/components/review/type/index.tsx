@@ -60,7 +60,6 @@ const AnswserByType = (props: any) => {
 
   }
   const editHalf = async (item: any) => {
-    console.log('33333333333333', item)
     item.isCorrect = 3
     item.exerciseScore = item.exerciseActualScore / 2
     let objArr = taskList

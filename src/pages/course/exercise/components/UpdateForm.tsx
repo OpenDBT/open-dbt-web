@@ -75,7 +75,7 @@ const updateExercise: React.FC<IProps> = (props) => {
   const testRunClick = async () => {
     const values = await form.validateFields();
     if (values) {
-      const result = await testRunAnswer({ sceneId: values.sceneId, answer: values.answer });
+      const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: -1, standardAnswer: values.answer, exerciseType: 6 });
       console.log('result == ', result);
       if (result.success) {
         if (result.obj.isSelect) {

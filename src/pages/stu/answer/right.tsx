@@ -23,6 +23,7 @@ const RightColumn = (props: any) => {
     const {
         exerciseId,
         stuAnswer,
+        exerciseType,
         testRunAnswer,
         onFinish,
         submitType,

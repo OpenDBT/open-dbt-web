@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import './common.less';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-mysql";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-min-noconflict/ext-language_tools";
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle } from 'react'
 import { testRunAnswer } from '@/services/teacher/course/exercise';
-import ResultSetModal from './components/ResultSetModal';
-import CODE_CONSTANT from '@/common/code';
+import ResultSetModal from './components/ResultSetModal'
+import CODE_CONSTANT from '@/common/code'
 import SuperIcon from "@/pages/components/icons";
 import BraftEditor from './components/editor/braft/braft';
-import { useParams } from 'umi';
+import { useParams } from 'umi'
 import { Button, Form, Input, Select, message, Divider, Modal } from 'antd';
-import { saveExercise, generateDescriptions, generatesAnswer } from '@/services/teacher/course/question-create';
+import { saveExercise } from '@/services/teacher/course/question-create';
 import { getShareScene } from '@/services/teacher/course/scene';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
 import { saveExerciseInfoByModel } from '@/services/teacher/task/task';
-import KnowledgeModal from '../knowledge';
-import Verify from './ddlSqlPackage/verify';
-import { getCatalogueResourcesId } from '@/services/resources/upload';
-import CustomBraftEditor from './components/editor/braft/CustomBraftEditor';
+import KnowledgeModal from '../knowledge'
 const { Option } = Select;
 interface IProps {
     onInit: QUESTION_BANK.QuestionExercise | null;
@@ -29,7 +26,7 @@ interface IProps {
     resetClick?: () => void;  // 编辑取消
 }
 
-const DDLSql = forwardRef((props: IProps, ref) => {
+const ViewSql = forwardRef((props: IProps, ref) => {
     const { onInit, compType, clickTaskQuestion, resetClick } = props;
     // 将父组件的方法暴露出来
     useImperativeHandle(ref, () => ({
@@ -39,7 +36,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     const params: QUESTION_BANK.IParams = useParams();    // 获取路由参数
     const [form] = Form.useForm();      // 获取表格数据
     const courseId = Number(params.courseId);   // 课程id
-    //const exerciseId = params.exerciseId ? Number(params.exerciseId) : (compType == 'task-edit' ? Number(onInit?.id) : -1); // 习题id
+    const exerciseId = params.exerciseId ? Number(params.exerciseId) : (compType == 'task-edit' ? Number(onInit?.id) : -1); // 习题id
     let parentId = params.parentId ? Number(params.parentId) : (compType == 'task-edit' ? Number(onInit?.parentId) : 0); // 上级id（所在文件夹id）
     const modelId = Number(onInit?.modelId);
     // 弹框数据参数
@@ -51,14 +48,8 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     const [knowModelVisible, setKnowModelVisible] = useState<boolean>(false)    // 知识点弹框显示变量
     const [knowList, setKnowList] = useState<QUESTION_BANK.Knowledge[]>([]);   // 知识点对象数组列表
     const [knowListId, setKnowListId] = useState<number[]>([]);   // 知识点id数组列表
-    const [initialValues, setInitialValues] = useState(getOptions(onInit));   // 初始化
+    const initialValues = getOptions(onInit);   // 初始化
     const [score, setScore] = useState(onInit?.exerciseScore);  // 分数
-    //const [sceneId, setsceneId] = useState(Number);  // 选中的场景id
-    const editorRef = useRef(null);
-    const editAceRef = useRef(null);
-    const [exerciseId, setexerciseId] = useState(params.exerciseId ? Number(params.exerciseId) : (compType == 'task-edit' ? Number(onInit?.id) : -1));
-    // 选中的场景id
-    const [selectSceneId, setselectSceneId] = useState<number>(-1);
     /**
    * 对选项值进行处理
    * @param init 
@@ -74,28 +65,17 @@ const DDLSql = forwardRef((props: IProps, ref) => {
             return {
                 knowledges: [] as QUESTION_BANK.Knowledge[],
                 exerciseLevel: CODE_CONSTANT?.exerciseLevelList[0].value,
-                bandingModel: false,
-                stemEditor: '',
-                standardAnswser: '',
+                bandingModel: false
             }
         }
     }
     useEffect(() => {
-        initKnowledgeForm();
+        initKnowledgeForm()
         //查询场景列表,下拉列表使用
         getShareScene(courseId).then((result) => {
             setAllScene(result.obj);
         });
-        //新建题目生成一个exerciseId
-        if (!exerciseId || exerciseId === -1) {
-            getCatalogueResourcesId().then((res) => {
-                if (res.success) {
-                    setexerciseId(res.obj);
-                }
-            })
-        }
-        setInitialValues(getOptions(onInit));
-            onInit&&onInit.sceneId&&setselectSceneId(onInit.sceneId);
+
     }, []);
     /**
      * 初始化知识点数据
@@ -104,7 +84,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
         if (initialValues.knowledges && initialValues.knowledges.length != 0) {
             let knowledges: QUESTION_BANK.Knowledge[] = [];
             let knowledgesId: number[] = [];
-            initialValues.knowledges.map((item: QUESTION_BANK.Knowledge) => {
+            initialValues.knowledges.map((item: QUESTION_BANK.Knowledge, index: number) => {
                 knowledges.push({ knowledgeId: item.knowledgeId, progress: item.progress, name: item.name });
                 knowledgesId.push(item.knowledgeId)
             })
@@ -130,7 +110,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
         values.parentId = Number(parentId)
         values.courseId = courseId
         values.elementType = 0;
-        values.exerciseType = 7;
+        values.exerciseType = 8;
         if (knowListId.length != 0) {
             let arr: QUESTION_BANK.Knowledge[] = []
             knowListId.map((item, index) => {
@@ -229,7 +209,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                 const data = onFinish(values)
                 if (data) bolUseSave(data, bol)
             })
-            .catch(() => {
+            .catch(errorInfo => {
                 return false
             })
     }
@@ -247,7 +227,11 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                 message.warning(`请填写正确答案内容`);
                 return
             }
-            const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 7 });
+            if (!values.verySql) {
+                message.warning(`请填写校验语句`);
+                return
+            }
+            const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 8,verySql: values.verySql  });
             console.log('result == ', result);
             if (result.success) {
                 if (result.obj.isSelect) {
@@ -263,40 +247,11 @@ const DDLSql = forwardRef((props: IProps, ref) => {
             }
         }
     };
-    //生成描述,并赋值
-    const descriptions = () => {
-        generateDescriptions({ sceneId: selectSceneId, exerciseId: exerciseId }).then((result) => {
-            if (result.success) {
-                if (editorRef.current) {
-                    editorRef.current.setValue(result.obj);
-                }
-            }
-            else {
-                message.error(result.message);
-            }
-        });
-    };
-    //生成答案
-    const generatorRunClick = () => {
-        generatesAnswer(selectSceneId, exerciseId).then((result) => {
-            if (result.success) {
-                if (editAceRef.current) {
-                    editAceRef.current.editor.setValue(result.obj);
-                }
-            }
-            else {
-                message.error(result.message);
-            }
-        });
-    }
-
-
     /**
       * 自定义验证表单数据
       * @param value 表单数据 
       */
     const onValidateData = (value: QUESTION_BANK.QuestionExercise) => {
-        debugger;
         if (!value.stemEditor || value.stemEditor == '<p></p>' || (typeof value.stemEditor != 'string' && value.stemEditor.isEmpty())) {
             message.warning('请填写题目描述')
             return
@@ -309,11 +264,13 @@ const DDLSql = forwardRef((props: IProps, ref) => {
         } else if (!value.exerciseName) {
             message.warning('请输入题目名称')
             return
-        } 
-        // else if (!value.sceneId) {
+        // } else if (!value.sceneId) {
         //     message.warning('请选择题目场景')
         //     return
-        // }
+        }else if (!value.verySql) {
+            message.warning('请输入校验语句')
+            return
+        }
         return true
     }
     /**
@@ -322,23 +279,11 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     const onChangeScore = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setScore(e.target.value.trim())
     };
-
-    //场景表切换
-    const handleChange = (option: React.ReactElement) => {
-        console.log("触发了场景切换",option);
-        if (option && option.key != undefined)
-            setselectSceneId(option.key as number);
-    }
-    //清空选择框
-    const clearSelect = () => {
-        setselectSceneId(-1);
-
-    }
     return (
         <>
             <div className='question-content-card'>
                 <div className='title'>
-                    SQL编程题
+                    DDL视图编程题
                     {
                         compType == 'task-edit' && <> <Input placeholder="" value={score} style={{ width: '50px', margin: '0 10px' }} onChange={onChangeScore} />分</>
                     }
@@ -363,29 +308,25 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                             <Input placeholder="输入题目名称" />
                         </Form.Item>
                         <Form.Item label="题目场景" name="sceneId">
-                            <Select onClear={clearSelect} placeholder="请选择" allowClear style={{ maxWidth: '200px' }} onChange={handleChange}>
+                            <Select placeholder="请选择" allowClear style={{ maxWidth: '200px' }}>
                                 {
-                                    allScene && allScene.map((item) => {
+                                    allScene && allScene.map((item, index) => {
                                         return <Select.Option key={item.sceneId} value={item.sceneId}>{item.sceneName}</Select.Option>
                                     })
                                 }
                             </Select>
                         </Form.Item>
-                        <Form.Item label="校验设置">
-                            <Verify selectSceneId={selectSceneId} onInit={onInit} exerciseId={exerciseId} />
+                        <Form.Item
+                            label="题目描述"
+                            name="stemEditor"
+                        >
+                            <BraftEditor className="border" placeholder="请输入正文内容" />
                         </Form.Item>
                         <div style={{ display: 'flex' }}>
-                            <Form.Item label="题目描述" name="stemEditor" style={{ flex: '1' }}>
-                                <CustomBraftEditor ref={editorRef} />
-                            </Form.Item>
-                            <Button type="primary" onClick={() => descriptions()} style={{ marginLeft: '20px' }}>生成描述</Button>
-                        </div>
-                        <div style={{ display: 'flex' }}>
-                            <Form.Item name="standardAnswser" style={{ position: 'relative', width: '100%', flex: '1' }} label="正确答案">
+                            <Form.Item name="standardAnswser" style={{ position: 'relative', width: '60%' }} label="正确答案">
                                 {/* <TextArea style={{ marginRight: 14 }} allowClear placeholder={"请输入正确答案"} rows={3} /> */}
                                 <AceEditor
-                                    ref={editAceRef}
-                                    style={{ width: '100%', height: '200px', fontSize: '1rem', marginRight: 14, border: '1px' }}
+                                    style={{ width: '100%', height: '100px', fontSize: '1rem', marginRight: 14, border: '1px' }}
                                     // placeholder="Placeholder Text1"
                                     mode="mysql"
                                     theme="github"
@@ -404,13 +345,30 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                                         useWorker: false //自动补全
                                     }} />
                             </Form.Item>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <Button type="primary" onClick={() => generatorRunClick()} style={{ marginLeft: '20px', marginBottom: '12px' }}>生成答案</Button>
-                                <Button type="primary" onClick={() => testRunClick()} style={{ marginLeft: '20px' }}>测试运行</Button>
-                            </div>
-
+                            <Button type="primary" onClick={() => testRunClick()} style={{ marginLeft: '20px' }}>测试运行</Button>
                         </div>
-
+                        <Form.Item name="verySql" style={{ position: 'relative', width: '60%' }} label="校验语句">
+                                {/* <TextArea style={{ marginRight: 14 }} allowClear placeholder={"请输入正确答案"} rows={3} /> */}
+                                <AceEditor
+                                    style={{ width: '100%', height: '100px', fontSize: '1rem', marginRight: 14, border: '1px' }}
+                                    // placeholder="Placeholder Text1"
+                                    mode="mysql"
+                                    theme="github"
+                                    name="stu-answer"
+                                    fontSize={18}
+                                    showPrintMargin={true} //打印边距
+                                    showGutter={true}//行号
+                                    highlightActiveLine={true}//突出显示活动线
+                                    editorProps={{ $blockScrolling: true }} //自动补全
+                                    setOptions={{
+                                        enableBasicAutocompletion: true,//自动补全
+                                        enableLiveAutocompletion: true,
+                                        enableSnippets: true,
+                                        showLineNumbers: true,
+                                        tabSize: 2,
+                                        useWorker: false //自动补全
+                                    }} />
+                            </Form.Item>
                         <Form.Item name="knowledges" label="知识点">
 
                             <Button type="dashed" style={{ marginBottom: '20px' }} onClick={() => setKnowModelVisible(true)}>
@@ -483,4 +441,4 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     )
 })
 
-export default DDLSql
+export default ViewSql

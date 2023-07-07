@@ -100,7 +100,6 @@ const AnswserBySort = (props: IProps) => {
             setIsWaitModalVisible(false);
             if (result.success) {
                 if (result.obj) {
-                    setExecuteResult(result.obj);
                     if (!result.obj.executeRs) {
                         message.error(result.obj.log);
                         return
@@ -192,7 +191,7 @@ const AnswserBySort = (props: IProps) => {
                             item.exerciseType == 5 && <BraftEditor className="border" placeholder="请输入正文内容" value={examList[index].exerciseResult} onChange={(val) => onChangeBraft(val, index)} />
                         }
                         {
-                            item.exerciseType == 6 && <>
+                            (item.exerciseType == 6||item.exerciseType == 7||item.exerciseType == 8||item.exerciseType == 9||item.exerciseType == 10) && <>
                                 <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(item.exercise.scene) }}>场景查看</Button>
                                 <Button style={{ marginRight: 8 }} type="primary" className="gray-button button-radius" onClick={() => { testRun(examList[index].exerciseResult, item) }}>测试运行</Button>
                                 <AceEditor

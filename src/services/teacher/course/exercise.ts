@@ -12,7 +12,7 @@ export function updateExercise(params?: API.ExerciseListParams) {
 }
 
 // 测试运行答案
-export function testRunAnswer(params: { sceneId: number | undefined, standardAnswer: string | undefined,exerciseType: number }) {
+export function testRunAnswer(params?: API.TestRunModel) {
     return request<API.Result<any>>('/course/testRunAnswer', { method: 'POST', data: params });
 }
 

@@ -15,14 +15,7 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface
 import { ValidateIntegerParam } from '@/utils/utils'
 
 //题目类型
-const typeList = [
-  { id: 1, name: '单选题' },
-  { id: 2, name: '多选题' },
-  { id: 3, name: '判断题' },
-  { id: 4, name: '填空题' },
-  { id: 5, name: '简答题' },
-  { id: 6, name: 'SQL编程题' },
-]
+const typeList = CODE_CONSTANT.typeList;
 interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: string;
@@ -454,6 +447,18 @@ const QuestionsHome = (props: any) => {
               }
               {
                 selectTypeNum[5] != 0 ? selectTypeNum[5] + "SQL编程题 " : ''
+              }
+              {
+                selectTypeNum[6] != 0 ? selectTypeNum[6] + "DDLSQL编程题 " : ''
+              }
+              {
+                selectTypeNum[7] != 0 ? selectTypeNum[7] + "DDL视图编程题 " : ''
+              }
+              {
+                selectTypeNum[8] != 0 ? selectTypeNum[8] + "DDL函数编程题 " : ''
+              }
+              {
+                selectTypeNum[9] != 0 ? selectTypeNum[9] + "DDL触发器编程题 " : ''
               }
               ）
             </span>

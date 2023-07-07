@@ -11,6 +11,11 @@ import SingleChoice from './type/singleChoice';
 import MultipleChoice from './type/multiple';
 import { getExerciseInfo } from '@/services/teacher/course/question-create';
 import { QUESTION_BANK } from '@/common/entity/questionbank'
+import DDLSql from './type/DDLSql';
+import ViewSql from './type/viewSql';
+import FunctionSql from './type/functionSql';
+import TriggerSql from './type/triggerSql';
+
 interface IRef extends React.RefObject<HTMLDivElement> {
   clickSave: () => void;
 }
@@ -46,6 +51,10 @@ const PreviewQuestion = (props: any) => {
           {showIndex == 3 && initData && <Judge ref={cRef} onInit={initData} />}
           {showIndex == 5 && initData && <ShortAnswer ref={cRef} onInit={initData} />}
           {showIndex == 6 && initData && <Sql ref={cRef} onInit={initData} />}
+          {showIndex == 7 && initData && <DDLSql ref={cRef} onInit={initData} />}
+          {showIndex == 8 && initData && <ViewSql ref={cRef} onInit={initData} />}
+          {showIndex == 9 && initData && <FunctionSql ref={cRef} onInit={initData} />}
+          {showIndex == 10 && initData && <TriggerSql ref={cRef} onInit={initData} />}
         </div>
       </div>
     </>

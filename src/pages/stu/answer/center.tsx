@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import Blanks from './components/questionType/blanks';
 import ShortAnswer from './components/questionType/shortAnswer';
 import BlanksExercise from './components/questionType/blanks';
-import { submitAnswer, stuTestRunAnswer } from '@/services/teacher/course/score';
+import { stuTestRunAnswer } from '@/services/teacher/course/score';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
 import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAnswerNotifiedFail } from '@/pages/components/exercise-answer-notification'

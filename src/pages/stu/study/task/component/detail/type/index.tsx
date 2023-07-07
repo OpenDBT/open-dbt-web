@@ -146,7 +146,7 @@ const AnswserByType = (props: any) => {
                     {/* 简答题或者sql编程题 */}
                     {/* 我的答案 */}
                     {
-                      (cItem.exerciseType == 5 || cItem.exerciseType == 6) &&
+                      (cItem.exerciseType == 5 || cItem.exerciseType == 6 || cItem.exerciseType == 7) &&
                       <div className='answser-own-braft'>
                         <div className='header'>
                           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
@@ -184,7 +184,7 @@ const AnswserByType = (props: any) => {
 
                     }
                     {
-                      (cItem.exerciseType == 5 || cItem.exerciseType == 6) &&  whetherAnswer == 1 &&
+                      (cItem.exerciseType == 5 || cItem.exerciseType == 6|| cItem.exerciseType == 7) &&  whetherAnswer == 1 &&
                       <div className='answser-normal-braft'>
                         <div className='header'>
                           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>正确答案：</span>
