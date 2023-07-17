@@ -117,13 +117,14 @@ const QuestionsHome = (props: any) => {
     }
     getHomeWorkModelExercises(getRandomuserParams({ ...tableParams, param, orderBy: order })).then((res) => {
       setData({ count: res.count, list: res.list })
+      
       checkedList = res.list.filter((item) => item.checked == 1)
       console.log("checkedList:", checkedList)
       let arr: any[] = [];
       checkedList.map((item) => {
         arr.push(item.id + '-' + item.exerciseType)
       })
-      setSelectedRowKeys(arr);
+      setSelectedRowKeys([...selectedRowKeys,...arr]);
       setTableParams({ ...tableParams, pagination: res.pagination })
     })
   };
