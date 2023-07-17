@@ -10,6 +10,7 @@ import { createRef } from 'react';
 import { API } from '@/common/entity/typings';
 
 const isDev = process.env.NODE_ENV === 'development';
+//const isDev = process.env.NODE_ENV === 'prod';
 const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -111,9 +112,11 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  * @see https://beta-pro.ant.design/docs/request-cn
  */
 // 生产模式
-let prefix = 'http://localhost:8080/open_dbt';
+//let prefix = 'http://118.190.151.85:59001/open-dbt';
+let prefix = 'http://192.168.11.111:59000/open-dbt';
 //开发模式
-if (isDev) prefix = 'http://localhost:8080/open_dbt'
+
+if (isDev) prefix = 'http://localhost:8080/open-dbt'
 export const request: RequestConfig = {
   credentials: 'include',
   prefix: prefix,

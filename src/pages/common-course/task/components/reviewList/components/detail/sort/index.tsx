@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
 import CODE_CONSTANT from '@/common/code'
 import { QUESTION_BANK } from '@/common/entity/questionbank'
-import { Button, Divider } from 'antd';
+import { Button, Divider, Space } from 'antd';
 import { TASK } from '@/common/entity/task';
 import SuperIcon from "@/pages/components/icons";
+import { API } from '@/common/entity/typings';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 const AnswserBySort = (props: any) => {
     const taskList = props.taskList
     const whetherAnswer = props.whetherAnswer
     const [examList, setExamList] = useState<TASK.TaskSumbitExerciseParam[]>(props.subExamList);  // 作业的习题参数列表
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
     return (
         <div>
             {
@@ -16,6 +20,10 @@ const AnswserBySort = (props: any) => {
                         <div>
                             <span className='card-list-title task-title'>
                                 {index + 1}. {item.exercise.exerciseName}
+                                {item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10 ?
+                                    <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(item.exercise.scene) }}>场景查看</Button>
+                                    : null
+                                }
                             </span>
                             <span className='card-list-desc desc'>（{CODE_CONSTANT.questionType[item.exerciseType - 1]}，{item.exerciseActualScore}分）</span>
                         </div>
@@ -66,7 +74,7 @@ const AnswserBySort = (props: any) => {
                         {/* 单选和多选正确答案 */}
                         {
 
-                            (item.exerciseType == 1 || item.exerciseType == 2 || item.exerciseType == 3) &&  whetherAnswer == 1 &&
+                            (item.exerciseType == 1 || item.exerciseType == 2 || item.exerciseType == 3) && whetherAnswer == 1 &&
                             <div className={item.isCorrect == 1 ? 'answser-submit answser-submit-line' : 'answser-submit answser-cuowu-line'}>
                                 <div>
                                     <SuperIcon type={item.isCorrect == 1 ? 'icon-icon-duihao31' : 'icon-icon-cuowu21'} className={item.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
@@ -85,13 +93,16 @@ const AnswserBySort = (props: any) => {
                             item.exerciseType == 4 &&
                             <div className='answser-own-braft'>
                                 <div className='header'>
+                                    <Space>
+                                        <SuperIcon type={item.isCorrect == 1 ? 'icon-icon-duihao31' : (item.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={item.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                                    </Space>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                                     <span>{item.exerciseScore} 分</span>
                                 </div>
                                 <div className='answser-content'>
                                     {
                                         item.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                                            return <div className='space-answser-line'>
+                                            return <div className='space-answser-line' style={{ display: 'flex' }}>
                                                 <span>空格{tIndex + 1}：</span>
                                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: examList[index].exerciseResult.split('@_@')[tIndex] }} style={{ fontWeight: 'normal' }}></div>
                                             </div>
@@ -101,7 +112,7 @@ const AnswserBySort = (props: any) => {
                             </div>
                         }
                         {
-                            item.exerciseType == 4 &&  whetherAnswer == 1 &&
+                            item.exerciseType == 4 && whetherAnswer == 1 &&
                             <div className='answser-normal-braft'>
                                 <div className='header'>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>正确答案：</span>
@@ -109,7 +120,7 @@ const AnswserBySort = (props: any) => {
                                 <div className='answser-content'>
                                     {
                                         item.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                                            return <div className='space-answser-line'>
+                                            return <div className='space-answser-line' style={{ display: 'flex' }}>
                                                 <span>空格{tIndex + 1}：</span>
                                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: tItem.content }} style={{ fontWeight: 'normal' }}></div>
                                             </div>
@@ -129,9 +140,12 @@ const AnswserBySort = (props: any) => {
                         {/* 简答题或者sql编程题 */}
                         {/* 我的答案 */}
                         {
-                            (item.exerciseType == 5 || item.exerciseType == 6) &&
+                            (item.exerciseType == 5 || item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10) &&
                             <div className='answser-own-braft'>
                                 <div className='header'>
+                                    <Space>
+                                        <SuperIcon type={item.isCorrect == 1 ? 'icon-icon-duihao31' : (item.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={item.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                                    </Space>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                                     <span>{item.exerciseScore} 分</span>
                                 </div>
@@ -142,7 +156,7 @@ const AnswserBySort = (props: any) => {
                             </div>
                         }
                         {
-                            (item.exerciseType == 5 || item.exerciseType == 6) && whetherAnswer == 1 &&
+                            (item.exerciseType == 5 || item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10) && whetherAnswer == 1 &&
                             <div className='answser-normal-braft'>
                                 <div className='header'>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>正确答案：</span>
@@ -163,6 +177,15 @@ const AnswserBySort = (props: any) => {
                     </div>
                 })
             }
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
         </div>
     )
 }

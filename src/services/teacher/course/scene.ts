@@ -100,3 +100,8 @@ export async function exportSceneById(sceneId: number) {
 export async function importScene(params: { courseId: number; filePathList: string[] }) {
     return await request<API.Result<string>>('/course/importScene', { method: 'POST', data: { ...params } });
 };
+
+// 根据id获取场景信息
+export async function getScene(sceneId: number) {
+    return await request<API.Result<API.SceneListRecord>>(`/scene/getScene/${sceneId}`);
+};

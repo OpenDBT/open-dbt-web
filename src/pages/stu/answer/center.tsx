@@ -17,13 +17,15 @@ import { API } from '@/common/entity/typings';
 import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAnswerNotifiedFail } from '@/pages/components/exercise-answer-notification'
 interface IProp {
     courseId: number;
-    changeExercise: (value: boolean) => void;
+    changeExercise: (value: boolean,direct: string) => void;
     exercise: API.StuAnswerExerciseInfo;
     topButtonDisabled: boolean;
     nextButtonDisabled: boolean;
     clazzId: number;
     onFinish: (value: { answer: string; usageTime: number }) => void;
     usageTime: number;
+    uploading: boolean;
+    dowmloading: boolean;
 
 }
 const areEqual = (prevProps, nextProps) => {
@@ -31,6 +33,8 @@ const areEqual = (prevProps, nextProps) => {
     if (prevProps.exercise === nextProps.exercise
         && prevProps.topButtonDisabled === nextProps.topButtonDisabled
         && prevProps.nextButtonDisabled === nextProps.nextButtonDisabled
+        && prevProps.uploading === nextProps.uploading
+        && prevProps.dowmloading === nextProps.dowmloading
     ) {
         return true
     } else {
@@ -58,7 +62,9 @@ const CneterColumn = (props: IProp) => {
         topButtonDisabled,
         nextButtonDisabled,
         onFinish,
-        usageTime
+        usageTime,
+        uploading,
+        dowmloading,
     } = props;
     const [childData, setChildData] = useState<any>();
 
@@ -93,7 +99,7 @@ const CneterColumn = (props: IProp) => {
         // "触发器题": <Judge data={exercise}></Judge>
 
     }
-
+  
     return (
         <div className='left'>
             <div className="flex content-title">
@@ -104,7 +110,8 @@ const CneterColumn = (props: IProp) => {
                         size="small"
                         className={topButtonDisabled ? 'disabled' : ''}
                         disabled={topButtonDisabled}
-                        onClick={() => changeExercise(false)}
+                        onClick={() => changeExercise(false,"up")}
+                        loading={uploading}
                     >
                         <LeftOutlined style={{ marginRight: -8 }} />上一题
                     </Button>
@@ -112,7 +119,8 @@ const CneterColumn = (props: IProp) => {
                         size="small"
                         className={nextButtonDisabled ? 'disabled' : ''}
                         disabled={nextButtonDisabled}
-                        onClick={() => changeExercise(true)}
+                        onClick={() => changeExercise(true,"down")}
+                        loading={dowmloading}
                     >
                         下一题<RightOutlined style={{ marginLeft: 3 }} />
                     </Button>

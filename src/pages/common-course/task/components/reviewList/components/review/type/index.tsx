@@ -9,6 +9,10 @@ import Short from '../../questionType/shortAnswser';
 import SpaceQeustion from '../../questionType/space';
 import SqlQuestion from '../../questionType/sql';
 import '../index.less'
+import DDLSql from '../../questionType/ddlSql';
+import DDLViewSql from '../../questionType/ddlViewSql';
+import DDLFunctionSql from '../../questionType/ddlFunctionSql copy';
+import DDLTriggerSql from '../../questionType/ddlTriggerSql copy';
 const AnswserByType = (props: any) => {
   const { changeAllScore } = props
   const [taskList, setTaskList] = useState<any>(props.taskList); //点击更多存储当前行数据
@@ -147,7 +151,18 @@ const AnswserByType = (props: any) => {
                     {
                             cItem.exerciseType == 6 && <SqlQuestion data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></SqlQuestion>
                     }
-      
+                    {
+                            cItem.exerciseType == 7 && <DDLSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLSql>
+                    }
+                    {
+                            cItem.exerciseType == 8 && <DDLViewSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLViewSql>
+                    }
+                    {
+                            cItem.exerciseType == 9 && <DDLFunctionSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLFunctionSql>
+                    }
+                    {
+                            cItem.exerciseType == 10 && <DDLTriggerSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLTriggerSql>
+                    }
                   </div>
                 })
               }

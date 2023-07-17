@@ -6,20 +6,18 @@ import BraftEditor from '@/pages/editor/braft';
 import { testSceneSQLShell } from '@/services/teacher/course/scene';
 import { saveScene } from '@/services/teacher/course/scene';
 import { API } from '@/common/entity/typings';
-import logo from '@/img/logo-itol.png'
 import { useParams } from 'umi'
 import { ValidateIntegerParam } from '@/utils/utils'
 import { useEffect } from 'react';
-import { history } from 'umi';
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
 
-const addIndex = (props) => {
+const addScene = (props) => {
   const params: any = useParams();
   const courseId = params.courseId || props.courseId; // 使用useParams获取courseId，若不存在则使用属性传递的courseId
   const [form] = Form.useForm();
-
+  const refresh=props.refresh;
   useEffect(() => {
     ValidateIntegerParam(courseId);
   }, []);
@@ -28,8 +26,8 @@ const addIndex = (props) => {
    * 保存
    */
   const onFinish = async (values: API.SceneListRecord) => {
-      // 检查 values.sceneDesc 的类型
-      if (typeof values.sceneDesc === 'string') {
+       // 检查 values.sceneDesc 的类型
+       if (typeof values.sceneDesc === 'string') {
         // 如果类型是 string，不做处理，或者进行其他操作
       } else  {
         // 如果类型是 BraftEditor，调用 .toHTML() 方法转换为 HTML
@@ -38,7 +36,7 @@ const addIndex = (props) => {
     const result = await saveScene(values)
     if (result.success) {
       message.success('保存成功');
-      window.location.reload();
+      refresh(result.obj);
     } else {
       message.error(result.message);
     }
@@ -90,14 +88,6 @@ const addIndex = (props) => {
   };
 
   return (
-    <div className='custom-single'>
-      <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-        <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-          <div className='header-logo'>
-            <img src={logo} alt="" onClick={() => history.push('/')} />
-          </div>
-        </div>
-      </div>
 
       <div className='main-container scene'>
         <div className="title-4">新建场景</div>
@@ -144,8 +134,8 @@ const addIndex = (props) => {
           </Form>
         </div>
       </div>
-    </div>
+  
   )
 }
 
-export default addIndex;
+export default addScene;

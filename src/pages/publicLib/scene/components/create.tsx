@@ -15,7 +15,13 @@ const addIndex = (props: any) => {
 
   // 保存
   const onFinish = async (values: API.PublicSceneRecord) => {
-    values.sceneDesc = values.sceneDesc.toHTML();
+       // 检查 values.sceneDesc 的类型
+       if (typeof values.sceneDesc === 'string') {
+        // 如果类型是 string，不做处理，或者进行其他操作
+      } else  {
+        // 如果类型是 BraftEditor，调用 .toHTML() 方法转换为 HTML
+        values.sceneDesc = values.sceneDesc.toHTML()
+      }
     const result = await updateScene(values);
     if (result.success) {
       history.push(`/expert/public_library/scene`);

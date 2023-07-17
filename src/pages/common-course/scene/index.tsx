@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './index.less';
 import '@/pages/common-course/course-common.less';
-import { getShareScene, removeScene, exportSceneList, exportSceneById }
+import { getShareScene, removeScene, exportSceneList, exportSceneById,getScene }
   from '@/services/teacher/course/scene';
 import { Tooltip, Button, message, Modal } from 'antd';
 import ViewModal from './components/ViewModal';
@@ -15,7 +15,7 @@ const SceneIndex = (props: any) => {
   const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
   const [importSceneModalVisible, setImportSceneModalVisible] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState(false);
   const courseId = props.courseId;
 
   useEffect(() => {
@@ -106,6 +106,22 @@ const SceneIndex = (props: any) => {
     });
   }
 
+//查看单个场景
+const getSceneById=(sceneId: number)=>{
+  setLoading(true);
+  getScene(sceneId).then((result)=>{
+    if (result.success) {
+      setLoading(false);
+      setStepFormValues(result.obj);
+      setViewModalVisible(true);
+      
+    } else {
+      setLoading(false);
+      message.error(result.message);
+    }
+  }
+  )
+}
   /**
    * 场景每行点击后的按钮提示
    * @param record 
@@ -114,7 +130,7 @@ const SceneIndex = (props: any) => {
   const hoverContent = (record: API.SceneListRecord) => {
     return <div className="card-buttons">
       <Button style={{ marginRight: 8 }} className="gray-button" onClick={() => { handExportSceneById(record) }}>导出</Button>
-      <Button style={{ marginRight: 8 }} className="gray-button" onClick={() => { setViewModalVisible(true); setStepFormValues(record) }}>查看</Button>
+      <Button style={{ marginRight: 8 }} loading={loading} className="gray-button" onClick={() => {  getSceneById(record.sceneId) }}>查看</Button>
       <Button type="primary" style={{ marginRight: 8 }}
         onClick={() => history.push(`/expert/course/${courseId}/scene/${record.sceneId}/update`)}>编辑</Button>
       <Button type="primary" onClick={() => { handleDel(record) }} danger>删除</Button>

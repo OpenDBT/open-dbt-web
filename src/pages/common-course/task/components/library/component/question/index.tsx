@@ -12,7 +12,6 @@ import CODE_CONSTANT from '@/common/code'
 import { API } from '@/common/entity/typings';
 import { history, useParams, useLocation } from 'umi';
 import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface';
-import { ValidateIntegerParam } from '@/utils/utils'
 
 //题目类型
 const typeList = CODE_CONSTANT.typeList;
@@ -56,7 +55,7 @@ const QuestionsHome = (props: any) => {
   });
   const [order, setOrder] = useState<string>('');  // 排序关键字
   const [selectNum, setSelectNum] = useState<number>(0);  // 选择题目个数
-  const [selectTypeNum, setSelectTypeNum] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);  // 选择题目个数
+  const [selectTypeNum, setSelectTypeNum] = useState<number[]>([ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);  // 选择题目个数
   const taskName = location.state?.taskName
   const questionType = location.state?.questionType
   const modelId = location.state?.modelId;
@@ -286,7 +285,7 @@ const QuestionsHome = (props: any) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys, 'selectedRows:', selectedRows);
 
     if (selectedRows.length != 0) {
-      let numArr = [0, 0, 0, 0, 0, 0]
+      let numArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       selectedRows.map((item: any) => {
         item.exerciseType == 1 && numArr[0]++;
         item.exerciseType == 2 && numArr[1]++;
@@ -294,6 +293,10 @@ const QuestionsHome = (props: any) => {
         item.exerciseType == 4 && numArr[3]++;
         item.exerciseType == 5 && numArr[4]++;
         item.exerciseType == 6 && numArr[5]++;
+        item.exerciseType == 7 && numArr[6]++;
+        item.exerciseType == 8 && numArr[7]++;
+        item.exerciseType == 9 && numArr[8]++;
+        item.exerciseType == 10 && numArr[9]++;
       })
       setSelectTypeNum(numArr)
     }

@@ -5,14 +5,17 @@ import Highlight from 'react-highlight';
 //import 'highlight.js/styles/foundation.css'
 import 'highlight.js/styles/magula.css'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useState } from 'react';
+import { API } from '@/common/entity/typings';
 
 interface IProp {
     courseId: number;
-    changeExercise: (value: boolean) => void;
+    changeExercise: (value: boolean,direct: string) => void;
     exercise: API.StuAnswerExerciseInfo;
     topButtonDisabled: boolean;
     nextButtonDisabled: boolean;
+    uploading: boolean;
+    dowmloading: boolean;
 }
 
 const areEqual = (prevProps, nextProps) => {
@@ -20,6 +23,8 @@ const areEqual = (prevProps, nextProps) => {
     if (prevProps.exercise === nextProps.exercise
         && prevProps.topButtonDisabled === nextProps.topButtonDisabled
         && prevProps.nextButtonDisabled === nextProps.nextButtonDisabled
+        && prevProps.uploading === nextProps.uploading
+        && prevProps.dowmloading === nextProps.dowmloading
         ) {
         return true
     } else {
@@ -32,21 +37,26 @@ const LeftColumn = (props: IProp) => {
         changeExercise,
         exercise,
         topButtonDisabled,
-        nextButtonDisabled
+        nextButtonDisabled,
+        uploading,
+        dowmloading,
     } = props;
     console.log('LeftColumn props', props)
     console.log('exerciseelefr:',exercise)
+    
     return (
         <div className="left">
             <div className="flex content-title">
                 <div className="title-3">{exercise?.courseName}</div>
                 <div className="tools">
+                    
                     <Button
                         style={{ marginRight: 12 }}
                         size="small"
                         className={topButtonDisabled ? 'disabled' : ''}
                         disabled={topButtonDisabled}
-                        onClick={() => changeExercise(false)}
+                        onClick={() => changeExercise(false,'up')}
+                        loading={uploading}
                     >
                         <LeftOutlined style={{ marginRight: -8 }} />上一题
                     </Button>
@@ -54,7 +64,8 @@ const LeftColumn = (props: IProp) => {
                         size="small"
                         className={nextButtonDisabled ? 'disabled' : ''}
                         disabled={nextButtonDisabled}
-                        onClick={() => changeExercise(true)}
+                        onClick={() => changeExercise(true,'down')}
+                        loading={dowmloading}
                     >
                         下一题<RightOutlined style={{ marginLeft: 3 }} />
                     </Button>

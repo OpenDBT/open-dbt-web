@@ -11,15 +11,19 @@ import CODE_CONSTANT from '@/common/code'
 import SuperIcon from "@/pages/components/icons";
 import BraftEditor from './components/editor/braft/braft';
 import { useParams } from 'umi'
-import { Button, Form, Input, Select, message, Divider, Modal,Spin } from 'antd';
+import { Button, Form, Input, Select, message, Divider, Modal } from 'antd';
 import { saveExercise } from '@/services/teacher/course/question-create';
-import { getShareScene } from '@/services/teacher/course/scene';
+import { getScene, getShareScene } from '@/services/teacher/course/scene';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
 import { saveExerciseInfoByModel } from '@/services/teacher/task/task';
 import KnowledgeModal from '../knowledge'
 import ResultSetModalFunction from './components/ResultSetModalFunction';
 import { EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
+import { history } from 'umi';
+import AddIndex from '@/pages/common-course/scene_new/create_pop';
+import UpdateScene from '@/pages/common-course/scene_new/update_pop';
 const { Option } = Select;
 interface IProps {
     onInit: QUESTION_BANK.QuestionExercise | null;
@@ -51,6 +55,19 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
     const initialValues = getOptions(onInit);   // 初始化
     const [score, setScore] = useState(onInit?.exerciseScore);  // 分数
     const [loading, setLoading] = useState(false);
+    const [buttonLoading, setButtonLoading] = useState(false);
+    
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    // 在组件中定义状态
+    const [sceneId, setSceneId] = useState(onInit?.sceneId);
+
+    // 处理场景选中事件
+    const handleSceneSelect = (value) => {
+        setSceneId(value);
+    };
     /**
    * 对选项值进行处理
    * @param init 
@@ -219,7 +236,7 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
      * @description 测试运行函数
      */
     const testRunClick = async () => {
-        
+
         const values: QUESTION_BANK.QuestionExercise = await form.validateFields();
         if (values) {
             // if (!values.sceneId) {
@@ -235,10 +252,10 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                 return
             }
             setLoading(true);
-            const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 9,verySql: values.verySql  });
+            const result = await testRunAnswer({ sceneId: values.sceneId ? values.sceneId : -1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 9, verySql: values.verySql });
             console.log('result == ', result);
             if (result.success) {
-              if (result.obj.functionResult&&result.obj.functionResult.length>0) {
+                if (result.obj.functionResult && result.obj.functionResult.length > 0) {
                     setFunctionResult(result.obj.functionResult);
                     setResultSetModalVisible(true);
                     setLoading(false);
@@ -249,7 +266,7 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
             } else {
                 setLoading(false);
                 message.error(result.message);
-                
+
             }
         }
     };
@@ -270,10 +287,10 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
         } else if (!value.exerciseName) {
             message.warning('请输入题目名称')
             return
-        // } else if (!value.sceneId) {
-        //     message.warning('请选择题目场景')
-        //     return
-        }else if (!value.verySql) {
+            // } else if (!value.sceneId) {
+            //     message.warning('请选择题目场景')
+            //     return
+        } else if (!value.verySql) {
             message.warning('请输入校验语句')
             return
         }
@@ -285,26 +302,56 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
     const onChangeScore = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setScore(e.target.value.trim())
     };
- 
-
-   // 处理点击新增按钮
-   const handleAddScene = () => {
-    
-  };
-    // 处理点击编辑按钮
-    const handleEditScene = (sceneId) => {
-        console.log('编辑场景:', sceneId);
-      };
-    
-      // 处理点击查看按钮
-      const handleViewScene = (sceneId) => {
+    //新增页面关闭
+    const closeModal = () => {
+        setShowModal(false);
+    }
+    // 处理点击新增按钮
+    const handleAddScene = () => {
+        setShowModal(true);
+    };
+    //关闭编辑页面
+    const closeEditModal = () => {
+        setShowEditModal(false);
+       
+    }
+    // 处理点击查看按钮
+    const handleViewScene = (sceneId: number) => {
         // 执行查看场景的逻辑，例如打开一个模态框或导航到场景详情页面
         console.log('查看场景:', sceneId);
-      };
-   
+        setButtonLoading(true);
+        getScene(sceneId).then((result) => {
+            if (result.success) {
+                setButtonLoading(false);
+                setStepFormValues(result.obj);
+                setViewModalVisible(true);
+
+            } else {
+                setButtonLoading(false);
+                message.error(result.message);
+            }
+        }
+        )
+    };
+    //编辑打开新页面
+    const handEditScene = () => {
+        setShowEditModal(true);
+    }
+    //刷新场景
+    const refreshAllScene=(sceneId)=>{
+    //查询场景列表,下拉列表使用
+    getShareScene(courseId).then((result) => {
+        setAllScene(result.obj);
+        if(sceneId){
+            form.setFieldsValue({ sceneId });
+            setSceneId(sceneId);
+        }
+    });
+    }
+
     return (
         <>
-         
+
             <div className='question-content-card'>
                 <div className='title'>
                     DDL函数编程题
@@ -331,28 +378,20 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                         >
                             <Input placeholder="输入题目名称" />
                         </Form.Item>
-                        <Form.Item label="题目场景" name="sceneId">
-                            <Select placeholder="请选择" allowClear style={{ maxWidth: '200px' }}
-                            dropdownRender={menu => (
-                                <div>
-                                  {menu}
-                                  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px' }}>
-                                    <Button type="text" icon={<PlusOutlined />} onClick={handleAddScene}>新增</Button>
-                                  </div>
-                                </div>
-                              )}
-                            >
-                                {
-                                    allScene && allScene.map((item, index) => {
-                                        return <Select.Option key={item.sceneId} value={item.sceneId}>{item.sceneName}
-                                                <Button type="text" icon={<EyeOutlined />} onClick={() => handleViewScene(item.sceneId)} />
-                                                <Button type="text" icon={<EditOutlined />} onClick={() => handleEditScene(item.sceneId)} />
-                                        
-                                        </Select.Option>
-                                    })
-                                }
-                            </Select>
-                        </Form.Item>
+                        <div style={{ display: 'flex' }}>
+                            <Form.Item label="题目场景" name="sceneId" >
+                                <Select placeholder="请选择" allowClear style={{ maxWidth: '200px' }} onChange={handleSceneSelect}>
+                                    {
+                                        allScene && allScene.map((item, index) => {
+                                            return <Select.Option key={item.sceneId} value={item.sceneId}>{item.sceneName}</Select.Option>
+                                        })
+                                    }
+                                </Select>
+                            </Form.Item>
+                            {sceneId && <Button type="text" icon={<EyeOutlined />} loading={buttonLoading} style={{ marginLeft: 8 }} onClick={() => handleViewScene(form.getFieldValue('sceneId'))} />}
+                            {sceneId && <Button type="text"  icon={<EditOutlined />} style={{ marginLeft: 2 }} onClick={handEditScene} />}
+                            <Button type="text" icon={<PlusOutlined />} onClick={handleAddScene}></Button>
+                        </div>
                         <Form.Item
                             label="题目描述"
                             name="stemEditor"
@@ -385,27 +424,27 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                             <Button type="primary" loading={loading} onClick={() => testRunClick()} style={{ marginLeft: '20px' }}>测试运行</Button>
                         </div>
                         <Form.Item name="verySql" style={{ position: 'relative', width: '60%' }} label="校验语句">
-                                {/* <TextArea style={{ marginRight: 14 }} allowClear placeholder={"请输入正确答案"} rows={3} /> */}
-                                <AceEditor
-                                    style={{ width: '100%', height: '100px', fontSize: '1rem', marginRight: 14, border: '1px' }}
-                                    // placeholder="Placeholder Text1"
-                                    mode="mysql"
-                                    theme="github"
-                                    name="stu-answer"
-                                    fontSize={18}
-                                    showPrintMargin={true} //打印边距
-                                    showGutter={true}//行号
-                                    highlightActiveLine={true}//突出显示活动线
-                                    editorProps={{ $blockScrolling: true }} //自动补全
-                                    setOptions={{
-                                        enableBasicAutocompletion: true,//自动补全
-                                        enableLiveAutocompletion: true,
-                                        enableSnippets: true,
-                                        showLineNumbers: true,
-                                        tabSize: 2,
-                                        useWorker: false //自动补全
-                                    }} />
-                            </Form.Item>
+                            {/* <TextArea style={{ marginRight: 14 }} allowClear placeholder={"请输入正确答案"} rows={3} /> */}
+                            <AceEditor
+                                style={{ width: '100%', height: '100px', fontSize: '1rem', marginRight: 14, border: '1px' }}
+                                // placeholder="Placeholder Text1"
+                                mode="mysql"
+                                theme="github"
+                                name="stu-answer"
+                                fontSize={18}
+                                showPrintMargin={true} //打印边距
+                                showGutter={true}//行号
+                                highlightActiveLine={true}//突出显示活动线
+                                editorProps={{ $blockScrolling: true }} //自动补全
+                                setOptions={{
+                                    enableBasicAutocompletion: true,//自动补全
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                    useWorker: false //自动补全
+                                }} />
+                        </Form.Item>
                         <Form.Item name="knowledges" label="知识点">
 
                             <Button type="dashed" style={{ marginBottom: '20px' }} onClick={() => setKnowModelVisible(true)}>
@@ -472,6 +511,24 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                 }}
                 selectIds={knowListId}
                 moveModelVisible={knowModelVisible}></KnowledgeModal>
+
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
+
+            <Modal visible={showModal} onCancel={closeModal} footer={null} width={900} centered={true}>
+                <AddIndex courseId={courseId} refresh={refreshAllScene}/>
+            </Modal>;
+            <Modal visible={showEditModal} onCancel={closeEditModal} footer={null} width={900} centered={true}>
+                <UpdateScene courseId={courseId}   sceneId={form.getFieldValue('sceneId')}  refresh={refreshAllScene}/>
+            </Modal>;
+
         </>
     )
 })

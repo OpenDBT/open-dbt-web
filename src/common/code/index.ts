@@ -34,7 +34,7 @@ typeList: [
     { id: 3, name: '判断题' },
     { id: 4, name: '填空题' },
     { id: 5, name: '简答题' },
-    { id: 6, name: 'SQL编程题' },
+    { id: 6, name: 'DMLSQL编程题' },
     { id: 7, name: 'DDLSQL编程题' },
     { id: 8, name: 'DDL视图编程题' },
     { id: 9, name: 'DDL函数编程题' },

@@ -44,9 +44,10 @@ const Answer = (props: any) => {
   const [topButtonDisabled, setTopButtonDisabled] = useState<boolean>(true);
   const [nextButtonDisabled, setNextButtonDisabled] = useState<boolean>(true);
   const [isCanAnswer, setIsCanAnswer] = useState<boolean>(false);
-
   let timer: any = useRef(); //计时器
   const [usageTime, setUsageTime] = useState<number>(0);
+  const [uploading, setUpLoading] = useState<boolean>(false);
+  const [dowmloading, setDownLoading] = useState<boolean>(false);
   // 清除定时器
   const stopTimer = () => {
     clearInterval(timer.current);
@@ -124,6 +125,8 @@ const Answer = (props: any) => {
     getExerciseInfo(clazzId, courseId, exerciseId).then((result: any) => {
       if (result.obj) {
         setExercise(result.obj);
+        setUpLoading(false);
+        setDownLoading(false);
       }
     });
   };
@@ -142,9 +145,16 @@ const Answer = (props: any) => {
    * 切换习题，上一题和下一题
    * @param next 是否下一题
    */
-  const changeExercise = (next: boolean) => {
+  const changeExercise = (next: boolean,direct: string) => {
+    if(direct=='up'){
+      setUpLoading(true);
+    }else{
+      setDownLoading(true);
+    }
+    
+   
     const index = exerciseList.findIndex(
-      (item: API.ExerciseRecord) => item.exerciseId === exerciseId,
+      (item: API.ExerciseRecord) => item.exerciseId == exerciseId,
     );
     console.log('next index exerciseList', next, index, exerciseList.length);
     //校验题目是否可以上下题切换
@@ -286,9 +296,11 @@ const Answer = (props: any) => {
               clazzId={clazzId}
               courseId={courseId}
               exercise={exercise!}
+              uploading={uploading}
+              dowmloading={dowmloading}
               usageTime={usageTime}
               onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
-              changeExercise={(next: boolean) => changeExercise(next)}
+              changeExercise={(next: boolean,direct: string) => changeExercise(next,direct)}
               topButtonDisabled={topButtonDisabled}
               nextButtonDisabled={nextButtonDisabled}
             ></CenterColumn>
@@ -300,7 +312,9 @@ const Answer = (props: any) => {
             <LeftColumn
               courseId={courseId}
               exercise={exercise!}
-              changeExercise={(next: boolean) => changeExercise(next)}
+              uploading={uploading}
+              dowmloading={dowmloading}
+              changeExercise={(next: boolean,direct: string) => changeExercise(next,direct)}
               topButtonDisabled={topButtonDisabled}
               nextButtonDisabled={nextButtonDisabled}
             />

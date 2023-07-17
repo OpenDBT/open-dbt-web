@@ -45,7 +45,8 @@ const Answer = (props: any) => {
   const [topButtonDisabled, setTopButtonDisabled] = useState<boolean>(true);
   const [nextButtonDisabled, setNextButtonDisabled] = useState<boolean>(true);
   const [isCanAnswer, setIsCanAnswer] = useState<boolean>(false);
-
+  const [uploading, setUpLoading] = useState<boolean>(false);
+  const [dowmloading, setDownLoading] = useState<boolean>(false);
   useEffect(() => {
     //查询班级信息
     getExamById(examClassId).then((result) => {
@@ -99,6 +100,8 @@ const Answer = (props: any) => {
     getExamExerciseById(clazzId, examId, examClassId, exerciseId).then((result: any) => {
       if (result.obj) {
         setExercise(result.obj);
+        setUpLoading(false);
+        setDownLoading(false);
       }
     });
   };
@@ -117,9 +120,14 @@ const Answer = (props: any) => {
    * 切换习题，上一题和下一题
    * @param next 是否下一题
    */
-  const changeExercise = (next: boolean) => {
+  const changeExercise = (next: boolean,direct: string ) => {
+    if(direct=='up'){
+      setUpLoading(true);
+    }else{
+      setDownLoading(true);
+    }
     const index = exerciseList.findIndex(
-      (item: API.StudentExamExercise) => item.exerciseId === exerciseId,
+      (item: API.StudentExamExercise) => item.exerciseId == exerciseId,
     );
     console.log('next index exerciseList', next, index, exerciseList.length);
     //校验题目是否可以上下题切换
@@ -250,7 +258,9 @@ const Answer = (props: any) => {
           <LeftColumn
             exam={exam!}
             exercise={exercise!}
-            changeExercise={(next: boolean) => changeExercise(next)}
+            uploading={uploading}
+            dowmloading={dowmloading}
+            changeExercise={(next: boolean,dirent: string) => changeExercise(next,dirent)}
             topButtonDisabled={topButtonDisabled}
             nextButtonDisabled={nextButtonDisabled}
           />

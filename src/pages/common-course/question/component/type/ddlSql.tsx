@@ -13,7 +13,7 @@ import BraftEditor from './components/editor/braft/braft';
 import { useParams } from 'umi';
 import { Button, Form, Input, Select, message, Divider, Modal } from 'antd';
 import { saveExercise, generateDescriptions, generatesAnswer } from '@/services/teacher/course/question-create';
-import { getShareScene } from '@/services/teacher/course/scene';
+
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
 import { saveExerciseInfoByModel } from '@/services/teacher/task/task';
@@ -21,6 +21,14 @@ import KnowledgeModal from '../knowledge';
 import Verify from './ddlSqlPackage/verify';
 import { getCatalogueResourcesId } from '@/services/resources/upload';
 import CustomBraftEditor from './components/editor/braft/CustomBraftEditor';
+import { EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+
+import UpdateScene from '@/pages/common-course/scene_new/update_pop';
+import AddIndex from '@/pages/common-course/scene_new/create_pop';
+import { getScene, getShareScene } from '@/services/teacher/course/scene';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
+
+
 const { Option } = Select;
 interface IProps {
     onInit: QUESTION_BANK.QuestionExercise | null;
@@ -59,6 +67,15 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     const [exerciseId, setexerciseId] = useState(params.exerciseId ? Number(params.exerciseId) : (compType == 'task-edit' ? Number(onInit?.id) : -1));
     // 选中的场景id
     const [selectSceneId, setselectSceneId] = useState<number>(-1);
+
+    const [loading, setLoading] = useState(false);
+    const [buttonLoading, setButtonLoading] = useState(false);
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
+    const [sceneId, setSceneId] = useState(onInit?.sceneId);
+   
     /**
    * 对选项值进行处理
    * @param init 
@@ -95,7 +112,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
             })
         }
         setInitialValues(getOptions(onInit));
-            onInit&&onInit.sceneId&&setselectSceneId(onInit.sceneId);
+        onInit && onInit.sceneId && setselectSceneId(onInit.sceneId);
     }, []);
     /**
      * 初始化知识点数据
@@ -247,7 +264,8 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                 message.warning(`请填写正确答案内容`);
                 return
             }
-            const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 7 });
+            setLoading(true);
+            const result = await testRunAnswer({ sceneId: values.sceneId ? values.sceneId : -1, exerciseId: exerciseId, standardAnswer: values.standardAnswser, exerciseType: 7 });
             console.log('result == ', result);
             if (result.success) {
                 if (result.obj.isSelect) {
@@ -255,10 +273,14 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                     setDatatype(result.obj.datatype)
                     setResultSet(result.obj.result);
                     setResultSetModalVisible(true);
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     message.success(`运行成功`);
+
                 }
             } else {
+                setLoading(false);
                 message.error(result.message);
             }
         }
@@ -309,7 +331,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
         } else if (!value.exerciseName) {
             message.warning('请输入题目名称')
             return
-        } 
+        }
         // else if (!value.sceneId) {
         //     message.warning('请选择题目场景')
         //     return
@@ -324,16 +346,66 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     };
 
     //场景表切换
-    const handleChange = (option: React.ReactElement) => {
-        console.log("触发了场景切换",option);
-        if (option && option.key != undefined)
-            setselectSceneId(option.key as number);
+    const handleChange = (value) => {
+        console.log("触发了场景切换", value);
+        setSceneId(value);
+        if (value  != undefined){
+            setselectSceneId(value);
+        }
+            
     }
     //清空选择框
     const clearSelect = () => {
         setselectSceneId(-1);
 
     }
+
+    //新增页面关闭
+    const closeModal = () => {
+        setShowModal(false);
+    }
+    // 处理点击新增按钮
+    const handleAddScene = () => {
+        setShowModal(true);
+    };
+    //关闭编辑页面
+    const closeEditModal = () => {
+        setShowEditModal(false);
+    }
+    // 处理点击查看按钮
+    const handleViewScene = (sceneId: number) => {
+        // 执行查看场景的逻辑，例如打开一个模态框或导航到场景详情页面
+        console.log('查看场景:', sceneId);
+        setButtonLoading(true);
+        getScene(sceneId).then((result) => {
+            if (result.success) {
+                setButtonLoading(false);
+                setStepFormValues(result.obj);
+                setViewModalVisible(true);
+
+            } else {
+                setButtonLoading(false);
+                message.error(result.message);
+            }
+        }
+        )
+    };
+    //编辑打开新页面
+    const handEditScene = () => {
+        setShowEditModal(true);
+    }
+        //刷新场景
+        const refreshAllScene = (sceneId) => {
+            //查询场景列表,下拉列表使用
+            getShareScene(courseId).then((result) => {
+                setAllScene(result.obj);
+                if (sceneId) {
+                    form.setFieldsValue({ sceneId });
+                    setSceneId(sceneId);
+                    setselectSceneId(sceneId);
+                }
+            });
+        }
     return (
         <>
             <div className='question-content-card'>
@@ -362,15 +434,20 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                         >
                             <Input placeholder="输入题目名称" />
                         </Form.Item>
-                        <Form.Item label="题目场景" name="sceneId">
-                            <Select onClear={clearSelect} placeholder="请选择" allowClear style={{ maxWidth: '200px' }} onChange={handleChange}>
-                                {
-                                    allScene && allScene.map((item) => {
-                                        return <Select.Option key={item.sceneId} value={item.sceneId}>{item.sceneName}</Select.Option>
-                                    })
-                                }
-                            </Select>
-                        </Form.Item>
+                        <div style={{ display: 'flex' }}>
+                            <Form.Item label="题目场景" name="sceneId">
+                                <Select onClear={clearSelect} placeholder="请选择" allowClear style={{ maxWidth: '200px' }} onChange={handleChange}>
+                                    {
+                                        allScene && allScene.map((item) => {
+                                            return <Select.Option key={item.sceneId} value={item.sceneId}>{item.sceneName}</Select.Option>
+                                        })
+                                    }
+                                </Select>
+                            </Form.Item>
+                            {sceneId && <Button type="text" icon={<EyeOutlined />} loading={buttonLoading} style={{ marginLeft: 8 }} onClick={() => handleViewScene(form.getFieldValue('sceneId'))} />}
+                            {sceneId && <Button type="text" icon={<EditOutlined />} style={{ marginLeft: 2 }} onClick={handEditScene} />}
+                            <Button type="text" icon={<PlusOutlined />} onClick={handleAddScene}></Button>
+                        </div>
                         <Form.Item label="校验设置">
                             <Verify selectSceneId={selectSceneId} onInit={onInit} exerciseId={exerciseId} />
                         </Form.Item>
@@ -406,7 +483,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                             </Form.Item>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <Button type="primary" onClick={() => generatorRunClick()} style={{ marginLeft: '20px', marginBottom: '12px' }}>生成答案</Button>
-                                <Button type="primary" onClick={() => testRunClick()} style={{ marginLeft: '20px' }}>测试运行</Button>
+                                <Button type="primary" loading={loading} onClick={() => testRunClick()} style={{ marginLeft: '20px' }}>测试运行</Button>
                             </div>
 
                         </div>
@@ -479,6 +556,23 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                 }}
                 selectIds={knowListId}
                 moveModelVisible={knowModelVisible}></KnowledgeModal>
+
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
+            <Modal visible={showModal} onCancel={closeModal} footer={null} width={900} centered={true}>
+                <AddIndex courseId={courseId} refresh={refreshAllScene}/>
+            </Modal>;
+            <Modal visible={showEditModal} onCancel={closeEditModal} footer={null} width={900} centered={true}>
+                <UpdateScene courseId={courseId} sceneId={form.getFieldValue('sceneId')} refresh={refreshAllScene}/>
+            </Modal>;
+
         </>
     )
 })

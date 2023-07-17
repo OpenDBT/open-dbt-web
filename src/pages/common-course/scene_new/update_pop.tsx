@@ -1,45 +1,56 @@
 import './index.less';
 import '@/pages/common-course/course-common.less';
-import { Form, Input, Button, Space, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { Form, Input, Button, Space, message, Spin } from 'antd';
 import moment from 'moment';
 import BraftEditor from '@/pages/editor/braft';
 import { testSceneSQLShell } from '@/services/teacher/course/scene';
-import { saveScene } from '@/services/teacher/course/scene';
+import { getSceneInfo, saveScene } from '@/services/teacher/course/scene';
 import { API } from '@/common/entity/typings';
-import logo from '@/img/logo-itol.png'
 import { useParams } from 'umi'
 import { ValidateIntegerParam } from '@/utils/utils'
-import { useEffect } from 'react';
-import { history } from 'umi';
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
 
-const addIndex = (props) => {
+const UpdateScene = (props) => {
   const params: any = useParams();
   const courseId = params.courseId || props.courseId; // 使用useParams获取courseId，若不存在则使用属性传递的courseId
+  const sceneId = params.sceneId || props.sceneId;
   const [form] = Form.useForm();
+  const refresh = props.refresh;
+  const [loading, setLoading] = useState(true);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
     ValidateIntegerParam(courseId);
+    ValidateIntegerParam(sceneId);
+    getSceneInfo(sceneId).then((result) => {
+      form.setFieldsValue(result.obj);
+      setLoading(false)
+    })
   }, []);
 
   /**
    * 保存
    */
   const onFinish = async (values: API.SceneListRecord) => {
-      // 检查 values.sceneDesc 的类型
-      if (typeof values.sceneDesc === 'string') {
-        // 如果类型是 string，不做处理，或者进行其他操作
-      } else  {
-        // 如果类型是 BraftEditor，调用 .toHTML() 方法转换为 HTML
-        values.sceneDesc = values.sceneDesc.toHTML()
-      }
+    // 检查 values.sceneDesc 的类型
+    if (typeof values.sceneDesc === 'string') {
+      // 如果类型是 string，不做处理，或者进行其他操作
+    } else  {
+      // 如果类型是 BraftEditor，调用 .toHTML() 方法转换为 HTML
+      values.sceneDesc = values.sceneDesc.toHTML()
+    }
+    setSaveLoading(true);
     const result = await saveScene(values)
     if (result.success) {
+      setSaveLoading(false);
+      refresh(result.obj);
       message.success('保存成功');
-      window.location.reload();
+
     } else {
+      setSaveLoading(false);
       message.error(result.message);
     }
   };
@@ -90,30 +101,24 @@ const addIndex = (props) => {
   };
 
   return (
-    <div className='custom-single'>
-      <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-        <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-          <div className='header-logo'>
-            <img src={logo} alt="" onClick={() => history.push('/')} />
-          </div>
-        </div>
-      </div>
+    <div className='main-container scene'>
+      <div className="title-4">编辑场景</div>
+      <div className='scene-create'>
+        {!loading ? (
 
-      <div className='main-container scene'>
-        <div className="title-4">新建场景</div>
-        <div className='scene-create'>
           <Form
             layout="vertical"
             form={form}
             onFinish={onFinish}
             initialValues={{
               courseId: courseId,
-              sceneName: '',
-              sceneDesc: '',
+              exerciseName: '',
+              exerciseDesc: '',
               initShell: ''
             }}
           >
             <FormItem name="courseId" hidden={true}><Input /></FormItem>
+            <FormItem name="sceneId" hidden={true}><Input /></FormItem>
             <FormItem
               name="sceneName"
               label="应用场景名称"
@@ -139,13 +144,18 @@ const addIndex = (props) => {
               />
             </FormItem>
             <div style={{ textAlign: 'center' }}>
-              <Form.Item><Button type="primary" htmlType="submit">保存设置</Button></Form.Item>
+              <Form.Item><Button type="primary" loading={saveLoading} htmlType="submit">保存设置</Button></Form.Item>
             </div>
           </Form>
-        </div>
+
+        ) : (
+          <div style={{ textAlign: 'center', height: '50vh' }}>
+            <Spin size="large" />
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default addIndex;
+export default UpdateScene;

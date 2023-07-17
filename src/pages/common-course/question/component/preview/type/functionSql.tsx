@@ -3,10 +3,11 @@ import './common.less';
 import './sql.less';
 import { forwardRef, useImperativeHandle } from 'react'
 import { Divider } from 'antd';
-import { getShareScene } from '@/services/teacher/course/scene';
+import { getScene } from '@/services/teacher/course/scene';
 import { API } from '@/common/entity/typings';
 import { history, useParams } from 'umi';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 interface IProps {
     onInit: QUESTION_BANK.QuestionExercise;
     compType?: string;
@@ -23,11 +24,13 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
     const courseId = Number(params.courseId);
     const exerciseId = Number(params.exerciseId);
     const parentId = Number(initialValues?.parentId);
-    const [allScene, setAllScene] = useState<API.SceneListRecord[]>([]);//场景列表
+    const [currentScene, setCurrentScene] = useState<API.SceneListRecord>();//场景列表
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
     useEffect(() => {
-        //查询场景列表,下拉列表使用
-        getShareScene(courseId).then((result) => {
-            setAllScene(result.obj);
+        //查询场景
+        getScene(initialValues.sceneId).then((result) => {
+            setCurrentScene(result.obj);
         });
     }, []);
     /**
@@ -54,13 +57,14 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                 </div>
                 <div className='card-answser'>
                     <div style={{ fontWeight: 'bold', margin: '20px 0', display: 'inline-block' }}>题目场景：</div>
-                    <span>
+                    <a onClick={() => {
+                        setViewModalVisible(true); setStepFormValues(currentScene)
+                    }}>
                         {
-                            allScene && allScene.filter((item, index) => {
-                                return item.sceneId == initialValues.sceneId
-                            })[0]?.sceneName
+                            currentScene?.sceneName
                         }
-                    </span>
+                    </a>
+                
                 </div>
                 <div className='card-content'>
                     <div className='html-width-class' dangerouslySetInnerHTML={{ __html: initialValues?.stem }}></div>
@@ -82,6 +86,15 @@ const FunctionSql = forwardRef((props: IProps, ref) => {
                     </div>
                 </div>
             </div>
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
         </>
     )
 })
