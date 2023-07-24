@@ -46,17 +46,17 @@ const ResultSetModalFunction: React.FC<UserFormProps> = (props) => {
     handleButtonClick(0);
   }, [props]);
 
-  const setTableContent = () => {
-    if (functionResult[selectedTableIndex]?.columnList.length > 0) {
-      console.log('setTableContent columnList = ', functionResult[selectedTableIndex]?.columnList);
-      console.log('setTableContent datatype = ', functionResult[selectedTableIndex]?.dataTypeAndImgList);
+  const setTableContent = (index: number) => {
+    if (functionResult[index]?.columnList.length > 0) {
+      console.log('setTableContent columnList = ', functionResult[index]?.columnList);
+      console.log('setTableContent datatype = ', functionResult[index]?.dataTypeAndImgList);
 
       let tableColumns: TableColumns[] = [];
-      functionResult[selectedTableIndex]?.columnList.map((item: string, index: number) => {
+      functionResult[index]?.columnList.map((item: string, index: number) => {
         const title = (
-          <Tooltip title={functionResult[selectedTableIndex]?.dataTypeAndImgList[index].dataType}>
+          <Tooltip title={functionResult[index]?.dataTypeAndImgList[index].dataType}>
             {
-              functionResult[selectedTableIndex]?.dataTypeAndImgList[index].imgUrl ? <span><img src={`${APP.request.prefix}${functionResult[selectedTableIndex]?.dataTypeAndImgList[index].imgUrl}`} />&nbsp;</span> : null
+              functionResult[index]?.dataTypeAndImgList[index].imgUrl ? <span><img src={`${APP.request.prefix}${functionResult[selectedTableIndex]?.dataTypeAndImgList[index].imgUrl}`} />&nbsp;</span> : null
             }
             {item}
           </Tooltip>
@@ -75,9 +75,9 @@ const ResultSetModalFunction: React.FC<UserFormProps> = (props) => {
 
   };
   const [selectedTableIndex, setSelectedTableIndex] = useState(0);
-  const handleButtonClick = (index) => {
+  const handleButtonClick = (index: number) => {
     setSelectedTableIndex(index);
-    setTableContent();
+    setTableContent(index);
   };
   return (
     <Modal

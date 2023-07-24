@@ -450,7 +450,7 @@ const QuestionsHome = (props: any) => {
                 selectTypeNum[4] != 0 ? selectTypeNum[4] + "简答题 " : ''
               }
               {
-                selectTypeNum[5] != 0 ? selectTypeNum[5] + "SQL编程题 " : ''
+                selectTypeNum[5] != 0 ? selectTypeNum[5] + "DMLSQL编程题 " : ''
               }
               {
                 selectTypeNum[6] != 0 ? selectTypeNum[6] + "DDLSQL编程题 " : ''

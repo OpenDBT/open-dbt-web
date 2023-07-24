@@ -83,6 +83,65 @@ const FileModel = (props: any) => {
     }
   }
 
+
+
+
+
+  // const exitFullScreenHandler = () => {
+  //   // 检查当前是否处于全屏状态
+  //   const isFullScreen =
+  //     document.fullscreenElement ||
+  //     document.mozFullScreenElement ||
+  //     document.webkitFullscreenElement ||
+  //     document.msFullscreenElement;
+  
+  //   if (isFullScreen) {
+  //     // 退出全屏操作
+  //     if (document.exitFullscreen) {
+  //       document.exitFullscreen();
+  //     } else if (document.mozCancelFullScreen) {
+  //       document.mozCancelFullScreen();
+  //     } else if (document.webkitExitFullscreen) {
+  //       document.webkitExitFullscreen();
+  //     } else if (document.msExitFullscreen) {
+  //       document.msExitFullscreen();
+  //     }
+  
+  //     // 移除全屏状态改变事件监听器
+  //     document.removeEventListener('fullscreenchange', exitFullScreenHandler);
+  //     document.removeEventListener('mozfullscreenchange', exitFullScreenHandler);
+  //     document.removeEventListener('webkitfullscreenchange', exitFullScreenHandler);
+  //     document.removeEventListener('MSFullscreenChange', exitFullScreenHandler);
+  //   }
+  // };
+  
+
+  
+  const toggleFullScreen = () => {
+    let embedElement:any;
+   embedElement = document.getElementById('pdf-play-model'+dataID);
+  if (embedElement) {
+    if (embedElement.requestFullscreen) {
+      embedElement.requestFullscreen();
+    } else if (embedElement.mozRequestFullScreen) {
+      embedElement.mozRequestFullScreen();
+    } else if (embedElement.webkitRequestFullscreen) {
+      embedElement.webkitRequestFullscreen();
+    } else if (embedElement.msRequestFullscreen) {
+      embedElement.msRequestFullscreen();
+    }
+    // // 监听全屏状态改变事件
+    // document.addEventListener('fullscreenchange', exitFullScreenHandler);
+    // document.addEventListener('mozfullscreenchange', exitFullScreenHandler);
+    // document.addEventListener('webkitfullscreenchange', exitFullScreenHandler);
+    // document.addEventListener('MSFullscreenChange', exitFullScreenHandler);
+
+  
+  }
+};
+ 
+  
+
   return (
     <>
     <div className="video-card">
@@ -108,6 +167,10 @@ const FileModel = (props: any) => {
             {
               fileVisible ?  <span style={{marginLeft: '10px'}}>收起</span> :  <span style={{marginLeft: '10px'}}>展开</span>
             }
+           
+            </div>
+            <div style={{ marginLeft: 'auto' }}>
+              {fileVisible && <a onClick={toggleFullScreen}>全屏显示</a>}
             </div>
           <div className='operate'></div>
           </div>
@@ -117,14 +180,14 @@ const FileModel = (props: any) => {
           <div className="content-main" style={{width: '90%', margin: 'auto'}}>
               {/* 自定义 */}
               <div style={{ display: fileVisible ? 'block' : 'none', height: '400px', margin: '20px auto' }}>
-
+              
                 {/* <Document
                   file={dataURL}
                   onLoadSuccess={onDocumentLoadSuccess}
                 >
                   <Page pageNumber={pageNumber} />
                 </Document> */}
-                <embed id="pdf-play-model" width="100%" height="100%" style={{ marginBottom: '40px', margin:'0px'}} src={APP.request.prefix+dataURL} type="application/pdf" />
+                <embed id={'pdf-play-model'+dataID} width="100%" height="100%" style={{ marginBottom: '40px', margin:'0px'}} src={APP.request.prefix+dataURL} type="application/pdf" />
                 </div>
           </div>
         </div>

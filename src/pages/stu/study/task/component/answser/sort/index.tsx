@@ -12,6 +12,7 @@ import { API } from '@/common/entity/typings';
 import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 import { stuTestRunAnswer } from '@/services/teacher/course/score';
 import ResultSetModal from '@/pages/course/exercise/components/ResultSetModal';
+import ResultSetModalFunction from '@/pages/common-course/question/component/type/components/ResultSetModalFunction';
 import { LoadingOutlined } from '@ant-design/icons';
 interface IProps {
     taskList: TASK.ReviewSortExercises[];
@@ -26,8 +27,9 @@ const AnswserBySort = (props: IProps) => {
     const [columnList, setColumnList] = useState([]);
     const [datatype, setDatatype] = useState([]);
     const [resultSet, setResultSet] = useState([]);
-    const [executeResult, setExecuteResult] = useState<API.SubmitResult>();
     const [isWaitModalVisible, setIsWaitModalVisible] = useState<boolean>(false);
+    const [resultSetFunModalVisible, setResultSetFunModalVisible] = useState<boolean>(false);
+    const [functionResult, setFunctionResult] = useState<QUESTION_BANK.ResultSetInfo[]>([]);
     // 单选题内容修改
     const onChangeSingle = (val: string, index: number) => {
         let arr = examList;
@@ -72,7 +74,7 @@ const AnswserBySort = (props: IProps) => {
     const onChangeSpace = (e: any, index: number, currentIndex: number) => {
         let arr = examList;
         let arrStr = arr[index].exerciseResult
-        let multArr: string []= []
+        let multArr: string[] = []
         if (arrStr != '') {
             multArr = arrStr.split('@_@')
             multArr[currentIndex] = e.target.value
@@ -94,22 +96,27 @@ const AnswserBySort = (props: IProps) => {
     // 测试运行
     const testRunAnswer = async (value: { answer: string; usageTime: number }, item: TASK.ReviewSortExercises) => {
         setIsWaitModalVisible(true);
-//TODO 需要修改
+        //TODO 需要修改
         //测试提交答案
-        stuTestRunAnswer({ ...value, exerciseId: item.exerciseId,exerciseType: item.exerciseType }).then((result: any) => {
+        stuTestRunAnswer({ ...value, exerciseId: item.exerciseId, exerciseType: item.exerciseType }).then((result: any) => {
             setIsWaitModalVisible(false);
             if (result.success) {
                 if (result.obj) {
-                    if (!result.obj.executeRs) {
-                        message.error(result.obj.log);
-                        return
-                    }
-                    setExecuteResult(result.obj);
-                    if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
-                        setColumnList(result.obj.studentResultMap.column);
-                        setDatatype(result.obj.studentResultMap.datatype);
-                        setResultSet(result.obj.studentResultMap.result);
-                        setResultSetModalVisible(true);
+                    //函数
+                    if (item.exerciseType == 9) {
+                        setFunctionResult(result.obj.functionResult);
+                        setResultSetFunModalVisible(true);
+                    } else if (!result.obj.select) {
+                        message.success("运行成功");
+                        return;
+                    } else {
+                        //非函数
+                        if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
+                            setColumnList(result.obj.studentResultMap.column);
+                            setDatatype(result.obj.studentResultMap.datatype);
+                            setResultSet(result.obj.studentResultMap.result);
+                            setResultSetModalVisible(true);
+                        }
                     }
                 }
             } else {
@@ -191,7 +198,7 @@ const AnswserBySort = (props: IProps) => {
                             item.exerciseType == 5 && <BraftEditor className="border" placeholder="请输入正文内容" value={examList[index].exerciseResult} onChange={(val) => onChangeBraft(val, index)} />
                         }
                         {
-                            (item.exerciseType == 6||item.exerciseType == 7||item.exerciseType == 8||item.exerciseType == 9||item.exerciseType == 10) && <>
+                            (item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10) && <>
                                 <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(item.exercise.scene) }}>场景查看</Button>
                                 <Button style={{ marginRight: 8 }} type="primary" className="gray-button button-radius" onClick={() => { testRun(examList[index].exerciseResult, item) }}>测试运行</Button>
                                 <AceEditor
@@ -239,6 +246,12 @@ const AnswserBySort = (props: IProps) => {
                 columnList={columnList}
                 datatype={datatype}
                 resultSet={resultSet}
+            />
+               {/* 结果集 */}
+            <ResultSetModalFunction
+                onCancel={() => { setResultSetFunModalVisible(false) }}
+                resultSetModalVisible={resultSetFunModalVisible}
+                functionResult={functionResult}
             />
             <Modal
                 width={250}

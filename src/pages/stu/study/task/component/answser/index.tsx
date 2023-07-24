@@ -33,6 +33,7 @@ const AnswserByStu = (props: any) => {
     }
     // 调用作业详情接口显示页面
     review(param).then((res) => {
+      debugger;
       if (res.success) {
         // 按题型分类
         if (res.obj.classify == 1) {

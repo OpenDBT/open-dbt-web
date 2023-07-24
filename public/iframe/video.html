@@ -31,7 +31,7 @@
     </div>
 </body>
 <script>
-    const urlPrfix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+   const urlPrfix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
     // document.getElementById('click').onclick=function(){
     //     parent.postMessage('来自iframe的信息','*'); //window.postMessage
         
@@ -39,7 +39,6 @@
 
 //回调函数
 function receiveMessageFromIndex ( event ) {
-    console.log( '我是iframe,我接受到了：', event.data );
     // document.getElementById("click").innerHTML = event.data.dataID
     document.getElementById("video1").src = urlPrfix + event.data.dataURL
 }

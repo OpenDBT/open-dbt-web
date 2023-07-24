@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Divider, message } from 'antd';
+import { Button, Divider, message } from 'antd';
 import { TASK } from '@/common/entity/task';
 import BraftEditor from '@/pages/stu/study/task/component/braft/braft';
 import SingleChoice from '../../questionType/singleChoice';
@@ -13,6 +13,8 @@ import DDLSql from '../../questionType/ddlSql';
 import DDLViewSql from '../../questionType/ddlViewSql';
 import DDLFunctionSql from '../../questionType/ddlFunctionSql copy';
 import DDLTriggerSql from '../../questionType/ddlTriggerSql copy';
+import { API } from '@/common/entity/typings';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 const AnswserByType = (props: any) => {
   const { changeAllScore } = props
   const [taskList, setTaskList] = useState<any>(props.taskList); //点击更多存储当前行数据
@@ -20,13 +22,15 @@ const AnswserByType = (props: any) => {
   const [examLength, setExamLength] = useState<number[]>([])
   const commit = props.reviewCommit;  // 作业评语
   const unSelectedGiven = props.unSelectedGiven
+  const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+  const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
 
   const editSumbit = async (item: any) => {
     item.isCorrect = 1
     item.exerciseScore = item.exerciseActualScore
     let objArr = taskList
     await setTaskList([...objArr])
-    let arr:any = []
+    let arr: any = []
     taskList.map((item: any, index: number) => {
       arr = arr.concat(item.collect)
     })
@@ -37,7 +41,7 @@ const AnswserByType = (props: any) => {
     item.exerciseScore = 0
     let objArr = taskList
     await setTaskList([...objArr])
-    let arr:any = []
+    let arr: any = []
     taskList.map((item: any, index: number) => {
       arr = arr.concat(item.collect)
     })
@@ -68,27 +72,27 @@ const AnswserByType = (props: any) => {
     item.exerciseScore = item.exerciseActualScore / 2
     let objArr = taskList
     await setTaskList([...objArr])
-    let arr:any = []
+    let arr: any = []
     taskList.map((item: any, index: number) => {
       arr = arr.concat(item.collect)
     })
     changeAllScore(arr)
-    
-}
+
+  }
   const onChangeScore = (e: any, currentIndex: number, index: number) => {
-  
+
     // let arr = examList;
     let arr: any = []
     taskList.map((item: any, index: number) => {
       arr = arr.concat(item.collect)
     })
     if (index == 0) {
-      if(e.target.value > arr[currentIndex].exerciseActualScore) {
+      if (e.target.value > arr[currentIndex].exerciseActualScore) {
         message.error('输入值超出题目分数!')
         e.preventDefault();
-    }else {
+      } else {
         arr[currentIndex].exerciseScore = e.target.value
-    }
+      }
       // arr[currentIndex].exerciseScore = e.target.value
       setExamList([...arr])
       changeAllScore(arr)
@@ -121,47 +125,50 @@ const AnswserByType = (props: any) => {
                     <div>
                       <span className='card-list-title task-title'>
                         {cIndex + 1}. {cItem.exercise.exerciseName}
+                        {[6, 7, 8, 9, 10].includes(cItem.exerciseType) ?
+                          <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(cItem.exercise.scene) }}>场景查看</Button>
+                          : null}
                       </span>
                     </div>
                     <div className='card-label'>
                       <div className='html-width-class' dangerouslySetInnerHTML={{ __html: cItem.exercise.stem }}></div>
                     </div>
-              
+
                     {/* 单选题 */}
                     {
-                            cItem.exerciseType == 1 && <SingleChoice data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></SingleChoice>
+                      cItem.exerciseType == 1 && <SingleChoice data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></SingleChoice>
                     }
                     {/* 多选题 */}
                     {
-                            cItem.exerciseType == 2 && <Multiple editHalf={editHalf} data={cItem} unselectedGiven={unSelectedGiven} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></Multiple>
+                      cItem.exerciseType == 2 && <Multiple editHalf={editHalf} data={cItem} unselectedGiven={unSelectedGiven} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></Multiple>
                     }
                     {/* 判断题 */}
                     {
-                            cItem.exerciseType == 3 && <Judge data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></Judge>
+                      cItem.exerciseType == 3 && <Judge data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} ></Judge>
                     }
-                 
+
                     {/* 填空题 */}
                     {
-                            cItem.exerciseType == 4 && <SpaceQeustion editHalf={editHalf} data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></SpaceQeustion>
+                      cItem.exerciseType == 4 && <SpaceQeustion editHalf={editHalf} data={cItem} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></SpaceQeustion>
                     }
                     {/* 简答题和sql编程题 */}
                     {
-                            cItem.exerciseType == 5 && <Short data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></Short>
+                      cItem.exerciseType == 5 && <Short data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></Short>
                     }
                     {
-                            cItem.exerciseType == 6 && <SqlQuestion data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></SqlQuestion>
+                      cItem.exerciseType == 6 && <SqlQuestion data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></SqlQuestion>
                     }
                     {
-                            cItem.exerciseType == 7 && <DDLSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLSql>
+                      cItem.exerciseType == 7 && <DDLSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLSql>
                     }
                     {
-                            cItem.exerciseType == 8 && <DDLViewSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLViewSql>
+                      cItem.exerciseType == 8 && <DDLViewSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLViewSql>
                     }
                     {
-                            cItem.exerciseType == 9 && <DDLFunctionSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLFunctionSql>
+                      cItem.exerciseType == 9 && <DDLFunctionSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLFunctionSql>
                     }
                     {
-                            cItem.exerciseType == 10 && <DDLTriggerSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLTriggerSql>
+                      cItem.exerciseType == 10 && <DDLTriggerSql data={cItem} editHalf={editHalf} current={examList[computedIndex(cIndex, index)]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, cIndex, index)}></DDLTriggerSql>
                     }
                   </div>
                 })
@@ -175,6 +182,15 @@ const AnswserByType = (props: any) => {
         <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>作业评语：</span>
       </div>
       <BraftEditor className="border" placeholder="请输入正文内容" value={commit.comment} onChange={(val) => { onChangeComment(val) }} />
+      {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+        <ViewModal
+          onCancel={() => {
+            setViewModalVisible(false);
+          }}
+          viewModalVisible={viewModalVisible}
+          scene={stepFormValues}
+        />
+      ) : null}
     </div>
   )
 }

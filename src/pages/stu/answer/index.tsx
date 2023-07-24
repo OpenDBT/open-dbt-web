@@ -14,6 +14,8 @@ import { querySclass } from '@/services/teacher/clazz/sclass';
 import Cookies from 'js-cookie';
 import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAnswerNotifiedFail } from '@/pages/components/exercise-answer-notification'
 import { API } from '@/common/entity/typings';
+import ResultSetModalFunction from '@/pages/common-course/question/component/type/components/ResultSetModalFunction';
+import { QUESTION_BANK } from '@/common/entity/questionbank';
 /**
  * 课程-SQL练习题-开始答题
  * @param props
@@ -48,6 +50,8 @@ const Answer = (props: any) => {
   const [usageTime, setUsageTime] = useState<number>(0);
   const [uploading, setUpLoading] = useState<boolean>(false);
   const [dowmloading, setDownLoading] = useState<boolean>(false);
+  const [resultSetFunModalVisible, setResultSetFunModalVisible] = useState<boolean>(false);
+  const [functionResult, setFunctionResult] = useState<QUESTION_BANK.ResultSetInfo[]>([]);
   // 清除定时器
   const stopTimer = () => {
     clearInterval(timer.current);
@@ -145,14 +149,14 @@ const Answer = (props: any) => {
    * 切换习题，上一题和下一题
    * @param next 是否下一题
    */
-  const changeExercise = (next: boolean,direct: string) => {
-    if(direct=='up'){
+  const changeExercise = (next: boolean, direct: string) => {
+    if (direct == 'up') {
       setUpLoading(true);
-    }else{
+    } else {
       setDownLoading(true);
     }
-    
-   
+
+
     const index = exerciseList.findIndex(
       (item: API.ExerciseRecord) => item.exerciseId == exerciseId,
     );
@@ -211,22 +215,28 @@ const Answer = (props: any) => {
     //显示窗口为测试运行
     setSubmitType(1);
     //测试提交答案
-
     stuTestRunAnswer({ ...value, exerciseId: exerciseId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
         if (result.obj) {
-          if(!result.obj.select){
+          //函数
+          if (exercise!.exerciseType == 9) {
+            setFunctionResult(result.obj.functionResult);
+            setResultSetFunModalVisible(true);
+          } else if (!result.obj.select) {
             message.success("运行成功");
-          return;
+            return;
+          } else {
+            //非函数
+            setExecuteResult(result.obj);
+            if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
+              setColumnList(result.obj.studentResultMap.column);
+              setDatatype(result.obj.studentResultMap.datatype);
+              setResultSet(result.obj.studentResultMap.result);
+              setResultSetModalVisible(true);
+            }
           }
-          setExecuteResult(result.obj);
-          if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
-            setColumnList(result.obj.studentResultMap.column);
-            setDatatype(result.obj.studentResultMap.datatype);
-            setResultSet(result.obj.studentResultMap.result);
-            setResultSetModalVisible(true);
-          }
+
         }
       } else {
         message.error(result.message);
@@ -262,10 +272,10 @@ const Answer = (props: any) => {
     submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
-        if(!result.obj.select){
-          message.success("提交成功");
-        return;
-        }
+        // if(!result.obj.select){
+        //   message.success("提交成功");
+        // return;
+        // }
         setExecuteResult(result.obj);
         if (result.obj.scoreRs) {
           openNotification(1, true);
@@ -300,7 +310,7 @@ const Answer = (props: any) => {
               dowmloading={dowmloading}
               usageTime={usageTime}
               onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
-              changeExercise={(next: boolean,direct: string) => changeExercise(next,direct)}
+              changeExercise={(next: boolean, direct: string) => changeExercise(next, direct)}
               topButtonDisabled={topButtonDisabled}
               nextButtonDisabled={nextButtonDisabled}
             ></CenterColumn>
@@ -314,7 +324,7 @@ const Answer = (props: any) => {
               exercise={exercise!}
               uploading={uploading}
               dowmloading={dowmloading}
-              changeExercise={(next: boolean,direct: string) => changeExercise(next,direct)}
+              changeExercise={(next: boolean, direct: string) => changeExercise(next, direct)}
               topButtonDisabled={topButtonDisabled}
               nextButtonDisabled={nextButtonDisabled}
             />
@@ -360,7 +370,12 @@ const Answer = (props: any) => {
         datatype={datatype}
         resultSet={resultSet}
       />
-
+      {/* 结果集 */}
+      <ResultSetModalFunction
+        onCancel={() => { setResultSetFunModalVisible(false) }}
+        resultSetModalVisible={resultSetFunModalVisible}
+        functionResult={functionResult}
+      />
       <Modal
         width={600}
         title="答题注意事项"

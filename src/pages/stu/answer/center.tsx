@@ -7,14 +7,10 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Judge from './components/questionType/judge'
 import Single from './components/questionType/single'
 import Multiple from './components/questionType/multiple'
-import React, { useEffect, useState } from 'react';
-import Blanks from './components/questionType/blanks';
+import React, {  useState } from 'react';
 import ShortAnswer from './components/questionType/shortAnswer';
 import BlanksExercise from './components/questionType/blanks';
-import { stuTestRunAnswer } from '@/services/teacher/course/score';
-import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
-import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAnswerNotifiedFail } from '@/pages/components/exercise-answer-notification'
 interface IProp {
     courseId: number;
     changeExercise: (value: boolean,direct: string) => void;

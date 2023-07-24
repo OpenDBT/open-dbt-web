@@ -112,11 +112,10 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  * @see https://beta-pro.ant.design/docs/request-cn
  */
 // 生产模式
-//let prefix = 'http://118.190.151.85:59001/open-dbt';
-let prefix = 'http://192.168.11.111:59000/open-dbt';
-//开发模式
 
-if (isDev) prefix = 'http://localhost:8080/open-dbt'
+let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+//开发模式
+if (isDev) prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt'
 export const request: RequestConfig = {
   credentials: 'include',
   prefix: prefix,
