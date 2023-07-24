@@ -61,10 +61,10 @@ const SelectImage: React.FC<IProps> = (props) => {
     },
     beforeUpload(file: any) {
       if (!file.type.includes('application')) {
-        message.error('请上传.pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx后缀的文件')
+        message.error('请上传.pdf, .doc, .docx, .xls, .xlsx, .pptx后缀的文件')
         return Upload.LIST_IGNORE;
       }
-      if (file.size / 1024 / 1024 >= 10) {
+      if (file.size / 1024 / 1024 >= 30) {
         message.warning('请上传小于10M的文件')
         return Upload.LIST_IGNORE;
       }
@@ -193,7 +193,7 @@ const SelectImage: React.FC<IProps> = (props) => {
                 <Upload
                   {...uploadProps}
                   className="upload-list-inline"
-                  accept=".pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx"
+                  accept=".pdf, .doc, .docx, .xls, .xlsx, .pptx"
                   maxCount={1}
                 >
                   <Button type="primary" >上传文件</Button>

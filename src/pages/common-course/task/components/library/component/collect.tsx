@@ -19,6 +19,14 @@ import SqlEdit from '@/pages/common-course/question/component/type/sql';
 import { QUESTION_BANK } from '@/common/entity/questionbank'
 import { delSelectedExercises, getExerciseInfoByModel } from '@/services/teacher/task/task';
 import './collect.less'
+import DDLSqlEdit from '@/pages/common-course/question/component/type/ddlSql';
+import DDLSql from '@/pages/common-course/question/component/preview/type/DDLSql';
+import ViewSql from '@/pages/common-course/question/component/preview/type/viewSql';
+import FunctionSql from '@/pages/common-course/question/component/preview/type/functionSql';
+import TriggerSqlEdit from '@/pages/common-course/question/component/type/TriggerSql';
+import ViewSqlSqlEdit from '@/pages/common-course/question/component/type/viewSql';
+import FunctionSqlEdit from '@/pages/common-course/question/component/type/functionSql';
+import TriggerSql from '@/pages/common-course/question/component/preview/type/triggerSql';
 interface IRef extends React.RefObject<HTMLDivElement> {
   clickSave: () => void;
   clickFinishFlash: () => void;
@@ -113,6 +121,10 @@ const Collect = (props: any) => {
             {showIndex == 4 && initData && <Space ref={cRef} onInit={initData} compType="task-edit" />}
             {showIndex == 5 && initData && <ShortAnswer ref={cRef} onInit={initData} compType="task-edit" />}
             {showIndex == 6 && initData && <Sql ref={cRef} onInit={initData} compType="task-edit" />}
+            {showIndex == 7 && initData && <DDLSql ref={cRef} onInit={initData} compType="task-edit" />}
+            {showIndex == 8 && initData && <ViewSql ref={cRef} onInit={initData} compType="task-edit" />}
+            {showIndex == 9 && initData && <FunctionSql ref={cRef} onInit={initData} compType="task-edit" />}
+            {showIndex == 10 && initData && <TriggerSql ref={cRef} onInit={initData} compType="task-edit" />}
           </div>
         }
 
@@ -126,6 +138,10 @@ const Collect = (props: any) => {
             {showIndex == 4 && initData && <SpaceEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
             {showIndex == 5 && initData && <ShortAnswerEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
             {showIndex == 6 && initData && <SqlEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
+            {showIndex == 7 && initData && <DDLSqlEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
+            {showIndex == 8 && initData && <ViewSqlSqlEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
+            {showIndex == 9 && initData && <FunctionSqlEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
+            {showIndex == 10 && initData && <TriggerSqlEdit ref={cRef} onInit={initData} compType="task-edit" clickTaskQuestion={() => { clickTaskQuestion() }} resetClick={()=>resetClick()}/>}
           </div>
         }
         <div className='collect-button-bottom'>

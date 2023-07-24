@@ -12,17 +12,9 @@ import CODE_CONSTANT from '@/common/code'
 import { API } from '@/common/entity/typings';
 import { history, useParams, useLocation } from 'umi';
 import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface';
-import { ValidateIntegerParam } from '@/utils/utils'
 
 //题目类型
-const typeList = [
-  { id: 1, name: '单选题' },
-  { id: 2, name: '多选题' },
-  { id: 3, name: '判断题' },
-  { id: 4, name: '填空题' },
-  { id: 5, name: '简答题' },
-  { id: 6, name: 'SQL编程题' },
-]
+const typeList = CODE_CONSTANT.typeList;
 interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: string;
@@ -63,7 +55,7 @@ const QuestionsHome = (props: any) => {
   });
   const [order, setOrder] = useState<string>('');  // 排序关键字
   const [selectNum, setSelectNum] = useState<number>(0);  // 选择题目个数
-  const [selectTypeNum, setSelectTypeNum] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);  // 选择题目个数
+  const [selectTypeNum, setSelectTypeNum] = useState<number[]>([ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);  // 选择题目个数
   const taskName = location.state?.taskName
   const questionType = location.state?.questionType
   const modelId = location.state?.modelId;
@@ -125,13 +117,14 @@ const QuestionsHome = (props: any) => {
     }
     getHomeWorkModelExercises(getRandomuserParams({ ...tableParams, param, orderBy: order })).then((res) => {
       setData({ count: res.count, list: res.list })
+      
       checkedList = res.list.filter((item) => item.checked == 1)
       console.log("checkedList:", checkedList)
       let arr: any[] = [];
       checkedList.map((item) => {
         arr.push(item.id + '-' + item.exerciseType)
       })
-      setSelectedRowKeys(arr);
+      setSelectedRowKeys([...selectedRowKeys,...arr]);
       setTableParams({ ...tableParams, pagination: res.pagination })
     })
   };
@@ -293,7 +286,7 @@ const QuestionsHome = (props: any) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys, 'selectedRows:', selectedRows);
 
     if (selectedRows.length != 0) {
-      let numArr = [0, 0, 0, 0, 0, 0]
+      let numArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       selectedRows.map((item: any) => {
         item.exerciseType == 1 && numArr[0]++;
         item.exerciseType == 2 && numArr[1]++;
@@ -301,6 +294,10 @@ const QuestionsHome = (props: any) => {
         item.exerciseType == 4 && numArr[3]++;
         item.exerciseType == 5 && numArr[4]++;
         item.exerciseType == 6 && numArr[5]++;
+        item.exerciseType == 7 && numArr[6]++;
+        item.exerciseType == 8 && numArr[7]++;
+        item.exerciseType == 9 && numArr[8]++;
+        item.exerciseType == 10 && numArr[9]++;
       })
       setSelectTypeNum(numArr)
     }
@@ -453,7 +450,19 @@ const QuestionsHome = (props: any) => {
                 selectTypeNum[4] != 0 ? selectTypeNum[4] + "简答题 " : ''
               }
               {
-                selectTypeNum[5] != 0 ? selectTypeNum[5] + "SQL编程题 " : ''
+                selectTypeNum[5] != 0 ? selectTypeNum[5] + "DMLSQL编程题 " : ''
+              }
+              {
+                selectTypeNum[6] != 0 ? selectTypeNum[6] + "DDLSQL编程题 " : ''
+              }
+              {
+                selectTypeNum[7] != 0 ? selectTypeNum[7] + "DDL视图编程题 " : ''
+              }
+              {
+                selectTypeNum[8] != 0 ? selectTypeNum[8] + "DDL函数编程题 " : ''
+              }
+              {
+                selectTypeNum[9] != 0 ? selectTypeNum[9] + "DDL触发器编程题 " : ''
               }
               ）
             </span>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './index.less';
-import { getShareScene, removeScene, exportSceneList, exportSceneById }
+import { getShareScene, removeScene, exportSceneList, exportSceneById ,getScene}
   from '@/services/teacher/course/scene';
 import { Tooltip, Button, message, Modal } from 'antd';
 import ViewModal from './components/ViewModal';
@@ -20,7 +20,7 @@ const SceneIndex = () => {
   const [importSceneModalVisible, setImportSceneModalVisible] = useState<boolean>(false);
   const params: any = useParams();
   const courseId = params.courseId;
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     ValidateIntegerParam(courseId);
     fetchSceneList();
@@ -109,7 +109,22 @@ const SceneIndex = () => {
       }
     });
   }
-
+//查看单个场景
+const getSceneById=(sceneId: number)=>{
+  setLoading(true);
+  getScene(sceneId).then((result)=>{
+    if (result.success) {
+      setLoading(false);
+      setStepFormValues(result.obj);
+      setViewModalVisible(true);
+      
+    } else {
+      setLoading(false);
+      message.error(result.message);
+    }
+  }
+  )
+}
   /**
    * 场景每行点击后的按钮提示
    * @param record 
@@ -118,7 +133,7 @@ const SceneIndex = () => {
   const hoverContent = (record: API.SceneListRecord) => {
     return <div className="card-buttons">
       <Button style={{ marginRight: 8 }} className="gray-button" onClick={() => { handExportSceneById(record) }}>导出</Button>
-      <Button style={{ marginRight: 8 }} className="gray-button" onClick={() => { setViewModalVisible(true); setStepFormValues(record) }}>查看</Button>
+      <Button style={{ marginRight: 8 }} loading={loading} className="gray-button" onClick={() => {getSceneById(record.sceneId) }}>查看</Button>
       <Button type="primary" style={{ marginRight: 8 }}
         onClick={() => history.push(`/scene/update/${courseId}/${record.sceneId}`)}>编辑</Button>
       <Button type="primary" onClick={() => { handleDel(record) }} danger>删除</Button>

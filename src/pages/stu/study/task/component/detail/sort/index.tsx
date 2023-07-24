@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import CODE_CONSTANT from '@/common/code'
 import { QUESTION_BANK } from '@/common/entity/questionbank'
-import { Button, Divider } from 'antd';
+import { Button, Divider, Space } from 'antd';
 import { TASK } from '@/common/entity/task';
 import SuperIcon from "@/pages/components/icons";
-
+import { API } from '@/common/entity/typings';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 const AnswserBySort = (props: any) => {
     const taskList = props.taskList
     const whetherAnswer = props.whetherAnswer
     const [examList, setExamList] = useState<TASK.TaskSumbitExerciseParam[]>(props.subExamList);  // 作业的习题参数列表
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
     return (
         <div>
             {
@@ -17,6 +20,11 @@ const AnswserBySort = (props: any) => {
                         <div>
                             <span className='card-list-title task-title'>
                                 {index + 1}. {item.exercise.exerciseName}
+                                {item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10 ?
+                                    <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(item.exercise.scene) }}>场景查看</Button>
+                                    : null
+                                }
+
                             </span>
                             <span className='card-list-desc desc'>（{CODE_CONSTANT.questionType[item.exerciseType - 1]}，{item.exerciseActualScore}分）</span>
                         </div>
@@ -28,13 +36,13 @@ const AnswserBySort = (props: any) => {
                             item.exerciseType == 3 &&
                             <>
                                 <div className='card-select'>
-                                    <Button shape="circle" className={examList[index].exerciseResult == '1' ? 'clcikAnswserClass' : ''}>
+                                    <Button shape="circle" className={examList[index].exerciseResult == '1' ? (item.exercise.standardAnswser == 1 ? 'clcikAnswserClass' : 'clcikFalseAnswserClass') : ''}>
                                         A
                                     </Button>
                                     <span style={{ marginLeft: '20px' }}>正确</span>
                                 </div>
                                 <div className='card-select'>
-                                    <Button shape="circle" className={examList[index].exerciseResult == '2' ? 'clcikAnswserClass' : ''}>
+                                    <Button shape="circle" className={examList[index].exerciseResult == '2' ? (item.exercise.standardAnswser == 2 ? 'clcikAnswserClass' : 'clcikFalseAnswserClass') : ''}>
                                         B
                                     </Button>
                                     <span style={{ marginLeft: '20px' }}>错误</span>
@@ -45,7 +53,7 @@ const AnswserBySort = (props: any) => {
                         {
                             item.exerciseType == 1 && item.exercise.exerciseInfos.map((eItem: QUESTION_BANK.QuestionExerciseOption, eIndex: number) => {
                                 return <div key={'single' + eIndex} style={{ display: 'flex' }}>
-                                    <Button shape="circle" className={eItem.prefix == examList[index].exerciseResult ? 'clcikAnswserClass' : ''}>
+                                    <Button shape="circle" className={eItem.prefix == examList[index].exerciseResult ? (item.exercise.standardAnswser == eItem.prefix ? 'clcikAnswserClass' : 'clcikFalseAnswserClass') : ''}>
                                         {eItem.prefix}
                                     </Button>
                                     <div className='html-width-class' dangerouslySetInnerHTML={{ __html: eItem?.content }} style={{ fontWeight: 'normal', marginLeft: '20px' }}></div>
@@ -57,7 +65,7 @@ const AnswserBySort = (props: any) => {
                             item.exerciseType == 2 &&
                             item.exercise && item.exercise.exerciseInfos.map((sItem: QUESTION_BANK.QuestionExerciseOption, sIndex: number) => {
                                 return <div key={'multiple' + sIndex} style={{ display: 'flex' }}>
-                                    <Button className={examList[index].exerciseResult?.split(',').includes(sItem.prefix) ? 'clcikAnswserClass' : ''}>
+                                    <Button className={examList[index].exerciseResult?.split(',').includes(sItem.prefix) ? (item.exercise.standardAnswser?.split(',').includes(sItem.prefix) ? 'clcikAnswserClass' : 'clcikFalseAnswserClass') : ''}>
                                         {sItem.prefix}
                                     </Button>
                                     <div className='html-width-class' dangerouslySetInnerHTML={{ __html: sItem?.content }} style={{ fontWeight: 'normal', marginLeft: '20px' }}></div>
@@ -96,13 +104,16 @@ const AnswserBySort = (props: any) => {
                             item.exerciseType == 4 &&
                             <div className='answser-own-braft'>
                                 <div className='header'>
+                                    <Space>
+                                        <SuperIcon type={item.isCorrect == 1 ? 'icon-icon-duihao31' : (item.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={item.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                                    </Space>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                                     <span>{item.exerciseScore} 分</span>
                                 </div>
                                 <div className='answser-content'>
                                     {
                                         item.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                                            return <div className='space-answser-line'>
+                                            return <div className='space-answser-line' style={{ display: 'flex' }}>
                                                 <span>空格{tIndex + 1}：</span>
                                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: examList[index].exerciseResult.split('@_@')[tIndex] }} style={{ fontWeight: 'normal' }}></div>
                                             </div>
@@ -120,7 +131,7 @@ const AnswserBySort = (props: any) => {
                                 <div className='answser-content'>
                                     {
                                         item.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                                            return <div className='space-answser-line'>
+                                            return <div className='space-answser-line' style={{ display: 'flex' }}>
                                                 <span>空格{tIndex + 1}：</span>
                                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: tItem.content }} style={{ fontWeight: 'normal' }}></div>
                                             </div>
@@ -140,9 +151,12 @@ const AnswserBySort = (props: any) => {
                         {/* 简答题或者sql编程题 */}
                         {/* 我的答案 */}
                         {
-                            (item.exerciseType == 5 || item.exerciseType == 6) &&
+                            (item.exerciseType == 5 || item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10) &&
                             <div className='answser-own-braft'>
                                 <div className='header'>
+                                    <Space>
+                                        <SuperIcon type={item.isCorrect == 1 ? 'icon-icon-duihao31' : (item.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={item.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                                    </Space>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                                     <span>{item.exerciseScore} 分</span>
                                 </div>
@@ -153,7 +167,7 @@ const AnswserBySort = (props: any) => {
                             </div>
                         }
                         {
-                            (item.exerciseType == 5 || item.exerciseType == 6) && whetherAnswer == 1 &&
+                            (item.exerciseType == 5 || item.exerciseType == 6 || item.exerciseType == 7 || item.exerciseType == 8 || item.exerciseType == 9 || item.exerciseType == 10) && whetherAnswer == 1 &&
                             <div className='answser-normal-braft'>
                                 <div className='header'>
                                     <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>正确答案：</span>
@@ -182,6 +196,15 @@ const AnswserBySort = (props: any) => {
 
                 </div>
             </div>
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
         </div>
     )
 }

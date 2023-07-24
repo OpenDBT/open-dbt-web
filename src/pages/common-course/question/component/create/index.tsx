@@ -1,24 +1,29 @@
-import React from 'react'
-import Header from './header'
-import './index.less';
-import { useState, useRef } from 'react';
+import CODE_CONSTANT from '@/common/code';
+import { QUESTION_BANK } from '@/common/entity/questionbank';
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Menu } from 'antd';
+import React, { useRef, useState } from 'react';
+import DDLSql from '../type/ddlSql';
 import Judge from '../type/judge';
+import MultipleChoice from '../type/multiple';
 import ShortAnswer from '../type/shortAnswer';
+import SingleChoice from '../type/singleChoice';
 import Space from '../type/space';
 import Sql from '../type/sql';
-import SingleChoice from '../type/singleChoice';
-import MultipleChoice from '../type/multiple';
-import { Button } from 'antd';
-import { QUESTION_BANK } from '@/common/entity/questionbank'
-import CODE_CONSTANT from '@/common/code'
+import Header from './header';
+import './index.less';
+import ViewSql from '../type/viewSql';
+import FunctionSql from '../type/functionSql';
+import TriggerSql from '../type/TriggerSql';
 interface IRef extends React.RefObject<HTMLDivElement> {
   clickSave: () => void;
   continueAnswer: () => void;
 }
-const CreateQuestion = (props: any) => {
+const CreateQuestion = () => {
   const [showIndex, setShowIndex] = useState<number>(1); // 显示的组件的排列顺序对应变量
   const cRef = useRef<IRef>(null);
   const [initData, setInitData] = useState<QUESTION_BANK.QuestionExercise | null>(null)
+  const [selectedValue, setSelectedValue] = useState(""); 
   /**
    * @description 选择按钮回调, 进行相应组件显示
    * @param number 进行判断的类型值
@@ -40,6 +45,19 @@ const CreateQuestion = (props: any) => {
     // 调用ref组件内部方法
     cRef.current && cRef.current.continueAnswer()
   }
+  const menu = (
+    <Menu>
+      {CODE_CONSTANT.DDLName && CODE_CONSTANT.DDLName.map((item) => {
+        return <Menu.Item key={item.value} onClick={() => handleClick(item.value,item.name)} >{item.name}</Menu.Item>
+      })}
+    </Menu>
+  );
+
+  const handleClick = (key: number,value: string) => {
+    setShowIndex(key);
+    setSelectedValue(value);
+  };
+
   return (
     <>
       <Header clickSave={() => clickSave()} continueAnswer={() => continueAnswer()} />
@@ -49,8 +67,19 @@ const CreateQuestion = (props: any) => {
             <span className='mb-right-20'>题型</span>
             {
               CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
-                return <Button key={index + 'Bt'} className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'} onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>
+                if(index<6){
+                  { return <Button key={index + 'Bt'} 
+                  className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'} 
+                  onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button> }
+                }
+              
               })
+            }
+            {<Dropdown.Button overlay={menu}
+              icon={<DownOutlined />} 
+              placement="bottom">
+             {selectedValue !== "" ? selectedValue : "DDL相关题型"}
+            </Dropdown.Button>
             }
           </div>
           {showIndex == 1 && <SingleChoice ref={cRef} onInit={initData} />}
@@ -59,6 +88,10 @@ const CreateQuestion = (props: any) => {
           {showIndex == 4 && <Space ref={cRef} onInit={initData} />}
           {showIndex == 5 && <ShortAnswer ref={cRef} onInit={initData} />}
           {showIndex == 6 && <Sql ref={cRef} onInit={initData} />}
+          {showIndex == 7 && <DDLSql ref={cRef} onInit={initData} />}
+          {showIndex == 8 && <ViewSql ref={cRef} onInit={initData} />}
+          {showIndex == 9 && <FunctionSql ref={cRef} onInit={initData} />}
+          {showIndex == 10 && <TriggerSql ref={cRef} onInit={initData} />}
         </div>
       </div>
     </>

@@ -70,10 +70,12 @@ const AddExercise: React.FC<IProps> = (props) => {
    * 测试运行
    */
   const testRunClick = async () => {
-    const values: API.ExerciseListParams = await form.validateFields();
+    const values = await form.validateFields();
     if (values) {
-      const result = await testRunAnswer({ sceneId: values.sceneId, answer: values.answer });
-      console.log('result == ', result);
+     // const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, answer: values.answer });
+     const result = await testRunAnswer({ sceneId: values.sceneId?values.sceneId:-1, exerciseId: -1, standardAnswer: values.answer, exerciseType: 6  });
+
+     console.log('result == ', result);
       if (result.success) {
         if (result.obj.isSelect) {
           setColumnList(result.obj.column);

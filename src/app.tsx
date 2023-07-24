@@ -10,6 +10,7 @@ import { createRef } from 'react';
 import { API } from '@/common/entity/typings';
 
 const isDev = process.env.NODE_ENV === 'development';
+//const isDev = process.env.NODE_ENV === 'prod';
 const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -111,6 +112,7 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  * @see https://beta-pro.ant.design/docs/request-cn
  */
 // 生产模式
+
 let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
 //开发模式
 if (isDev) prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt'
@@ -154,7 +156,7 @@ export const layoutActionRef = createRef<{ reload: () => void }>();
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-// console.log('initialState ', initialState?.currentUser?.userId,initialState)  
+// console.log('initialState ', initialState?.currentUser?.userId,initialState)
   return {
     actionRef: layoutActionRef,
     disableContentMargin: false,
@@ -200,7 +202,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // childrenRender: (children) => {
     //   if (initialState.loading) return <PageLoading />;
     //   return children;
-    // },    
+    // },
     ...initialState?.settings,
     // headerRender: <a>Ant design</a>,
   };

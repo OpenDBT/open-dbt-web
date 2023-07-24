@@ -4,7 +4,7 @@ import "ace-builds/src-noconflict/mode-mysql";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-min-noconflict/ext-language_tools";
 import { QUESTION_BANK } from '@/common/entity/questionbank'
-import {  Button, Form,  Input, message, Modal, Space } from 'antd';
+import { Button, Form, Input, message, Modal, Space } from 'antd';
 import { TASK } from '@/common/entity/task';
 import BraftEditor from '../../braft/braft';
 import { API } from '@/common/entity/typings';
@@ -12,9 +12,10 @@ import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 import { stuTestRunAnswer } from '@/services/teacher/course/score';
 import ResultSetModal from '@/pages/course/exercise/components/ResultSetModal';
 import { LoadingOutlined } from '@ant-design/icons';
+import ResultSetModalFunction from '@/pages/common-course/question/component/type/components/ResultSetModalFunction';
 interface IProps {
   taskList: TASK.ReviewClassifyExercises[];
-  subExamList: TASK.TaskSumbitExerciseParam[];  
+  subExamList: TASK.TaskSumbitExerciseParam[];
 }
 const AnswserByType = (props: IProps) => {
   const taskList = props.taskList
@@ -27,6 +28,8 @@ const AnswserByType = (props: IProps) => {
   const [resultSet, setResultSet] = useState([]);
   const [isWaitModalVisible, setIsWaitModalVisible] = useState<boolean>(false);
   const [resultSetModalVisible, setResultSetModalVisible] = useState<boolean>(false);
+  const [resultSetFunModalVisible, setResultSetFunModalVisible] = useState<boolean>(false);
+  const [functionResult, setFunctionResult] = useState<QUESTION_BANK.ResultSetInfo[]>([]);
   useEffect(() => {
     let arr: number[] = []
     taskList.map((item: any, index: number) => {
@@ -117,20 +120,28 @@ const AnswserByType = (props: IProps) => {
   const testRunAnswer = async (value: { answer: string; usageTime: number }, item: any) => {
     setIsWaitModalVisible(true);
     //测试提交答案
-    stuTestRunAnswer({ ...value, exerciseId: item.exercise_id }).then((result: any) => {
+    stuTestRunAnswer({ ...value, exerciseId: item.exerciseId, exerciseType: item.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
+
         if (result.obj) {
-          if (!result.obj.executeRs) {
-            message.error(result.obj.log);
-            return
+          //函数
+          if (item.exerciseType == 9) {
+            setFunctionResult(result.obj.functionResult);
+            setResultSetFunModalVisible(true);
+          } else if (!result.obj.select) {
+            message.success("运行成功");
+            return;
+          } else {
+            //非函数
+            if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
+              setColumnList(result.obj.studentResultMap.column);
+              setDatatype(result.obj.studentResultMap.datatype);
+              setResultSet(result.obj.studentResultMap.result);
+              setResultSetModalVisible(true);
+            }
           }
-          if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
-            setColumnList(result.obj.studentResultMap.column);
-            setDatatype(result.obj.studentResultMap.datatype);
-            setResultSet(result.obj.studentResultMap.result);
-            setResultSetModalVisible(true);
-          }
+
         }
       } else {
         message.error(result.message);
@@ -207,13 +218,13 @@ const AnswserByType = (props: IProps) => {
                       cItem.exerciseType == 4 &&
                       <>
                         {
-                        cItem.exercise.exerciseInfos.map((tItem: any, tIndex: number) => {
-                          return <div style={{ display: 'flex' }} key={'field' + tIndex}>
-                            <Form.Item label={`空格 ${tIndex + 1}`} style={{ width: '100%' }}>
-                              <Input style={{ width: '100%' }} value={examList[computedIndex(cIndex, index)].exerciseResult.split('@_@')[tIndex]} onChange={(e) => onChangeSpace(e, index, tIndex, computedIndex(cIndex, index))} />
-                            </Form.Item>
-                          </div>
-                        })
+                          cItem.exercise.exerciseInfos.map((tItem: any, tIndex: number) => {
+                            return <div style={{ display: 'flex' }} key={'field' + tIndex}>
+                              <Form.Item label={`空格 ${tIndex + 1}`} style={{ width: '100%' }}>
+                                <Input style={{ width: '100%' }} value={examList[computedIndex(cIndex, index)].exerciseResult.split('@_@')[tIndex]} onChange={(e) => onChangeSpace(e, index, tIndex, computedIndex(cIndex, index))} />
+                              </Form.Item>
+                            </div>
+                          })
                         }
                       </>
                     }
@@ -222,29 +233,29 @@ const AnswserByType = (props: IProps) => {
                       cItem.exerciseType == 5 && <BraftEditor className="border" placeholder="请输入正文内容" value={examList[computedIndex(cIndex, index)].exerciseResult} onChange={(val) => onChangeBraft(val, computedIndex(cIndex, index))} />
                     }
                     {
-                      cItem.exerciseType == 6 && <>
+                      (cItem.exerciseType == 6 || cItem.exerciseType == 7 || cItem.exerciseType == 8 || cItem.exerciseType == 9 || cItem.exerciseType == 10) && <>
                         <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(cItem.exercise.scene) }}>场景查看</Button>
                         <Button style={{ marginRight: 8 }} type="primary" className="gray-button button-radius" onClick={() => { testRun(examList[computedIndex(cIndex, index)].exerciseResult, cItem) }}>测试运行</Button>
                         <AceEditor
-                                    value={examList[computedIndex(cIndex, index)].exerciseResult}
-                                    style={{ width: '100%', height: '100px', fontSize: '1rem' }}
-                                    mode="mysql"
-                                    theme="github"
-                                    name="stu-answer"
-                                    onChange={(val) => onChangeSql(val, computedIndex(cIndex, index))}
-                                    fontSize={18}
-                                    showPrintMargin={true} //打印边距
-                                    showGutter={true}//行号
-                                    highlightActiveLine={true}//突出显示活动线
-                                    editorProps={{ $blockScrolling: true }} //自动补全
-                                    setOptions={{
-                                        enableBasicAutocompletion: true,//自动补全
-                                        enableLiveAutocompletion: true,
-                                        enableSnippets: true,
-                                        showLineNumbers: true,
-                                        tabSize: 2,
-                                        useWorker: false //自动补全
-                                    }} />
+                          value={examList[computedIndex(cIndex, index)].exerciseResult}
+                          style={{ width: '100%', height: '100px', fontSize: '1rem' }}
+                          mode="mysql"
+                          theme="github"
+                          name="stu-answer"
+                          onChange={(val) => onChangeSql(val, computedIndex(cIndex, index))}
+                          fontSize={18}
+                          showPrintMargin={true} //打印边距
+                          showGutter={true}//行号
+                          highlightActiveLine={true}//突出显示活动线
+                          editorProps={{ $blockScrolling: true }} //自动补全
+                          setOptions={{
+                            enableBasicAutocompletion: true,//自动补全
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                            useWorker: false //自动补全
+                          }} />
                       </>
                     }
                   </div>
@@ -272,6 +283,12 @@ const AnswserByType = (props: IProps) => {
         columnList={columnList}
         datatype={datatype}
         resultSet={resultSet}
+      />
+      {/* 结果集 */}
+      <ResultSetModalFunction
+        onCancel={() => { setResultSetFunModalVisible(false) }}
+        resultSetModalVisible={resultSetFunModalVisible}
+        functionResult={functionResult}
       />
       <Modal
         width={250}

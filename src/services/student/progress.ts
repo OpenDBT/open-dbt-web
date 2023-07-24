@@ -1,5 +1,6 @@
 import { request } from 'umi';
 import { API } from '@/common/entity/typings';
+import { QUESTION_BANK } from '@/common/entity/questionbank';
 /**
  * 查询学生当前课程学习进度
  * 学生-课程--学习进度
@@ -103,4 +104,21 @@ export async function getCourseProgressByStu(sclassId: number, courseId: number)
 
 export async function exportStatisticsInfo(sclassId: number, type: string, isFuzzyQuery: number, searchValue: string) {
   return request<API.Result<string>>(`/progress/exportStatisticsInfo/${sclassId}/${type}/${isFuzzyQuery}/${searchValue}`);
+}
+
+/**
+ * 学生重置练习（全部重置）
+ * @param courseId 
+ * @returns 
+ */
+export async function exerciseReset(courseId: number) {
+  return request<API.Result<boolean>>(`/progress/exerciseReset/${courseId}`);
+}
+/**
+ * 题库习题设置为练习/取消练习
+ * @param courseId 
+ * @returns 
+ */
+export async function publishExercise(data: QUESTION_BANK.QuestionSettingParam) {
+  return request<API.Result<boolean>>(`/progress/publishExercise`,  { method: 'POST', data });
 }

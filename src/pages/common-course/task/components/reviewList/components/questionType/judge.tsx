@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { Affix, Button, Divider, Form, Tooltip, Input, message, Dropdown, Space, Menu } from 'antd';
+import { useState } from 'react'
+import { Button, Dropdown, Space, Menu } from 'antd';
 import SuperIcon from "@/pages/components/icons";
-import { QUESTION_BANK } from '@/common/entity/questionbank'
 interface IProps {
   editSumbit: (value: any) => void;
   editReset: (value: any) => void;
@@ -16,7 +15,7 @@ const judge = (props: IProps) => {
     current,
     editSumbit: editSumbit,
     editReset: editReset
-} = props;
+  } = props;
   const [clickMore, setClickMore] = useState<any>(); //点击更多存储当前行数据
   const menu = (
     <Menu

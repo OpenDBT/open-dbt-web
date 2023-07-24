@@ -5,6 +5,7 @@ import { submitAnswer, stuTestRunAnswer } from '@/services/teacher/course/score'
 import './index.less';
 import LeftColumn from '@/pages/stu/answer/left';
 import RightColumn from '@/pages/stu/answer/right';
+import CenterColumn from '@/pages/stu/answer/center';
 import { LoadingOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import StudentMenu from '../study/menu';
@@ -13,10 +14,12 @@ import { querySclass } from '@/services/teacher/clazz/sclass';
 import Cookies from 'js-cookie';
 import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAnswerNotifiedFail } from '@/pages/components/exercise-answer-notification'
 import { API } from '@/common/entity/typings';
+import ResultSetModalFunction from '@/pages/common-course/question/component/type/components/ResultSetModalFunction';
+import { QUESTION_BANK } from '@/common/entity/questionbank';
 /**
  * 课程-SQL练习题-开始答题
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const Answer = (props: any) => {
   let courseId = -1;
@@ -42,15 +45,18 @@ const Answer = (props: any) => {
   const [exerciseList, setExerciseList] = useState<API.StuAnswerExerciseInfo[]>([]); //全部习题，用于上下题切换不再重复请求
   const [topButtonDisabled, setTopButtonDisabled] = useState<boolean>(true);
   const [nextButtonDisabled, setNextButtonDisabled] = useState<boolean>(true);
-
   const [isCanAnswer, setIsCanAnswer] = useState<boolean>(false);
-
   let timer: any = useRef(); //计时器
   const [usageTime, setUsageTime] = useState<number>(0);
-
+  const [uploading, setUpLoading] = useState<boolean>(false);
+  const [dowmloading, setDownLoading] = useState<boolean>(false);
+  const [resultSetFunModalVisible, setResultSetFunModalVisible] = useState<boolean>(false);
+  const [functionResult, setFunctionResult] = useState<QUESTION_BANK.ResultSetInfo[]>([]);
+  // 清除定时器
   const stopTimer = () => {
     clearInterval(timer.current);
   };
+  // 重新统计时间
   const restartTimer = () => {
     stopTimer();
     setUsageTime(0);
@@ -69,6 +75,7 @@ const Answer = (props: any) => {
   useEffect(() => {
     //查询班级信息
     querySclass(clazzId).then((result) => {
+      // ````
       if (result && result.success) {
         if (result.obj.isEnd === 1) {
           //isCanAnswer=false 不可以答题
@@ -100,7 +107,6 @@ const Answer = (props: any) => {
   }, []);
 
   useEffect(() => {
-    console.log('exerciseId', exerciseId);
     change(exerciseId);
   }, [exerciseId]);
 
@@ -123,6 +129,8 @@ const Answer = (props: any) => {
     getExerciseInfo(clazzId, courseId, exerciseId).then((result: any) => {
       if (result.obj) {
         setExercise(result.obj);
+        setUpLoading(false);
+        setDownLoading(false);
       }
     });
   };
@@ -141,9 +149,16 @@ const Answer = (props: any) => {
    * 切换习题，上一题和下一题
    * @param next 是否下一题
    */
-  const changeExercise = (next: boolean) => {
+  const changeExercise = (next: boolean, direct: string) => {
+    if (direct == 'up') {
+      setUpLoading(true);
+    } else {
+      setDownLoading(true);
+    }
+
+
     const index = exerciseList.findIndex(
-      (item: API.ExerciseRecord) => item.exerciseId === exerciseId,
+      (item: API.ExerciseRecord) => item.exerciseId == exerciseId,
     );
     console.log('next index exerciseList', next, index, exerciseList.length);
     //校验题目是否可以上下题切换
@@ -194,23 +209,34 @@ const Answer = (props: any) => {
     }
   };
   // 测试运行
-  const testRunAnswer = async (value: { answer: string; usageTime: number }) => {
+  const testRunAnswer = async (value: { answer: string; usageTime: number; }) => {
     //wait窗口
     setIsWaitModalVisible(true);
     //显示窗口为测试运行
     setSubmitType(1);
     //测试提交答案
-    stuTestRunAnswer({ ...value, exerciseId: exerciseId }).then((result: any) => {
+    stuTestRunAnswer({ ...value, exerciseId: exerciseId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
         if (result.obj) {
-          setExecuteResult(result.obj);
-          if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
-            setColumnList(result.obj.studentResultMap.column);
-            setDatatype(result.obj.studentResultMap.datatype);
-            setResultSet(result.obj.studentResultMap.result);
-            setResultSetModalVisible(true);
+          //函数
+          if (exercise!.exerciseType == 9) {
+            setFunctionResult(result.obj.functionResult);
+            setResultSetFunModalVisible(true);
+          } else if (!result.obj.select) {
+            message.success("运行成功");
+            return;
+          } else {
+            //非函数
+            setExecuteResult(result.obj);
+            if (result.obj.executeRs && Object.keys(result.obj.studentResultMap).length == 3) {
+              setColumnList(result.obj.studentResultMap.column);
+              setDatatype(result.obj.studentResultMap.datatype);
+              setResultSet(result.obj.studentResultMap.result);
+              setResultSetModalVisible(true);
+            }
           }
+
         }
       } else {
         message.error(result.message);
@@ -219,8 +245,8 @@ const Answer = (props: any) => {
   };
   /**
    * 答题结果提示
-   * @param type 
-   * @param scoreRs 
+   * @param type
+   * @param scoreRs
    */
   const openNotification = (type: number, scoreRs: boolean) => {
     // type: -1=>出错,0=>答案错误,1=>答案正确
@@ -242,9 +268,14 @@ const Answer = (props: any) => {
     // 停止计时器
     clearInterval(timer.current);
     //提交答案
-    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId }).then((result: any) => {
+
+    submitAnswer({ ...value, exerciseId: exerciseId, sclassId: clazzId, exerciseType: exercise!.exerciseType }).then((result: any) => {
       setIsWaitModalVisible(false);
       if (result.success) {
+        // if(!result.obj.select){
+        //   message.success("提交成功");
+        // return;
+        // }
         setExecuteResult(result.obj);
         if (result.obj.scoreRs) {
           openNotification(1, true);
@@ -268,29 +299,52 @@ const Answer = (props: any) => {
   return (
     <div className="flex stu-answer">
       <StudentMenu {...menuProps} />
-      <Row className="content">
-        <Col span={12} className="page-container">
-          <LeftColumn
-            courseId={courseId}
-            exercise={exercise!}
-            changeExercise={(next: boolean) => changeExercise(next)}
-            topButtonDisabled={topButtonDisabled}
-            nextButtonDisabled={nextButtonDisabled}
-          />
-        </Col>
-        <Col span={12} className="page-container">
-          <RightColumn
-            testRunAnswer={(value: { answer: string; usageTime: number }) => testRunAnswer(value)}
-            onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
-            submitType={submitType}
-            executeResult={executeResult}
-            usageTime={usageTime}
-            stuAnswer={exercise?.stuAnswer || ''}
-            isCanAnswer={isCanAnswer}
-            exerciseId={exercise?.exerciseId}
-          />
-        </Col>
-      </Row>
+      {(exercise?.exerciseType == 1 || exercise?.exerciseType == 2 || exercise?.exerciseType == 3 || exercise?.exerciseType == 4 || exercise?.exerciseType == 5) ?
+        <Row className="content">
+          <Col span={24} className="page-container">
+            <CenterColumn
+              clazzId={clazzId}
+              courseId={courseId}
+              exercise={exercise!}
+              uploading={uploading}
+              dowmloading={dowmloading}
+              usageTime={usageTime}
+              onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
+              changeExercise={(next: boolean, direct: string) => changeExercise(next, direct)}
+              topButtonDisabled={topButtonDisabled}
+              nextButtonDisabled={nextButtonDisabled}
+            ></CenterColumn>
+          </Col>
+        </Row>
+        :
+        <Row className="content">
+          <Col span={12} className="page-container">
+            <LeftColumn
+              courseId={courseId}
+              exercise={exercise!}
+              uploading={uploading}
+              dowmloading={dowmloading}
+              changeExercise={(next: boolean, direct: string) => changeExercise(next, direct)}
+              topButtonDisabled={topButtonDisabled}
+              nextButtonDisabled={nextButtonDisabled}
+            />
+          </Col>
+          <Col span={12} className="page-container">
+            <RightColumn
+              testRunAnswer={(value: { answer: string; usageTime: number }) => testRunAnswer(value)}
+              onFinish={(value: { answer: string; usageTime: number }) => onFinish(value)}
+              submitType={submitType}
+              executeResult={executeResult}
+              usageTime={usageTime}
+              stuAnswer={exercise?.stuAnswer || ''}
+              isCanAnswer={isCanAnswer}
+              exerciseId={exercise?.exerciseId}
+            />
+          </Col>
+        </Row>
+      }
+
+
 
       <Modal
         width={250}
@@ -316,7 +370,12 @@ const Answer = (props: any) => {
         datatype={datatype}
         resultSet={resultSet}
       />
-
+      {/* 结果集 */}
+      <ResultSetModalFunction
+        onCancel={() => { setResultSetFunModalVisible(false) }}
+        resultSetModalVisible={resultSetFunModalVisible}
+        functionResult={functionResult}
+      />
       <Modal
         width={600}
         title="答题注意事项"

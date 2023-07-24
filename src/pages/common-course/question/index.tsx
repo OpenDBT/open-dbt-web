@@ -13,18 +13,12 @@ import { QUESTION_BANK } from '@/common/entity/questionbank';
 import CODE_CONSTANT from '@/common/code'
 import { API } from '@/common/entity/typings';
 import EditMenuModal from './component/file/add/index';
+import ExerciseSettingModal from './component/setting/index';
 import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface';
 import { ValidateIntegerParam } from '@/utils/utils'
 
 //题目类型
-const typeList = [
-  { id: 1, name: '单选题' },
-  { id: 2, name: '多选题' },
-  { id: 3, name: '判断题' },
-  { id: 4, name: '填空题' },
-  { id: 5, name: '简答题' },
-  { id: 6, name: 'SQL编程题' },
-]
+const typeList = CODE_CONSTANT.typeList;
 interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: string;
@@ -49,7 +43,7 @@ const QuestionsHome = (props: any) => {
   const params: any = useParams();
   const courseId = params.courseId;
   const [course, setCourse] = useState<API.CourseListItem | undefined>(undefined); //课程
-  const [data, setData] = useState<{ count: number, list: QUESTION_BANK.QuestionBankRecord [] }>({ count: 0, list: [] });
+  const [data, setData] = useState<{ count: number, list: QUESTION_BANK.QuestionBankRecord[] }>({ count: 0, list: [] });
   const [moveModelVisible, setMoveModelVisible] = useState(false);
   const [checkList_q, setCheckList_q] = useState<number[]>(typeList.map((item) => item.id)); //题库选择器，默认值全选
   const [indeterminate_q, setIndeterminate_q] = useState(true);//题库全选style控制
@@ -57,11 +51,15 @@ const QuestionsHome = (props: any) => {
   const [selectId, setSelectId] = useState<number>(-1); //选中id
   const [checkId, setCheckId] = useState<number>(-1); //操作id
   const [editNameModalVisible, handEditNameModalVisible] = useState<boolean>(false);// 修改目录标题，开关弹框
+  const [exerciseSettingVisible, handleExerciseSettingVisible] = useState<boolean>(false);// 练习题设置弹框
+  const [checkList, setCheckList] = useState<React.Key[]>([])
+
   const [renameBol, setRenameBol] = useState<boolean>(false);// 修改文件夹弹框 true: 修改 false: 新增
   const [clickFile, setClickFile] = useState<{ label: string, value: number }[]>([{ label: '全部题目', value: 0 }]);
   const [keyWord, setkeyWord] = useState<string>('');  // 关键字
   const [knowledge, setknowledge] = useState<string>('');  // 知识点关键字
   const [rename, setRename] = useState<string>('');  // 存储的需要修改的文件夹名称
+  const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('checkbox');
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: defPage,
     parentId: 0,//目录父级id
@@ -189,12 +187,35 @@ const QuestionsHome = (props: any) => {
       }
     },
     {
+      title: '练习题状态',
+      dataIndex: 'exerciseStatus',
+      align: 'center',
+      key: 'exerciseStatus',
+      width: '150px',
+      render: (item, record) => {
+        return record.elementType == 1 ? '' : (item == 0 ? <span>练习题</span> : <span>非练习题</span>)
+      }
+    },
+    {
+      title: '练习题答案显示',
+      dataIndex: 'showAnswer',
+      align: 'center',
+      key: 'showAnswer',
+      width: '150px',
+      render: (item, record) => {
+        return record.elementType == 1 ? '' : (item == 0 ? <span>显示</span> : <span>不显示</span>)
+
+      }
+    },
+    {
       title: '题型',
       dataIndex: 'exerciseType',
       align: 'center',
       key: 'exerciseType',
       width: '100px',
       render: (item, record) => {
+        CODE_CONSTANT.questionType
+        CODE_CONSTANT.DDLType
         return <span>{CODE_CONSTANT.questionType[Number(item) - 1]}</span>
       }
     },
@@ -395,7 +416,23 @@ const QuestionsHome = (props: any) => {
     setClickFile(() => [...clickFile.slice(0, index + 1)])
     setTableParams({ ...tableParams, pagination: { ...tableParams.pagination, current: 1 }, parentId: id })
   }
-
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: any) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setCheckList(selectedRowKeys)
+    },
+    getCheckboxProps: (record: any) => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+  const clickQestionSetting = () => {
+    if (checkList.length == 0) {
+      message.error("请选择习题")
+      return
+    }
+    handleExerciseSettingVisible(true)
+  }
   return (
     <div className='custom-single'>
       {/* <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
@@ -416,6 +453,7 @@ const QuestionsHome = (props: any) => {
                 {/* <Button style={{background: '#FDDF66'}}><SuperIcon type="icon-icon-import" />一键导入</Button> */}
                 <Button onClick={() => addNewFile()}><SuperIcon type="icon-icon-folder" />新建文件夹</Button>
                 <Button onClick={() => { window.open(`/scene/list/${params.courseId}`); }}><SuperIcon type="icon-icon-scene" />场景</Button>
+                <Button type="primary" onClick={() => { clickQestionSetting() }}><SuperIcon type="icon-icon-edit-3" />练习题设置</Button>
               </div>
               <div className='right'>
                 {/* <Button type="text"><SuperIcon type="icon-daochu" />导出全部</Button> */}
@@ -474,6 +512,10 @@ const QuestionsHome = (props: any) => {
               rowKey={record => record.id}
               dataSource={data.list}
               pagination={tableParams.pagination}
+              rowSelection={{
+                type: selectionType,
+                ...rowSelection,
+              }}
               // loading={loading}
               onChange={handleTableChange}
               onRow={record => {
@@ -526,6 +568,20 @@ const QuestionsHome = (props: any) => {
           name={renameBol ? '修改文件夹名称' : '新建文件夹'}
         />
       }
+      {
+        checkList.length != 0 &&
+        <ExerciseSettingModal
+          visible={exerciseSettingVisible}
+          checkList={checkList}
+          onCancel={() => {
+            handleExerciseSettingVisible(false);
+          }}
+          onSubmit={() => {
+            handleExerciseSettingVisible(false);
+            queryButtonClick();
+          }}></ExerciseSettingModal>
+      }
+
     </div>
   );
 };

@@ -6,18 +6,11 @@ import '@/pages/home.less';
 import { getCourseDetail } from '@/services/teacher/course/course';
 import CourseInfo from './course'
 import KnowledgeIndex from './knowledge'
-import ExerciseIndex from './exercise'
-import ExerciseCreate from './exercise/create'
-import ExerciseUpdate from './exercise/update'
+
 // import CourseExam from './exam'
 import CourseTask from './task';//作业
 import ExamInfo from './exam/info'
-import ExamExercise from './exam/exercise'
-import ExamClassReport from './exam/report'
 import ExamAnswer from './exam/report/answerView'
-import SceneIndex from './scene'
-import SceneCreate from './scene/create'
-import SceneUpdate from './scene/update'
 import Chapter from './chapter'
 import ChapterStatisList from './chapter/statis'
 import ChapterStatisDetail from './chapter/statis/chapter-detail'

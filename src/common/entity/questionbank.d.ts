@@ -106,6 +106,7 @@ declare namespace QUESTION_BANK {
     bandingModel: boolean;  // 是否已经引用
     exerciseScore?: string; // 习题分数
     modelId?: number; // 模板id
+    verySql?: string;//校验语句
 
 
   }
@@ -116,7 +117,341 @@ declare namespace QUESTION_BANK {
     prefix: string,//选项
     content: string,//选项内容 "<p>a</p>"
   }
+  // 题库习题设置为练习/取消练习
+  type QuestionSettingParam = {
+    ids: number[],
+    exerciseStatus: number,
+    showAnswer: number
+  }
 
+  //学生练习提交
+  type SubmitAnswer = {
+    exerciseId: number,
+    sclassId: number,
+    exerciseType: number,
+    verySql: string,
+    sceneId: number,
+    answer: string,
+    usageTime: number,
+  }
 
+  type TSceneDetail = {
+    id?: number,
+    sceneId?: number,
+    tableName?: string,
+    tableDetail?: string,
+    tableDesc?: string
+  }
+
+  type TCheckDetail = {
+    id?: number,
+    sceneDetailId?: number,
+    exerciseId?: number,
+    checkStatus?: string,
+    tableName?: string,
+    describe?: string
+
+  }
+
+  type TCheckDetailSave={
+    detail?: TCheckDetail,
+    sceneId?: number
+  }
+  //用户最终页面显示
+  type TSceneDetailDisplay = {
+    id: number,
+    sceneId: number,
+    tableName: string,
+    tableDetail: string,
+    tableDesc: string,
+    detail: TCheckDetail
+  }
+
+  type TSceneField = {
+    id?: number,
+    sceneDetailId?: number,
+    sortNum?: number,
+    fieldType?: string,
+    fieldLength?: number,
+    fieldDefault?: string,
+    fieldNonNull?: boolean,
+    fieldComment?: string,
+    fieldName?: string,
+    autoIncrement?: boolean,
+    decimalNum?: number,
+    primaryKey?: boolean
+  }
+
+  type TCheckField = {
+    id?: number,
+    sceneFieldId?: number,
+    checkStatus?: string,
+    sortNum?: number,
+    fieldType?: string,
+    fieldLength?: number,
+    fieldDefault?: string,
+    fieldNonNull?: boolean,
+    fieldComment?: string,
+    fieldName?: string,
+    autoIncrement?: boolean,
+    decimalNum?: number,
+    primaryKey?: boolean,
+    tableName?: string,
+    exerciseId?: number,
+    sceneDetailId?: number
+  }
+  type TSceneFieldDisplay = {
+    id?: number,
+    sceneDetailId?: number,
+    sortNum?: number,
+    fieldType?: string,
+    fieldLength?: number,
+    fieldDefault?: string,
+    fieldNonNull?: boolean,
+    fieldComment?: string,
+    fieldName?: string,
+    autoIncrement?: boolean,
+    decimalNum?: number,
+    primaryKey?: boolean,
+    detail?: TCheckField
+  }
+  //DDL类型题目 表信息查询
+  type VerificationList = {
+    sceneDetails: List<TSceneDetail>,
+    checkDetails: List<TCheckDetail>,
+    sceneFields: List<TSceneField>,
+    checkFields: List<TCheckField>,
+    sceneFks: List<TSceneFk>,
+    checkFks: List<TCheckFk>,
+    sceneSeqs: List<TSceneSeq>,
+    checkSeqs: List<TCheckSeq>,
+    sceneIndexList: List<TSceneIndex>,
+    checkIndexList: List<TCheckIndex>
+    sceneConstraints: List<TSceneConstraint>,
+    checkConstraints: List<TCheckConstraint>
+    sceneDetailDisplays: List<TSceneDetailDisplay>,
+    sceneFieldDisplays: List<TSceneFieldDisplay>,
+    sceneConstraintDisplays: List<TSceneConstraintDisplay>,
+    sceneFKDisplays: List<TSceneFKDisplay>,
+    sceneIndexDisplays: List<TSceneIndexDisplay>,
+    sceneSeqDisplays: List<TSceneSeqDisplay>,
+  }
+  //恢复接口传参
+  type RecoveryModel = {
+    sceneDetailId?: number,
+    exerciseId?: number,
+    recoverType?: string,
+    tableName?: string,
+  }
+  //删除新增表校验信息接口传参
+  type NewTableInfoDel = {
+    ids: list,
+    exerciseId: number,
+    types: string
+  }
+
+  //保存更新字段
+  type CheckFieldsSave = {
+    fields: List<TCheckField>,
+    sceneId: number
+  }
+  //约束查询中间类
+  type SearchModel = {
+    sceneDetailId?: number,
+    exerciseId?: number,
+    tableName?: string,
+  }
+  //约束
+  type TSceneConstraint = {
+    id?: number,
+    sceneDetailId?: number,
+    crName?: string,
+    crType?: string,
+    crFields?: string,
+    crExpression?: string,
+    crIndexType?: string
+  }
+
+  //约束校验
+  type TCheckConstraint = {
+    id?: number,
+    checkStatus?: string,
+    sceneConstraintId?: number,
+    crName?: string,
+    crType?: string,
+    crFields?: string,
+    crExpression?: string,
+    crIndexType?: string,
+    tableName?: string,
+    exerciseId?: number,
+    sceneDetailId?: number
+  }
+  //约束显示
+  type TSceneConstraintDisplay = {
+    id?: number,
+    sceneDetailId?: number,
+    crName?: string,
+    crType?: string,
+    crFields?: string,
+    crExpression?: string,
+    crIndexType?: string,
+    detail?: TCheckConstraint
+  }
+  //保存更新约束
+  type CheckConstraintsSave = {
+    checkConstraints: List<TCheckConstraint>,
+    sceneId: number
+  }
+  type TSceneFk = {
+    id?: number,
+    sceneDetailId?: number,
+    fkName?: string,
+    fkFields?: string,
+    reference?: string,
+    referenceFields?: string,
+    updateRule?: string,
+    deleteRule?: string,
+    sortNum?: number,
+  }
+  type TCheckFk = {
+    id?: number,
+    sceneFkId?: number,
+    checkStatus?: string,
+    sceneDetailId?: number,
+    fkName?: string,
+    fkFields?: string,
+    reference?: string,
+    referenceFields?: string,
+    updateRule?: string,
+    deleteRule?: string,
+    sortNum?: number,
+    tableName?: string,
+    exerciseId?: number
+  }
+  //外键
+  type TSceneFKDisplay = {
+    id?: number,
+    sceneDetailId?: number,
+    fkName?: string,
+    fkFields?: string,
+    reference?: string,
+    referenceFields?: string,
+    updateRule?: string,
+    deleteRule?: string,
+    sortNum?: number,
+    detail?: TCheckFk
+  }
+  //外键保存
+  type CheckFksSave = {
+    checkFks: List<TCheckFk>,
+    sceneId: number
+  }
+  type TSceneIndex = {
+    id?: number,
+    sceneDetailId?: number,
+    indexName?: string,
+    indexFields?: string,
+    indexType?: string,
+    sortNum?: number,
+    indexUnique?: boolean,
+    description?: string,
+  }
+  type TCheckIndex = {
+    id?: number,
+    sceneIndexId?: number,
+    checkStatus?: string,
+    sceneDetailId?: number,
+    indexName?: string,
+    indexFields?: string,
+    indexType?: string,
+    sortNum?: number,
+    indexUnique?: boolean,
+    description?: string,
+    tableName?: string,
+    exerciseId?: number
+  }
+  type TSceneIndexDisplay = {
+    id?: number,
+    sceneDetailId?: number,
+    indexName?: string,
+    indexFields?: string,
+    indexType?: string,
+    sortNum?: number,
+    indexUnique?: boolean,
+    description?: string,
+    detail?: TCheckIndex
+  }
+  //索引保存
+  type CheckIndexListSave = {
+    indexList: List<TCheckIndex>,
+    sceneId: number
+  }
+  type TSceneSeq = {
+    id?: number,
+    sceneDetailId?: number,
+    sortNum?: number,
+    seqName?: string,
+    step?: number,
+    minValue?: number,
+    maxValue?: number,
+    latestValue?: number,
+    cycle?: boolean,
+    field?: string,
+    remark?: string,
+    typeName?: string,
+    startValue?: number,
+    cacheSize?: number,
+  }
+  type TCheckSeq = {
+    id?: number,
+    sceneSeqId?: number,
+    checkStatus?: string,
+    sceneDetailId?: number,
+    sortNum?: number,
+    seqName?: string,
+    step?: number,
+    minValue?: number,
+    maxValue?: number,
+    latestValue?: number,
+    cycle?: boolean,
+    field?: string,
+    remark?: string,
+    typeName?: string,
+    startValue?: number,
+    cacheSize?: number,
+    tableName?: string,
+    exerciseId?: number
+  }
+  type TSceneSeqDisplay = {
+    id?: number,
+    sceneDetailId?: number,
+    sortNum?: number,
+    seqName?: string,
+    step?: number,
+    minValue?: number,
+    maxValue?: number,
+    latestValue?: number,
+    cycle?: boolean,
+    field?: string,
+    remark?: string,
+    typeName?: string,
+    startValue?: number,
+    cacheSize?: number,
+    detail?: TCheckSeq
+  }
+  //序列保存
+  type CheckSequensSave = {
+    checkSeqs: List<TCheckSeq>,
+    sceneId: number
+  }
+
+  type ResultSetInfo={
+    columnNumber?: number,
+    rowNumber?: number,
+    columnList?: List<String>,
+    dataTypeAndImgList?: List<DataTypeAndImg>,
+    dataList?: List<Map<Object, Object>>
+
+  }
 }
 

@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { QUESTION_BANK } from '@/common/entity/questionbank'
-import { Affix, Button, Divider } from 'antd';
+import { Affix, Button, Divider, Dropdown, Space } from 'antd';
 import { TASK } from '@/common/entity/task';
 import SuperIcon from "@/pages/components/icons";
 import '../index.less'
+import { API } from '@/common/entity/typings';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
 const AnswserByType = (props: any) => {
   const taskList = props.taskList
   const [examList, setExamList] = useState<TASK.TaskSumbitExerciseParam[]>(props.subExamList);  // 作业的习题参数列表
   const [examLength, setExamLength] = useState<number[]>([])
   const commit = props.reviewCommit;  // 批阅详情内容
   const whetherAnswer = props.whetherAnswer
+  const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+  const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
   useEffect(() => {
     let arr: number[] = []
     taskList.map((item: any, index: number) => {
@@ -49,6 +53,10 @@ const AnswserByType = (props: any) => {
                     <div>
                       <span className='card-list-title task-title'>
                         {cIndex + 1}. {cItem.exercise.exerciseName}
+                        {cItem.exerciseType == 6 || cItem.exerciseType == 7 || cItem.exerciseType == 8 || cItem.exerciseType == 9 || cItem.exerciseType == 10 ?
+                          <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(cItem.exercise.scene) }}>场景查看</Button>
+                          : null
+                        }
                       </span>
                     </div>
                     <div className='card-label'>
@@ -103,13 +111,16 @@ const AnswserByType = (props: any) => {
                       cItem.exerciseType == 4 &&
                       <div className='answser-own-braft'>
                         <div className='header'>
+                          <Space>
+                            <SuperIcon type={cItem.isCorrect == 1 ? 'icon-icon-duihao31' : (cItem.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={cItem.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                          </Space>
                           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                           <span>{cItem.exerciseScore} 分</span>
                         </div>
                         <div className='answser-content'>
                           {
                             cItem.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                              return <div className='space-answser-line' key={tIndex+ 'space-line'}>
+                              return <div className='space-answser-line' key={tIndex + 'space-line'} style={{ display: 'flex' }}>
                                 <span>空格{tIndex + 1}：</span>
                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: examList[computedIndex(cIndex, index)].exerciseResult.split('@_@')[tIndex] }} style={{ fontWeight: 'normal' }}></div>
                               </div>
@@ -127,7 +138,7 @@ const AnswserByType = (props: any) => {
                         <div className='answser-content'>
                           {
                             cItem.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-                              return <div className='space-answser-line' key={tIndex+ 'spaceAnswser'}>
+                              return <div className='space-answser-line' key={tIndex + 'spaceAnswser'} style={{ display: 'flex' }}>
                                 <span>空格{tIndex + 1}：</span>
                                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: tItem.content }} style={{ fontWeight: 'normal' }}></div>
                               </div>
@@ -146,9 +157,12 @@ const AnswserByType = (props: any) => {
                     {/* 简答题或者sql编程题 */}
                     {/* 我的答案 */}
                     {
-                      (cItem.exerciseType == 5 || cItem.exerciseType == 6) &&
+                      (cItem.exerciseType == 5 || cItem.exerciseType == 6 || cItem.exerciseType == 7 || cItem.exerciseType == 8 || cItem.exerciseType == 9 || cItem.exerciseType == 10) &&
                       <div className='answser-own-braft'>
                         <div className='header'>
+                          <Space>
+                            <SuperIcon type={cItem.isCorrect == 1 ? 'icon-icon-duihao31' : (cItem.isCorrect == 2 ? 'icon-icon-cuowu21' : 'icon-half-correct')} className={cItem.isCorrect == 1 ? 'answser-submit-button' : 'answser-cuowu-button'} style={{ verticalAlign: 'middle', fontSize: '1.5rem', marginRight: '20px' }} />
+                          </Space>
                           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>我的答案：</span>
                           <span>{cItem.exerciseScore} 分</span>
                         </div>
@@ -184,7 +198,7 @@ const AnswserByType = (props: any) => {
 
                     }
                     {
-                      (cItem.exerciseType == 5 || cItem.exerciseType == 6) &&  whetherAnswer == 1 &&
+                      (cItem.exerciseType == 5 || cItem.exerciseType == 6 || cItem.exerciseType == 7 || cItem.exerciseType == 8 || cItem.exerciseType == 9 || cItem.exerciseType == 10) && whetherAnswer == 1 &&
                       <div className='answser-normal-braft'>
                         <div className='header'>
                           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>正确答案：</span>
@@ -208,7 +222,7 @@ const AnswserByType = (props: any) => {
           )
         })
       }
-      <div className='answser-own-braft' style={{marginTop: '20px'}}>
+      <div className='answser-own-braft' style={{ marginTop: '20px' }}>
         <div className='header'>
           <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>作业评语：</span>
         </div>
@@ -216,6 +230,15 @@ const AnswserByType = (props: any) => {
           <div className='html-width-class' dangerouslySetInnerHTML={{ __html: commit.comment }}></div>
         </div>
       </div>
+      {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+        <ViewModal
+          onCancel={() => {
+            setViewModalVisible(false);
+          }}
+          viewModalVisible={viewModalVisible}
+          scene={stepFormValues}
+        />
+      ) : null}
     </div>
   )
 }

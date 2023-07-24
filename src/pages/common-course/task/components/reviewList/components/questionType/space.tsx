@@ -85,7 +85,7 @@ const SpaceQeustion = (props: IProps) => {
         <div className='answser-content'>
           {
             data.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-              return <div className='space-answser-line' key={'space' + tIndex}>
+              return <div className='space-answser-line' key={'space' + tIndex} style={{display: 'flex'}}>
                 <span>空格{tIndex + 1}：</span>
                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: current.exerciseResult.split('@_@')[tIndex] }} style={{ fontWeight: 'normal' }}></div>
               </div>
@@ -101,7 +101,7 @@ const SpaceQeustion = (props: IProps) => {
         <div className='answser-content'>
           {
             data.exercise.exerciseInfos.map((tItem: QUESTION_BANK.QuestionExerciseOption, tIndex: number) => {
-              return <div className='space-answser-line' key={'space-sumbit' + tIndex}>
+              return <div className='space-answser-line' key={'space-sumbit' + tIndex} style={{display: 'flex'}}>
                 <span>空格{tIndex + 1}：</span>
                 <div className='html-width-class' dangerouslySetInnerHTML={{ __html: tItem.content }} style={{ fontWeight: 'normal' }}></div>
               </div>

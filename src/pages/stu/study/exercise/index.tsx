@@ -10,14 +10,13 @@ type IProp = {
 };
 /**
  * 课程-习题-SQL编程题-开始答题
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const exercise = (props: IProp) => {
   const courseId = props.courseId;
   const clazzId = props.clazzId;
   const knowId = props.knowId;
-
   const [info, setInfo] = useState<API.stuExerciseInfo>();
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const exercise = (props: IProp) => {
   }, []);
   /**
    * 去答题页面
-   * @param exerciseId 
+   * @param exerciseId
    */
   const goAnswer = (exerciseId: number) => {
     window.open(`/stu/course/exercise/${courseId}/${clazzId}/${knowId}/${exerciseId}`)

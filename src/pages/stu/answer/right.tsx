@@ -23,6 +23,7 @@ const RightColumn = (props: any) => {
     const {
         exerciseId,
         stuAnswer,
+        exerciseType,
         testRunAnswer,
         onFinish,
         submitType,
@@ -34,7 +35,7 @@ const RightColumn = (props: any) => {
     useEffect(() => {
         console.log('RightColumn useEffect exerciseId .....', exerciseId,stuAnswer);
         setAnswer(stuAnswer)
-    }, [exerciseId])    
+    }, [exerciseId])
 
     useEffect(() => {
         console.log('RightColumn useEffect stuAnswer .....', stuAnswer);
@@ -48,7 +49,7 @@ const RightColumn = (props: any) => {
     }
     /**
      * 测试运行
-     * @returns 
+     * @returns
      */
     const testRun = () => {
         if (answer.length === 0) {
@@ -59,7 +60,7 @@ const RightColumn = (props: any) => {
     }
     /**
      * 提交答案
-     * @returns 
+     * @returns
      */
     const submit = () => {
         if (answer.length === 0) {
@@ -143,7 +144,7 @@ const RightColumn = (props: any) => {
                                     <Paragraph>
                                         SQL语法{executeResult.executeRs ? '正确' : '错误'}，结果{executeResult.scoreRs ? '正确' : '错误'}
                                         {executeResult.log ? <span><br />JDBC日志：{executeResult.log}</span> : null}
-                                        {executeResult.errorMessage && !executeResult.scoreRs ? <span style={{ color: '#FF6B6B' }}><br />错误提示：{executeResult.errorMessage}</span> : null}
+                                        {executeResult.errorMessage && !executeResult.scoreRs ? <span style={{ color: '#ff6b6b' }}><br />错误提示：{executeResult.errorMessage}</span> : null}
                                     </Paragraph>
                                     {/* <Title level={5}>练习总用时：</Title>
                                     <Paragraph>执行时间：{formateTime(executeResult.usageTime)}</Paragraph> */}

@@ -52,7 +52,7 @@ const TeacherMenu = (props: IProp) => {
           )}
           <div>统计</div>
         </div>
-        <div className={`course-menu-item ${props.active === 'exam' ? 'item-active' : ''}`}
+        {/* <div className={`course-menu-item ${props.active === 'exam' ? 'item-active' : ''}`}
           onClick={() => {
             history.push(`/teacher/class/${props.sclassId}/exam`);
           }}
@@ -63,7 +63,7 @@ const TeacherMenu = (props: IProp) => {
             <img src={require('@/img/student/icon-homework.svg')}></img>
           )}
           <div>作业</div>
-        </div>
+        </div> */}
       </div>
     </Affix>
   );
