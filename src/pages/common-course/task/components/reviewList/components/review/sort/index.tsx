@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import CODE_CONSTANT from '@/common/code'
-import { Divider,  message } from 'antd';
+import { Button, Divider, message } from 'antd';
 import { TASK } from '@/common/entity/task';
 import BraftEditor from '@/pages/stu/study/task/component/braft/braft';
 import SingleChoice from '../../questionType/singleChoice';
@@ -9,6 +9,12 @@ import Multiple from '../../questionType/multiple';
 import Short from '../../questionType/shortAnswser';
 import SpaceQeustion from '../../questionType/space';
 import SqlQuestion from '../../questionType/sql';
+import { API } from '@/common/entity/typings';
+import ViewModal from '@/pages/common-course/scene/components/ViewModal';
+import DDLSql from '../../questionType/ddlSql';
+import DDLViewSql from '../../questionType/ddlViewSql';
+import DDLFunctionSql from '../../questionType/ddlFunctionSql copy';
+import DDLTriggerSql from '../../questionType/ddlTriggerSql copy';
 
 const AnswserBySort = (props: any) => {
     const { changeAllScore } = props
@@ -17,6 +23,8 @@ const AnswserBySort = (props: any) => {
     const commit = props.reviewCommit;  // 批阅详情内容
     const [examList, setExamList] = useState<TASK.TaskSumbitExerciseParam[]>(props.subExamList);  // 作业的习题参数列表
     const unSelectedGiven = props.unSelectedGiven
+    const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+    const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
     const editSumbit = async (item: any) => {
         item.isCorrect = 1
         item.exerciseScore = item.exerciseActualScore
@@ -41,13 +49,13 @@ const AnswserBySort = (props: any) => {
     const onChangeScore = (e: any, index: number) => {
         // e.target.value = e.target.value.replace(/[^\d{1,}\.\d{1}|]/g,'')
         let arr = taskList;
-        if(e.target.value > arr[index].exerciseActualScore) {
+        if (e.target.value > arr[index].exerciseActualScore) {
             message.error('输入值超出题目分数!')
             e.preventDefault();
-        }else  if(e.target.value < 0) {
+        } else if (e.target.value < 0) {
             message.error('输入值不对!')
             e.preventDefault();
-        }else {
+        } else {
             arr[index].exerciseScore = e.target.value
         }
         setExamList([...arr])
@@ -65,6 +73,9 @@ const AnswserBySort = (props: any) => {
                         <div>
                             <span className='card-list-title task-title'>
                                 {index + 1}. {item.exercise.exerciseName}
+                                {[6, 7, 8, 9, 10].includes(item.exerciseType) ?
+                                    <Button style={{ marginRight: 8, marginBottom: 10 }} className="gray-button button-radius continue-button" onClick={() => { setViewModalVisible(true); setStepFormValues(item.exercise.scene) }}>场景查看</Button>
+                                    : null}
                             </span>
                             <span className='card-list-desc desc'>（{CODE_CONSTANT.questionType[item.exerciseType - 1]}，{item.exerciseActualScore}分）</span>
                         </div>
@@ -89,6 +100,18 @@ const AnswserBySort = (props: any) => {
                         {
                             item.exerciseType == 6 && <SqlQuestion data={item} editHalf={editHalf} current={examList[index]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, index)}></SqlQuestion>
                         }
+                        {
+                            item.exerciseType == 7 && <DDLSql data={item} editHalf={editHalf} current={examList[index]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, index)}></DDLSql>
+                        }
+                        {
+                            item.exerciseType == 8 && <DDLViewSql data={item} editHalf={editHalf} current={examList[index]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, index)}></DDLViewSql>
+                        }
+                        {
+                            item.exerciseType == 9 && <DDLFunctionSql data={item} editHalf={editHalf} current={examList[index]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, index)}></DDLFunctionSql>
+                        }
+                        {
+                            item.exerciseType == 10 && <DDLTriggerSql data={item} editHalf={editHalf} current={examList[index]} taskList={taskList} changeAllScore={changeAllScore} editSumbit={(value: any) => editSumbit(value)} editReset={(value: any) => editReset(value)} onChangeScore={(val: any) => onChangeScore(val, index)}></DDLTriggerSql>
+                        }
                         <Divider />
                     </div>
                 })
@@ -97,6 +120,15 @@ const AnswserBySort = (props: any) => {
                 <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>作业评语：</span>
             </div>
             <BraftEditor className="border" placeholder="请输入正文内容" value={commit.comment} onChange={(val) => { onChangeComment(val) }} />
+            {viewModalVisible && stepFormValues && Object.keys(stepFormValues).length ? (
+                <ViewModal
+                    onCancel={() => {
+                        setViewModalVisible(false);
+                    }}
+                    viewModalVisible={viewModalVisible}
+                    scene={stepFormValues}
+                />
+            ) : null}
         </div>
     )
 }

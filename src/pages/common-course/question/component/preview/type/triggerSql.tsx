@@ -45,13 +45,13 @@ const TriggerSql = forwardRef((props: IProps, ref) => {
                 <div className='title'>
                     <div className='title-type'>
                         {
-                             compType != 'task-edit' && ' （DDL触发器编程题）'
+                             compType != 'task-edit' && ' （触发器编程题）'
                         }
                     </div>
                     <div className='title-name'>
                         {initialValues?.exerciseName}
                         {
-                             compType == 'task-edit' && <span>（DDL触发器编程题，{onInit?.exerciseScore}分）</span>
+                             compType == 'task-edit' && <span>（触发器编程题，{onInit?.exerciseScore}分）</span>
                         }
                     </div>
                 </div>

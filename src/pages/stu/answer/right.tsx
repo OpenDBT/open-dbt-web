@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Button, Typography, message } from 'antd';
 import AceEditor from "react-ace";
-import formateTime from '../utils/formateTime';
 import "ace-builds/src-noconflict/mode-mysql";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-min-noconflict/ext-language_tools";
-import React from 'react';
+
 
 const { Paragraph } = Typography;
 

@@ -456,13 +456,13 @@ const QuestionsHome = (props: any) => {
                 selectTypeNum[6] != 0 ? selectTypeNum[6] + "DDLSQL编程题 " : ''
               }
               {
-                selectTypeNum[7] != 0 ? selectTypeNum[7] + "DDL视图编程题 " : ''
+                selectTypeNum[7] != 0 ? selectTypeNum[7] + "视图编程题 " : ''
               }
               {
-                selectTypeNum[8] != 0 ? selectTypeNum[8] + "DDL函数编程题 " : ''
+                selectTypeNum[8] != 0 ? selectTypeNum[8] + "函数编程题 " : ''
               }
               {
-                selectTypeNum[9] != 0 ? selectTypeNum[9] + "DDL触发器编程题 " : ''
+                selectTypeNum[9] != 0 ? selectTypeNum[9] + "触发器编程题 " : ''
               }
               ）
             </span>

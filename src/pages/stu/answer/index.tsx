@@ -223,7 +223,7 @@ const Answer = (props: any) => {
           if (exercise!.exerciseType == 9) {
             setFunctionResult(result.obj.functionResult);
             setResultSetFunModalVisible(true);
-          } else if (!result.obj.select) {
+          } else if (exercise!.exerciseType == 9&&!result.obj.select) {
             message.success("运行成功");
             return;
           } else {

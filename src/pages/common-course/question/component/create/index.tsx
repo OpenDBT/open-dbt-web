@@ -1,14 +1,14 @@
 import CODE_CONSTANT from '@/common/code';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { DownOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Menu, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import DDLSql from '../type/ddlSql';
 import Judge from '../type/judge';
 import MultipleChoice from '../type/multiple';
 import ShortAnswer from '../type/shortAnswer';
 import SingleChoice from '../type/singleChoice';
-import Space from '../type/space';
+import SpaceA from '../type/space';
 import Sql from '../type/sql';
 import Header from './header';
 import './index.less';
@@ -23,7 +23,7 @@ const CreateQuestion = () => {
   const [showIndex, setShowIndex] = useState<number>(1); // 显示的组件的排列顺序对应变量
   const cRef = useRef<IRef>(null);
   const [initData, setInitData] = useState<QUESTION_BANK.QuestionExercise | null>(null)
-  const [selectedValue, setSelectedValue] = useState(""); 
+  const [selectedValue, setSelectedValue] = useState("");
   /**
    * @description 选择按钮回调, 进行相应组件显示
    * @param number 进行判断的类型值
@@ -48,12 +48,12 @@ const CreateQuestion = () => {
   const menu = (
     <Menu>
       {CODE_CONSTANT.DDLName && CODE_CONSTANT.DDLName.map((item) => {
-        return <Menu.Item key={item.value} onClick={() => handleClick(item.value,item.name)} >{item.name}</Menu.Item>
+        return <Menu.Item key={item.value} onClick={() => handleClick(item.value, item.name)} >{item.name}</Menu.Item>
       })}
     </Menu>
   );
 
-  const handleClick = (key: number,value: string) => {
+  const handleClick = (key: number, value: string) => {
     setShowIndex(key);
     setSelectedValue(value);
   };
@@ -67,25 +67,34 @@ const CreateQuestion = () => {
             <span className='mb-right-20'>题型</span>
             {
               CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
-                if(index<6){
-                  { return <Button key={index + 'Bt'} 
-                  className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'} 
-                  onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button> }
+                if (index < 6) {
+                  {
+                    return <Button key={index + 'Bt'}
+                      className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'}
+                      onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>
+                  }
                 }
-              
+
               })
             }
-            {<Dropdown.Button overlay={menu}
-              icon={<DownOutlined />} 
-              placement="bottom">
-             {selectedValue !== "" ? selectedValue : "DDL相关题型"}
-            </Dropdown.Button>
-            }
+
+            <div style={{ display: 'inline-block' }}>
+              <Dropdown overlay={menu}>
+                <Button>
+                  <Space>
+                    {selectedValue !== "" ? selectedValue : "DDL相关题型"}
+                    <DownOutlined />
+                  </Space>
+                </Button>
+
+              </Dropdown>
+
+            </div>
           </div>
           {showIndex == 1 && <SingleChoice ref={cRef} onInit={initData} />}
           {showIndex == 2 && <MultipleChoice ref={cRef} onInit={initData} />}
           {showIndex == 3 && <Judge ref={cRef} onInit={initData} />}
-          {showIndex == 4 && <Space ref={cRef} onInit={initData} />}
+          {showIndex == 4 && <SpaceA ref={cRef} onInit={initData} />}
           {showIndex == 5 && <ShortAnswer ref={cRef} onInit={initData} />}
           {showIndex == 6 && <Sql ref={cRef} onInit={initData} />}
           {showIndex == 7 && <DDLSql ref={cRef} onInit={initData} />}
