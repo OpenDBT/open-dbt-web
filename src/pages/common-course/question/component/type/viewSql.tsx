@@ -350,7 +350,7 @@ const ViewSql = forwardRef((props: IProps, ref) => {
         <>
             <div className='question-content-card'>
                 <div className='title'>
-                    DDL视图编程题
+                    视图编程题
                     {
                         compType == 'task-edit' && <> <Input placeholder="" value={score} style={{ width: '50px', margin: '0 10px' }} onChange={onChangeScore} />分</>
                     }

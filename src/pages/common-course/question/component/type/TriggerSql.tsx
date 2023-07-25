@@ -349,7 +349,7 @@ const TriggerSql = forwardRef((props: IProps, ref) => {
         <>
             <div className='question-content-card'>
                 <div className='title'>
-                    DDL触发器编程题
+                    触发器编程题
                     {
                         compType == 'task-edit' && <> <Input placeholder="" value={score} style={{ width: '50px', margin: '0 10px' }} onChange={onChangeScore} />分</>
                     }

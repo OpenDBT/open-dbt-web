@@ -46,7 +46,7 @@ export enum ExerciseType {
     "简答题" = 5,
     "DMLsql题" = 6,
     "DDLsql题" = 7,
-    "DDL视图题" = 8,
+    "视图题" = 8,
     "函数题" = 9,
     "触发器题" = 10
 }
@@ -90,7 +90,7 @@ const CneterColumn = (props: IProp) => {
         "简答题": <ShortAnswer data={exercise} childData={childData} beforeSubmitModel={submitModel}></ShortAnswer>
         // "DMLsql题": <Judge data={exercise}></Judge>,
         // "DDLsql题": <Judge data={exercise}></Judge>,
-        // "DDL视图题": <Judge data={exercise}></Judge>,
+        // "视图题": <Judge data={exercise}></Judge>,
         // "函数题": <Judge data={exercise}></Judge>,
         // "触发器题": <Judge data={exercise}></Judge>
 
