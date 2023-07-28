@@ -70,8 +70,8 @@ const Sql = forwardRef((props: IProps, ref) => {
     };
     /**
    * 对选项值进行处理
-   * @param init 
-   * @returns 
+   * @param init
+   * @returns
    */
     function getOptions(values: QUESTION_BANK.QuestionExercise | null) {
         if (values) {
@@ -142,7 +142,7 @@ const Sql = forwardRef((props: IProps, ref) => {
         return values
     };
     /**
-      * 
+      *
       * @param values 表单数据
       * @param continueBol 判断是否继续出题
       */
@@ -210,7 +210,7 @@ const Sql = forwardRef((props: IProps, ref) => {
             resetClick()
     }
     /**
-  * 
+  *
   * 点击继续做题。保存，并刷新表单数据
   */
     const sumbitFlash = () => {
@@ -267,7 +267,7 @@ const Sql = forwardRef((props: IProps, ref) => {
     };
     /**
       * 自定义验证表单数据
-      * @param value 表单数据 
+      * @param value 表单数据
       */
     const onValidateData = (value: QUESTION_BANK.QuestionExercise) => {
 

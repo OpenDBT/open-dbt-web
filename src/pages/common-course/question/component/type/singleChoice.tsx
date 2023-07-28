@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, VoidFunctionComponent } from 'react'
+import React, { useState, useEffect } from 'react'
 import './common.less';
 import { forwardRef, useImperativeHandle } from 'react'
 import BraftEditor from './components/editor/braft/braft';
-import { Button, Checkbox, Form, Input, Select, Tooltip, message, Divider, Modal } from 'antd';
+import { Button, Form, Input, Select, Tooltip, message, Divider, Modal } from 'antd';
 import { useParams } from 'umi'
 import { saveExercise } from '@/services/teacher/course/question-create';
 import { saveExerciseInfoByModel } from '@/services/teacher/task/task';
