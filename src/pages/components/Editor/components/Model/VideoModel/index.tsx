@@ -39,6 +39,7 @@ const VideoModel = (props: any) => {
     if(!textContent.attachments) {
       textContent.attachments = []
     }
+    console.log(dataID)
     const item = textContent.attachments.filter((res:any)=>res.resourcesId == dataID)
     // 如果查不到，新增一条资源对象数据到资源数组中,查到了改变按钮显示状态
     if(item.length == 0) {
@@ -59,6 +60,9 @@ const VideoModel = (props: any) => {
       }else {
         setFarwordVisible(true)
       }
+      item[0].deleteFlag = 0
+      
+
     }
     
     /**
@@ -67,6 +71,10 @@ const VideoModel = (props: any) => {
     getCatalogueResourcesId().then((res) => {
       if(res.success) {
         resourcesData.id = res.obj
+        resourcesData.deleteFlag = 0
+       if(item.length != 0) {
+        //item[0].id = res.obj
+       }
       }
     })
    // 避免不正常删除无法清除资源数据对象
@@ -109,7 +117,6 @@ const VideoModel = (props: any) => {
   // 注意：通过blockRendererFn定义的block，无法在编辑器中直接删除，需要在组件中增加删除按钮
   const removeBarBlock = () => {
     textContent.attachments.map( (item:any) =>{
-      item.deleteFlag = 1
       if(item.resourcesId == dataID) {
         item.deleteFlag = 1
       }

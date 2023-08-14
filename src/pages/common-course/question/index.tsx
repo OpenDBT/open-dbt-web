@@ -16,6 +16,7 @@ import EditMenuModal from './component/file/add/index';
 import ExerciseSettingModal from './component/setting/index';
 import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface';
 import { ValidateIntegerParam } from '@/utils/utils'
+import SharedSettings from './component/setting/sharedSettings';
 
 //题目类型
 const typeList = CODE_CONSTANT.typeList;
@@ -52,6 +53,7 @@ const QuestionsHome = (props: any) => {
   const [checkId, setCheckId] = useState<number>(-1); //操作id
   const [editNameModalVisible, handEditNameModalVisible] = useState<boolean>(false);// 修改目录标题，开关弹框
   const [exerciseSettingVisible, handleExerciseSettingVisible] = useState<boolean>(false);// 练习题设置弹框
+  const [exerciseShareVisible, handleExerciseShareVisible] = useState<boolean>(false);// 共享习题设置弹框
   const [checkList, setCheckList] = useState<React.Key[]>([])
 
   const [renameBol, setRenameBol] = useState<boolean>(false);// 修改文件夹弹框 true: 修改 false: 新增
@@ -194,6 +196,16 @@ const QuestionsHome = (props: any) => {
       width: '150px',
       render: (item, record) => {
         return record.elementType == 1 ? '' : (item == 0 ? <span>练习题</span> : <span>非练习题</span>)
+      }
+    },
+    {
+      title: '共享状态',
+      dataIndex: 'authType',
+      align: 'center',
+      key: 'authType',
+      width: '150px',
+      render: (item, record) => {
+        return record.elementType == 1 ? '' : (item == 2 ? <span>共享</span> : <span>私有</span>)
       }
     },
     {
@@ -426,12 +438,21 @@ const QuestionsHome = (props: any) => {
       name: record.name,
     }),
   };
+  //练习题设置
   const clickQestionSetting = () => {
     if (checkList.length == 0) {
       message.error("请选择习题")
       return
     }
     handleExerciseSettingVisible(true)
+  }
+//共享设置
+  const SharedSetting = () => {
+    if (checkList.length == 0) {
+      message.error("请选择习题")
+      return
+    }
+    handleExerciseShareVisible(true)
   }
   return (
     <div className='custom-single'>
@@ -454,6 +475,7 @@ const QuestionsHome = (props: any) => {
                 <Button onClick={() => addNewFile()}><SuperIcon type="icon-icon-folder" />新建文件夹</Button>
                 <Button onClick={() => { window.open(`/scene/list/${params.courseId}`); }}><SuperIcon type="icon-icon-scene" />场景</Button>
                 <Button type="primary" onClick={() => { clickQestionSetting() }}><SuperIcon type="icon-icon-edit-3" />练习题设置</Button>
+                <Button type="primary" onClick={() => { SharedSetting() }}><SuperIcon type="icon-icon-edit-3" />共享设置</Button>
               </div>
               <div className='right'>
                 {/* <Button type="text"><SuperIcon type="icon-daochu" />导出全部</Button> */}
@@ -581,7 +603,20 @@ const QuestionsHome = (props: any) => {
             queryButtonClick();
           }}></ExerciseSettingModal>
       }
-
+  {
+        checkList.length != 0 &&
+        <SharedSettings
+          visible={exerciseShareVisible}
+          courseId={courseId}
+          checkList={checkList}
+          onCancel={() => {
+            handleExerciseShareVisible(false);
+          }}
+          onSubmit={() => {
+            handleExerciseShareVisible(false);
+            queryButtonClick();
+          }}></SharedSettings>
+      }
     </div>
   );
 };

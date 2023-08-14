@@ -300,7 +300,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
    * @description 进行编辑器的html的保存
   */
   const sumbitUpload = () => {
-    console.log('11111')
+    console.log('开始保存')
     const newVal = editorState.toHTML();
     console.log(newVal != '<p></p>')
     if (newVal && newVal != '<p></p>') {
@@ -378,6 +378,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         imgVisible && (
           <ImgModal
             modalVisible={imgVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setImgVisible(false) }}
             onSubmit={(value: string) => {
               // 没有值，关闭弹框，避免报错
@@ -407,6 +409,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         videoVisible && (
           <VideoModal
             modalVisible={videoVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setVideoVisible(false) }}
             onSubmit={(value: CHAPTER.HistoryResource) => {
               // 没有值，关闭弹框，避免报错
@@ -445,6 +449,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         fileVisible && (
           <FileModal
             modalVisible={fileVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setFileVisible(false) }}
             onSubmit={(value: string) => {
               if (value == '') {

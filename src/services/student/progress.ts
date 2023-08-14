@@ -122,3 +122,13 @@ export async function exerciseReset(courseId: number) {
 export async function publishExercise(data: QUESTION_BANK.QuestionSettingParam) {
   return request<API.Result<boolean>>(`/progress/publishExercise`,  { method: 'POST', data });
 }
+
+
+/**
+ * 共享设置
+ * @param courseId 
+ * @returns 
+ */
+export async function sharedExercise(data: QUESTION_BANK.SharedQuestionParam) {
+  return request<API.Result<boolean>>(`/progress/sharedExercise`,  { method: 'POST', data });
+}

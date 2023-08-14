@@ -5,6 +5,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import BraftEditor from '@/pages/components/Editor'
 import { useRef } from 'react'
 import { CHAPTER } from '@/common/entity/chapter'
+import { message } from 'antd';
 
 interface IProps {
   courseId: number;
@@ -75,9 +76,12 @@ const editContent = forwardRef((props: IProps, ref) => {
     })
     //销毁调用
     return () => {
-      clickSave()
+      message.info('内容修改后，请保存后切换！');
+      // clickSave()
     }
   }, [chapterId])
+
+
 
   return (
     <>

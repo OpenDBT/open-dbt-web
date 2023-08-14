@@ -54,6 +54,7 @@ const menuTree = (props: IProps) => {
    * 切换章节id
    */
   useEffect(() => {
+    console.log('333')
     selectNode(chapterId, listData)
   }, [chapterId]);
 
