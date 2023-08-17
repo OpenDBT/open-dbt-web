@@ -1,7 +1,7 @@
+import React, { useState, useRef } from 'react'
 import Menu from './menu';
 import Content from './content'
 import Header from './header'
-import { useRef, useState } from 'react'
 import './index.less';
 
 interface IProps {

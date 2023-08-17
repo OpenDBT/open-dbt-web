@@ -1,6 +1,6 @@
 
 import { Affix, Button, Col, Row, Tooltip, message, Modal } from 'antd';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, UpOutlined } from '@ant-design/icons';
 import { api_getCatalogueByClass, api_saveCatalogue, api_updateCatalogue, api_delCatalogue, api_moveUp, api_moveDown }
   from '@/services/teacher/course/chapter';
@@ -54,7 +54,6 @@ const menuTree = (props: IProps) => {
    * 切换章节id
    */
   useEffect(() => {
-    console.log('333')
     selectNode(chapterId, listData)
   }, [chapterId]);
 

@@ -3,17 +3,19 @@ import Header from './header'
 import './index.less'
 import { Affix, Button, Divider, Input, message, Modal } from 'antd';
 import { review, submitHomeWrok } from '@/services/student/task/task';
-import { approval, taskCallBack } from '@/services/teacher/task/task';
+import { approval, taskCallBack, duplicateCheck } from '@/services/teacher/task/task';
 import { TASK } from '@/common/entity/task';
 import SortMenu from './menu/sort'
 import TypeMenu from './menu/type'
 import SortContnet from './sort/index'
 import TypeContnet from './type/index'
 import { API } from '@/common/entity/typings';
+import Similarity from './duplicate/similarity';
+
 type IStuParam = {
   avatar: string;
   studentName: string;
-  className:string;
+  className: string;
   code: string;
 }
 type ICommitParam = {
@@ -37,6 +39,9 @@ const DetailByTeacher = (props: any) => {
   const [currentStu, setCurrentStu] = useState<IStuParam>();  // 总分
   const [unSelectedGiven, setUnSelectedGiven] = useState<number>(-1);  // 是否有半对
   let arr: TASK.TaskTeacherSumbitExerciseParam[] = []
+  const [similarityList, setSimilarityList] = useState<[TASK.duplicateCheckModel]>();//相似度列表
+  const [showSimilarity, setShowSimilarity] = useState<boolean>(false);
+
   useEffect(() => {
     fetchData()
   }, []);
@@ -222,6 +227,26 @@ const DetailByTeacher = (props: any) => {
       }
     })
   }
+  //查重
+  const duplicate_check = () => {
+
+    duplicateCheck(homeworkId, studentId).then((res: any) => {
+      if (res.success) {
+        console.info(res.obj);
+        setSimilarityList(res.obj);
+        setShowSimilarity(true);
+        //message.success(res.message)
+      } else {
+        message.error(res.message)
+      }
+    })
+  }
+
+  //返回
+  const withdraw = () => {
+    setShowSimilarity(false);
+  }
+
   return (
     <div className='custom-single '>
       <Header clickSave={() => clickSave()} continueAnswer={() => continueAnswer()} />
@@ -231,6 +256,7 @@ const DetailByTeacher = (props: any) => {
           <div className='question-create-card content-left'>
             <div className='title'>
               {taskData?.homeworkName}
+              <div className='duplicate-check'><a onClick={duplicate_check}>查重</a></div>
             </div>
             <div className='desc'>
               <span>题量：{taskData?.exerciseCount}</span>
@@ -239,13 +265,14 @@ const DetailByTeacher = (props: any) => {
             </div>
             <Divider></Divider>
             {
-              bolClassify == false && taskList.length != 0 && whetherAnswer != -1 &&
+              bolClassify == false && taskList.length != 0 && whetherAnswer != -1 && showSimilarity == false &&
               <SortContnet unSelectedGiven={unSelectedGiven} taskList={taskList} subExamList={subExamList} whetherAnswer={whetherAnswer} reviewCommit={reviewCommit} changeAllScore={(val: any) => { changeAllScore(val) }}></SortContnet>
             }
             {
-              bolClassify == true && taskTypeList.length != 0 && whetherAnswer != -1 &&
+              bolClassify == true && taskTypeList.length != 0 && whetherAnswer != -1 && showSimilarity == false &&
               <TypeContnet unSelectedGiven={unSelectedGiven} taskList={taskTypeList} subExamList={subExamList} whetherAnswer={whetherAnswer} reviewCommit={reviewCommit} changeAllScore={(val: any) => { changeAllScore(val) }}></TypeContnet>
             }
+            {similarityList && showSimilarity && <Similarity similarityList={similarityList} withdraw={withdraw} homeworkId={homeworkId}></Similarity>}
           </div>
           <Affix offsetTop={90} className="content-right">
             {

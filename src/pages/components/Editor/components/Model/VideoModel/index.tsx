@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from 'react'
 import { ContentUtils } from 'braft-utils'
 import { Card, Checkbox  } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import "video-react/dist/video-react.css"; // import css
-import { useEffect, useState } from 'react';
 import SuperIcon from "@/pages/components/icons";
 import "./index.less"
 import { CHAPTER } from '@/common/entity/chapter'

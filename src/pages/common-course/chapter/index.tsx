@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Button, Collapse, Select, Col, Row, Switch, Progress, message, Tooltip } from 'antd';
 import { api_getCatalogueByClass, api_saveCatalogueAuth }
   from '@/services/teacher/course/chapter';

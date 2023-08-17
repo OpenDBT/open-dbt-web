@@ -129,6 +129,11 @@ export default [
         path: '/task-bank/task/review/studentId/homeworkId/:studentId/:homeworkId',
         component: './common-course/task/components/reviewList/components/review',
       },
+      {
+        name: '查重查看',
+        path: '/task-bank/task/review/duplicate/studentId/otherStudentId/homeworkId/:studentId/:otherStudentId/:homeworkId',
+        component: './common-course/task/components/reviewList/components/review/duplicate',
+      },
     ],
   },
    // 学生作业单独页面
