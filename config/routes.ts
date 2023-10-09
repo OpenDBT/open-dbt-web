@@ -89,6 +89,7 @@ export default [
       },
     ]
   },
+ 
   // 作业库
   {
     path: '/task-bank',
@@ -397,6 +398,7 @@ export default [
       { name: '题库列表', path: '/teacher/course/question/:courseId', component: './common-course/forwordPage' },
       { name: '作业', path: '/teacher/course/task/:courseId', component: './common-course/forwordPage' },
       { name: '批阅列表', path: '/teacher/course/task/review/courseId/classId/homeworkId/:courseId/:classId/:homeworkId', component: './common-course/forwordPage' },
+      {name: '实验环境',path: '/teacher/start/:courseId/:studentCode',component: './common-course/forwordPage'},
     ],
   },
   // 教师

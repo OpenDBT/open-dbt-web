@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import StudentMenu from '@/pages/common-course/menu';
 import ContentHeader from '@/pages/common-course/ContentHeader';
 import { saveCourseStorage } from '@/pages/common-course/utils'

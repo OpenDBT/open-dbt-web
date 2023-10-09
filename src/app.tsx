@@ -6,16 +6,19 @@ import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import { currentUser as queryCurrentUser, getMenu } from './services/system/api';
 import { RequestInterceptor, ResponseInterceptor } from './../node_modules/umi-request';
-import { createRef } from 'react';
+import React,{ createRef } from 'react';
 import { API } from '@/common/entity/typings';
 
 const isDev = process.env.NODE_ENV === 'development';
 //const isDev = process.env.NODE_ENV === 'prod';
 const loginPath = '/user/login';
 
+
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
+  //用于替代服务器地址字符串保存html
+  HOST: 'OPEN_DBT_HOST',
 };
 
 /**

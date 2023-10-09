@@ -17,6 +17,7 @@ import ChapterStatisDetail from './chapter/statis/chapter-detail'
 import ChapterStatisStuProcess from './chapter/statis/student-detail'
 import TaskReview from './task/components/reviewList'
 import QuestionList from './question'
+import ExperimentIndex from './docker';
 class ForwordPage extends React.Component<any> {
 
   constructor(props: any) {
@@ -161,6 +162,13 @@ class ForwordPage extends React.Component<any> {
         children = <ChapterStatisStuProcess courseId={courseId} clazzId={clazzId} chapterId={chapterId} serialNum={serialNum} userId={userId} />
       else if (pathname.indexOf('/teacher/course/chapter/statis/detail') > -1)
         children = <ChapterStatisDetail courseId={courseId} clazzId={clazzId} chapterId={chapterId} serialNum={serialNum} resourcesId={resourcesId} />
+    }else if (pathname.indexOf('/teacher/start/') > -1){
+       //在线实验
+       let studentCode = this.props.match.params.studentCode;//学生code  
+       menuProps = { active: 'experiment', courseId: courseId };
+       navProps = { active: 6, courseId: courseId };
+      
+      children = <ExperimentIndex courseId={courseId} studentCode={studentCode} />
     }
 
     return (

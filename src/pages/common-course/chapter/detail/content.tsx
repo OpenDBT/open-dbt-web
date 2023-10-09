@@ -1,6 +1,6 @@
 
 import { findRichTXT } from '@/services/resources/upload';
-import { useState, useEffect } from 'react'
+import React,{ useState, useEffect } from 'react'
 import { forwardRef, useImperativeHandle } from 'react'
 import BraftEditor from '@/pages/components/Editor'
 import { useRef } from 'react'

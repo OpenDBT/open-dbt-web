@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import { Button, Input, Progress } from 'antd';
 import { api_getCatalogueInfo, api_getCatalogueInfoTitle }
   from '@/services/teacher/course/chapter';

@@ -1,0 +1,86 @@
+@import '~antd/es/style/themes/default.less';
+
+// 在你的样式文件中添加以下样式
+
+.experiment {
+    .showTerminal {
+      display: flex;
+      .left,
+      .right {
+        overflow-y: scroll;
+        max-height: 100vh;
+      }
+      .left {
+        flex: 1; // 左侧区域占据剩余空间
+      }
+      .right {
+        flex: 1; // 右侧区域占据剩余空间
+      }
+    }
+  }
+  
+  // 添加其他样式以适应你的页面布局和需求
+  /* 隐藏滚动条但保持滚动功能 */
+.hide-scrollbar::-webkit-scrollbar {
+    width: 0.2em;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888;
+  }
+  
+  /* 对于Firefox浏览器 */
+  .hide-scrollbar {
+    scrollbar-width: thin;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar-thumb:vertical {
+    background-color: #888;
+  }
+  
+
+
+
+  /////////////////
+
+  .experiment-bank .experiment-tool {
+    margin-top: 10px;
+    padding: 22px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 30px 2px rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
+    flex-direction: column;
+  }
+  .experiment-bank .experiment-tool button {
+    margin-right: 14px;
+  }
+  
+  .experiment-bank .experiment-tool .ant-input-search-button {
+    margin-right: 0;
+  }
+  
+  .experiment-bank .experiment-tool .row-1 {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .experiment-bank .experiment-tool .row-2 {
+    margin-top: 14px;
+  }
+  
+  .experiment-bank .experiment-tool .row-2 .ant-select-selection-overflow {
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+  }
+  
+  .experiment-bank .experiment-tool .row-2 label {
+    margin-right: 10px;
+  }
+  
+  .experiment-bank .experiment-tool .row-2 .ant-select {
+    margin-right: 20px;
+  }

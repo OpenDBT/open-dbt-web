@@ -1,3 +1,4 @@
+import React from 'react';
 import { Affix } from 'antd';
 import { history, useModel } from 'umi';
 
@@ -92,6 +93,22 @@ const CourseMenu = (props: IProp) => {
               <img src={require('@/img/student/icon-homework.svg')}></img>
             )}
             <div>作业</div>
+          </div>
+        }
+         {
+        //在线实验
+          currentUser && currentUser.roleList && currentUser.roleList[0].roleId == 3 &&
+          <div className={`course-menu-item ${props.active === 'experiment' ? 'item-active' : ''}`}
+            onClick={() => {
+              history.push(`/teacher/start/${props.courseId}/${currentUser.code}`);
+            }}
+          >
+            {props.active === 'experiment' ? (
+              <img src={require('@/img/student/icon-homework-active.svg')}></img>
+            ) : (
+              <img src={require('@/img/student/icon-homework.svg')}></img>
+            )}
+            <div>实验</div>
           </div>
         }
       </div>

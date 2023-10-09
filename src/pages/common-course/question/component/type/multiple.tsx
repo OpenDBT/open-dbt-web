@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React,{ useState, useEffect } from 'react'
 import './common.less';
 import { forwardRef, useImperativeHandle } from 'react'
 import BraftEditor from './components/editor/braft/braft';
