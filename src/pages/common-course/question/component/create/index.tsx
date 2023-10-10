@@ -64,10 +64,10 @@ const CreateQuestion = () => {
       <div className='question-create-div'>
         <div className='content'>
           <div className='question-create-card'>
-            <span className='mb-right-20'>题型</span>
+            <span className='mb-right-20'>基础题型</span>
             {
               CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
-                if (index < 6) {
+                if (index < 5) {
                   {
                     return <Button key={index + 'Bt'}
                       className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'}
@@ -77,17 +77,22 @@ const CreateQuestion = () => {
 
               })
             }
-
+          </div>
+          <div className='question-create-card'>
+            <span className='mb-right-20'>实验题型</span>
             <div style={{ display: 'inline-block' }}>
-              <Dropdown overlay={menu}>
-                <Button>
-                  <Space>
-                    {selectedValue !== "" ? selectedValue : "DDL相关题型"}
-                    <DownOutlined />
-                  </Space>
-                </Button>
+              {
+                CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
+                  if (index >= 5) {
+                    {
+                      return <Button key={index + 'Bt'}
+                        className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'}
+                        onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>
+                    }
+                  }
 
-              </Dropdown>
+                })
+              }
 
             </div>
           </div>
