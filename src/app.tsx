@@ -116,9 +116,10 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  */
 // 生产模式
 
-let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+// 生产模式
+let prefix = 'http://118.190.151.85:58668/open-dbt';
 //开发模式
-if (isDev) prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt'
+if (isDev) prefix = 'http://192.168.10.125:8080/open-dbt'
 export const request: RequestConfig = {
   credentials: 'include',
   prefix: prefix,

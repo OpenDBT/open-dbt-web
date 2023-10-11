@@ -95,7 +95,7 @@ const CourseMenu = (props: IProp) => {
             <div>作业</div>
           </div>
         }
-         {/* {
+         {
         //在线实验
           currentUser && currentUser.roleList && currentUser.roleList[0].roleId == 3 &&
           <div className={`course-menu-item ${props.active === 'experiment' ? 'item-active' : ''}`}
@@ -110,7 +110,7 @@ const CourseMenu = (props: IProp) => {
             )}
             <div>实验</div>
           </div>
-        } */}
+        }
       </div>
     </Affix>
   );
