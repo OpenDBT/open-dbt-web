@@ -48,7 +48,11 @@
   </div>
 </body>
 <script>
-  const urlPrfix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+  // 获取 URL 查询字符串
+  const queryString = window.location.search;
+  // 创建一个 URLSearchParams 对象，用于解析查询字符串
+  const urlParams = new URLSearchParams(queryString);
+  const urlPrfix = urlParams.get('myhost');
   var id = ''
   var resourceId = ''
   var courseId = '' // 课程id
@@ -81,7 +85,7 @@
     isSpeed = geturl('isSpeed')
     isTask = geturl('isTask')
     fastForward = geturl('fastForward')
-    url = urlPrfix+geturl("url")
+    url = urlPrfix + geturl("url")
     duration = geturl("duration")
 
     // 放入url

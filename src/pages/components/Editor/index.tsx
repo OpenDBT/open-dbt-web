@@ -20,7 +20,7 @@ import './index.less'
 import { api_saveRichTXT } from '@/services/resources/upload';
 import { CHAPTER } from '@/common/entity/chapter';
 import * as APP from '@/app';
-
+import '@/myapp.js';
 // 在ts下需要声明window下previewWindow属性,用于预览功能
 declare const window: Window & { previewWindow: any };  // 生命window下previewWindow属性
 
@@ -135,7 +135,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
         start: `
       <div class='block-video' data-id="${dataID}" data-url="${dataURL}" data-name="${dataName}">
         <iframe id="html-iframe-${id}" onload="onLoadDataVideo('html-iframe-${id}')"  data-id="${id}" style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"
-        src= "/iframe/videoPlay.html?isSpeed=${isSpeed}&fastForward=${fastForward}&isTask=${isTask}&id=${id}&resourceId=${resourceId}&courseId=${courseId}&catalogueId=${catalogueId}&url=${dataURL}"></iframe>`,
+        src= "/iframe/videoPlay.html?isSpeed=${isSpeed}&fastForward=${fastForward}&myhost=${window.myhost}&isTask=${isTask}&id=${id}&resourceId=${resourceId}&courseId=${courseId}&catalogueId=${catalogueId}&url=${dataURL}"></iframe>`,
         end: '</div>'
       }
     }
@@ -153,7 +153,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
       }
       return {
         start: `<div class='block-file' data-id="${dataID}" data-url="${dataURL}" data-name="${dataName}"><iframe id="pdf-iframe-${id}" onload="onLoadDataPdf('pdf-iframe-${id}')" data-id="${id}"
-      style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"src= "/iframe/pdfView.html?id=${id}&resourceId=${resourceId}&url=${dataURL}"></iframe>`,
+      style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"src= "/iframe/pdfView.html?id=${id}&myhost=${window.myhost}&resourceId=${resourceId}&url=${dataURL}"></iframe>`,
         end: '</div>'
       }
     }

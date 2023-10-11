@@ -8,9 +8,11 @@ import { currentUser as queryCurrentUser, getMenu } from './services/system/api'
 import { RequestInterceptor, ResponseInterceptor } from './../node_modules/umi-request';
 import React,{ createRef } from 'react';
 import { API } from '@/common/entity/typings';
+import '@/myapp.js';
+
+
 
 const isDev = process.env.NODE_ENV === 'development';
-//const isDev = process.env.NODE_ENV === 'prod';
 const loginPath = '/user/login';
 
 
@@ -116,10 +118,10 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  */
 // 生产模式
 
-// 生产模式
-let prefix = 'http://118.190.151.85:58668/open-dbt';
+let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
 //开发模式
-if (isDev) prefix = 'http://192.168.10.125:8080/open-dbt'
+if (isDev) prefix = window.myhost;
+console.log("我的本地地址",prefix);
 export const request: RequestConfig = {
   credentials: 'include',
   prefix: prefix,
