@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>PDF显示</title>
   <script type="text/javascript" src="./jquery.min.js"></script>
   <script type="text/javascript" src="./common.js"></script>
+  
 </head>
 <style>
   body,
@@ -34,7 +34,11 @@
 
 </body>
 <script>
-  const urlPrfix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+  // 获取 URL 查询字符串
+  const queryString = window.location.search;
+  // 创建一个 URLSearchParams 对象，用于解析查询字符串
+  const urlParams = new URLSearchParams(queryString);
+  const urlPrfix = urlParams.get('myhost');
   //回调函数
   function receiveMessageFromIndex(event) {
     function geturl(name) {

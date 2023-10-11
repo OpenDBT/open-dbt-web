@@ -8,7 +8,7 @@ import "./index.less"
 import { CHAPTER } from '@/common/entity/chapter'
 import { getCatalogueResourcesId } from '@/services/resources/upload';
 declare const window: Window & { mesFromIframe: any };  // 生命window下previewWindow属性
-
+import '@/myapp.js';
 // 自定义组件，可加入自定义功能
 const VideoModel = (props: any) => {
   const blockData = props.block.getData()
@@ -205,7 +205,7 @@ const VideoModel = (props: any) => {
           }
           <div className="content-main" style={{width: '90%', margin: 'auto'}}>
               {/* 自定义 */}
-              <iframe id={`my-iframe-${dataID}`} onLoad={onLoad} src={`/iframe/video.html?id=${dataID}&url=${dataURL}`} style={{ width: "100%", height: "450px", border: "none", display: visible?'block':'none',marginBottom: '20px'}}></iframe>
+              <iframe id={`my-iframe-${dataID}`} onLoad={onLoad} src={`/iframe/video.html?id=${dataID}&url=${dataURL}&myhost=${window.myhost}`} style={{ width: "100%", height: "450px", border: "none", display: visible?'block':'none',marginBottom: '20px'}}></iframe>
           </div>
         </div>
       </div>

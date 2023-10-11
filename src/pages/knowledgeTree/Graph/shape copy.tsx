@@ -1,7 +1,7 @@
 import ReactDom from 'react-dom'
 import { Menu, Dropdown } from 'antd'
 import { Graph, ToolsView, EdgeView, Node, Shape } from '@antv/x6'
-
+import React from 'react';
 // 定义节点
 export default class TreeNode extends Shape.Rect {
   private collapsed: boolean = false

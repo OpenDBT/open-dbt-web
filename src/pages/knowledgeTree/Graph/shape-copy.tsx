@@ -1,7 +1,7 @@
 import ReactDom from 'react-dom'
 import { Menu, Dropdown } from 'antd'
 import { Graph, ToolsView, EdgeView, Dom } from '@antv/x6'
-
+import React from 'react';
 Graph.registerNode(
   'mind-map-rect',
   {
