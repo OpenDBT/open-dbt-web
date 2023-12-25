@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import '@/pages/common-course/course-common.less';
 import '@/pages/common-course/scene/index.less';
 import '@/pages/home.less';

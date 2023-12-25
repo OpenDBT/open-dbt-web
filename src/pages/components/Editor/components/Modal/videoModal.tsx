@@ -90,6 +90,7 @@ const SelectImage: React.FC<IProps> = (props) => {
       formData.append('lastModifiedDate', data.file.lastModifiedDate)
       formData.append('courseId', courseId + '')
       const headers = data.headers;
+      console.log('---------------formData',formData);
       axios.post(data.action, formData, { headers })
         .then((resp: API.Result<CHAPTER.HistoryResource[]>) => {
           if (!resp.data.success && resp.data && resp.data.message) {

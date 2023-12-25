@@ -76,7 +76,7 @@ const editContent = forwardRef((props: IProps, ref) => {
     })
     //销毁调用
     return () => {
-      message.info('内容修改后，请保存后切换！');
+      //message.info('内容修改后，请保存后切换！');
       // clickSave()
     }
   }, [chapterId])

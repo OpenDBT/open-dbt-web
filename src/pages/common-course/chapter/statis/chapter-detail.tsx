@@ -8,6 +8,7 @@ const { Search } = Input;
 import './index.less';
 import { CHAPTER } from '@/common/entity/chapter'
 import { API } from '@/common/entity/typings';
+import SuperIcon from '@/pages/components/icons';
 
 /**
  * 章节统计功能--章节统计详情
@@ -83,13 +84,14 @@ const ChapterDetailIndex = (props: any) => {
   const onSearch = (value: string) => {
     actionRef.current?.reload();
   };
+   const backup=()=>{
+    window.history.go(-1)     
+   }
+
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
   const params = { courseId: courseId, catalogueId: chapterId, classId: clazzId, resourcesId: resourcesId, userName: userName };
   const $title = <div>
-    <b>{serialNum} {node?.catalogueName}</b>
-    <Button type="primary" style={{ marginLeft: 50 }} size="small"
-      // onClick={() => history.push(`/teacher/course/chapter/statis/list/${courseId}/${chapterId}/${clazzId}/${serialNum}`)}
-      onClick={() => window.history.go(-1)}
-    >返回</Button>
+    <a onClick={backup}>{customCloseIcon}</a>
   </div>
   return (
     <div className="chapter-statis-detail">

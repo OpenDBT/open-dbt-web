@@ -10,7 +10,8 @@ import { TASK } from '@/common/entity/task';
 import { api_getClassByLoginUser } from '@/services/teacher/clazz/sclass';
 import { api_getHomeWork, delHomeWork } from '@/services/teacher/task/task';
 import EditPublishModal from './components/publish/index';
-
+import SuperIcon from '@/pages/components/icons';
+import { history } from 'umi';
 interface IProps {
   courseId: number;
 }
@@ -19,12 +20,14 @@ const CourseTask = (props: IProps) => {
   const [status, setStatus] = useState(0);  // 单选框-作业状态
   const [clazzList, setClazzList] = useState<API.SclassListRecord[]>([]);//未结束的班级列表
   const [clazzId, setClazzId] = useState<string>('-1');//下拉框选中班级
-  const [taskDataList, setTaskDataList] = useState<TASK.TaskList []>([]);//作业列表
+  const [taskDataList, setTaskDataList] = useState<TASK.TaskList[]>([]);//作业列表
   const [keyWord, setkeyWord] = useState<string>('');  // 作业搜索关键字
   const [editPublishModalVisible, handEditPublishModalVisible] = useState<boolean>(false);// 修改发布设置弹框
   const [checkId, setCheckId] = useState<number>(-1); //操作id
   const [total, setTotal] = useState<number>(0); // 列表总数
   const [currentPage, setCurrentPage] = useState<number>(1); // 当前页数
+  const [viewModalVisible, setViewModalVisible] = useState<boolean>(false);
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
 
   useEffect(() => {
     // 获取下拉班级列表接口
@@ -37,7 +40,7 @@ const CourseTask = (props: IProps) => {
     window.scrollTo(0, 0)
     fetchData()
   }, [status, clazzId, keyWord, currentPage]);
-  
+
   /**
    * 查询数据
    */
@@ -92,13 +95,17 @@ const CourseTask = (props: IProps) => {
    * 跳转到作业库
    */
   const clickInToLibrary = () => {
-    window.open(`/task-bank/list/${courseId}`);
+    //window.open(`/task-bank/list/${courseId}`);
+    history.push(`/task-bank/list/${courseId}`)
   }
   /**
    * 添加作业
    */
   const clickAddTask = () => {
-    window.open(`/task-bank/addTask/courseId/parentId/${courseId}/0`);
+    //window.open(`/task-bank/addTask/courseId/parentId/${courseId}/0`);
+    history.push({ pathname: `/task-bank/addTask/courseId/parentId/${courseId}/0`, state: { } })
+
+    //setViewModalVisible(true);
   }
   /**
    * 删除作业
@@ -128,13 +135,20 @@ const CourseTask = (props: IProps) => {
     setCurrentPage(page);
   };
   // 修改发布设置
-  const editPublishSet = async (item:TASK.TaskList) => {
+  const editPublishSet = async (item: TASK.TaskList) => {
     await setCheckId(item.id);
     handEditPublishModalVisible(true)
   }
   // 点击批阅跳转
-  const clickReviewInto = (item:TASK.TaskList) => {
-    window.open(`/teacher/course/task/review/courseId/classId/homeworkId/${courseId}/${item.classId}/${item.id}`)
+  const clickReviewInto = (item: TASK.TaskList) => {
+    //window.open(`/teacher/course/task/review/courseId/classId/homeworkId/${courseId}/${item.classId}/${item.id}`)
+    history.push(`/teacher/course/task/review/courseId/classId/homeworkId/${courseId}/${item.classId}/${item.id}`)
+  }
+
+  //关闭
+  const onCancel = () => {
+    console.log("关闭了吗");
+    setViewModalVisible(false);
   }
   return (
     <>
@@ -149,7 +163,7 @@ const CourseTask = (props: IProps) => {
                 <Option value='-1'>全部班级</Option>
                 {
                   clazzList.map((item, index) => {
-                    return <Option key={index+'clazzList'} value={item.id}>{item.className}</Option>
+                    return <Option key={index + 'clazzList'} value={item.id}>{item.className}</Option>
                   })
                 }
               </Select>
@@ -210,7 +224,6 @@ const CourseTask = (props: IProps) => {
           checkId={checkId}
         />
       }
-
     </>
   )
 }

@@ -50,7 +50,10 @@
       return "";
     }
     const id = geturl('id')
-    const url = urlPrfix + geturl("url")
+    //const url = urlPrfix + geturl("url")
+    //const url =  "/";//geturl("url")
+    const url =  geturl("url");
+    console.log("============================",url);
     if (url) {
       document.getElementById("pdf-play").src = url
     }

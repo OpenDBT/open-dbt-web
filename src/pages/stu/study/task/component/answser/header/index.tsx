@@ -1,4 +1,4 @@
-
+import React from 'react';
 import logo from '@/img/logo-itol.png'
 import './index.less'
 import { Button } from 'antd';
@@ -9,7 +9,11 @@ interface IProps {
   sumbitAnswer: () => void; // 提交
   homeworkStatus: number; // 作业状态
 }
+const backup=()=>{
+   history.go(-1)
+ }
 
+const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
 /**
  * 章节编辑的header
  * @param props 
@@ -42,6 +46,7 @@ const CreateHeader = (props: IProps) => {
           <Button type="primary" className='button-radius continue-button' style={{}} onClick={sumbitAnswer}>
             <SuperIcon type="icon-icon-release" />提交
           </Button>
+          <a style={{marginLeft: '15px'}} onClick={backup}>{customCloseIcon}</a>
         </div>
       </div>
     </div>

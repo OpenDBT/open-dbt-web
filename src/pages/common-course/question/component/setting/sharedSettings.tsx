@@ -14,14 +14,24 @@ const SharedSettings = (props: IProps) => {
   const [value, setValue] = useState<boolean>(false);//单选框选中
   const [itemVisible, setItemVisible] = useState<boolean>(true); //任务点弹框判断
   const { onCancel: onCancel, onSubmit: onSubmit, visible, checkList,courseId } = props;
+
+    //如果是单个题目设置原始值
+    useEffect(() => {
+      if(checkList&&checkList.length==1){
+        console.log("--------",checkList[0].authType);
+        setValue(checkList[0].authType==2?true:false);
+      }
+     
+    }, [])
   // 确定
   const handleOk = () => {
     settingExercise()
   };
   // 共享设置
   const settingExercise = () => {
+    const idCollection = checkList.map(item => item.id);
     let parmas = {
-      ids: checkList,
+      ids: idCollection,
       authType: value==true?2:1,
       courseId: courseId
     }

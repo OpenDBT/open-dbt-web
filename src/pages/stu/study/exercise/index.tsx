@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { getExerciseInfoByStu } from '@/services/teacher/course/score';
 import { Button } from 'antd';
 import './index.less';
 import { API } from '@/common/entity/typings';
+import { history } from 'umi';
 type IProp = {
   courseId: number;
   clazzId: number;
@@ -29,7 +30,7 @@ const exercise = (props: IProp) => {
    * @param exerciseId
    */
   const goAnswer = (exerciseId: number) => {
-    window.open(`/stu/course/exercise/${courseId}/${clazzId}/${knowId}/${exerciseId}`)
+    history.push(`/stu/course/exercise/${courseId}/${clazzId}/${knowId}/${exerciseId}`)
   }
   const getExerciseCard = (item: API.StuExerciseListRecord) => {
     if (item.score === '100') {

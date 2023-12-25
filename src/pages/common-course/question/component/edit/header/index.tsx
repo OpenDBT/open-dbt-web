@@ -1,4 +1,5 @@
 
+import React,{ } from 'react';
 import logo from '@/img/logo-itol.png'
 import './index.less'
 import { Button, Menu, Modal } from 'antd';
@@ -19,6 +20,10 @@ const EditorHeader = (props: IProps) => {
     clickSave: clickSave,
   } = props;
 
+  const saveExec=()=>{
+    clickSave();
+    backup();
+  }
   /**
    * 退出关闭
    */
@@ -35,6 +40,14 @@ const EditorHeader = (props: IProps) => {
       onCancel() {},
     });
   }
+
+    
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+  
+ const backup=()=>{
+      //history.push(`/teacher/course/task/review/courseId/classId/homeworkId/${courseId}/${classId}/${homeworkId}`)
+  history.go(-1);    
+}
   return (
     <div className='custom-single'>
       <div className='custom-header-row'>
@@ -52,9 +65,10 @@ const EditorHeader = (props: IProps) => {
             编辑题目
         </div>
         <div className='header-right'>
-          <Button type="primary" style={{ borderRadius: '5px',marginRight: '40px' }} onClick={() => { clickSave() }}>
+          <Button type="primary" style={{ borderRadius: '5px',marginRight: '40px' }} onClick={() => { saveExec() }}>
             <SuperIcon type="icon-baocun" />保存
           </Button>
+          <a onClick={backup}>{customCloseIcon}</a>
         </div>
       </div>
     </div>

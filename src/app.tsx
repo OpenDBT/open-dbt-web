@@ -118,9 +118,10 @@ const responseInterceptors: ResponseInterceptor = (async (response: any, options
  */
 // 生产模式
 
-let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
+//let prefix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
 //开发模式
-if (isDev) prefix = window.myhost;
+//if (isDev) prefix = window.myhost;
+let prefix = window.myhost;
 console.log("我的本地地址",prefix);
 export const request: RequestConfig = {
   credentials: 'include',

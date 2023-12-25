@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import { Input, Tabs } from 'antd';
 import { api_getCatalogueProgress, api_getStudentProgress } from '@/services/teacher/course/chapter';
 import ProTable from '@ant-design/pro-table';
@@ -140,7 +140,7 @@ const ChapterHome = (props: IProps) => {
           key="a"
           onClick={() => {
             const url = `/teacher/course/chapter/statis/student/process/${courseId}/${chapterId}/${clazzId}/${serialNum}/${row.userId}`;
-            window.open(url)
+            history.push(url)
           }}
         >
           查看

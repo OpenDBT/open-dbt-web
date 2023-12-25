@@ -78,13 +78,13 @@ const VideoModel = (props: any) => {
       }
     })
    // 避免不正常删除无法清除资源数据对象
-   return ()=>{
-    textContent.attachments.map((item: any) => {
-      if (item.resourcesId == dataID) {
-        item.deleteFlag = 1
-      }
-    })
-  }
+  //  return ()=>{
+  //   textContent.attachments.map((item: any) => {
+  //     if (item.resourcesId == dataID) {
+  //       //item.deleteFlag = 0
+  //     }
+  //   })
+  // }
   },[])
   // 任务点选择函数
   const onChangeCheckboxItem = (e: CheckboxChangeEvent) => {

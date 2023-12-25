@@ -1,4 +1,4 @@
-
+import React from 'react'
 import logo from '@/img/logo-itol.png'
 import './header.less'
 import { Button, Modal } from 'antd';
@@ -7,7 +7,7 @@ import SuperIcon from "@/pages/components/icons";
 interface IProps {
   clickSave: () => void;
   type?: string;
-}
+  }
 
 /**
  * 章节编辑的header
@@ -53,6 +53,8 @@ const EditorHeader = (props: IProps) => {
     });
 
   }
+
+ 
   return (
     <div className='custom-single'>
       <div className='custom-header-row'>

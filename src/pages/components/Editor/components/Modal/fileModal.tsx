@@ -14,7 +14,7 @@ interface IProps {
   onCancel: () => void;
   modalVisible: boolean;
   courseId: number;
-  callParentMethod: () =>void;
+  callParentMethod: (param: any) =>void;
 }
 interface DataNode {
   id: string;
@@ -97,13 +97,14 @@ const SelectImage: React.FC<IProps> = (props) => {
       formData.append('resourcesSize', data.file.size)
       formData.append('lastModifiedDate', data.file.lastModifiedDate)
       formData.append('courseId', courseId+'')
+      console.log('---------------formData',formData);
       const headers = data.headers;
       axios.post(data.action, formData, { headers })
         .then((resp: any) => {
           if(!resp.data.success&&resp.data&&resp.data.message){
             throw new Error(resp.data.message);
           }
-          let url = `/readResourse/`
+          let url = `/readResourse/`;
           if (resp.data.obj.resourcesTypeName == '幻灯片') {
             let filenName = resp.data.obj.resourcesRename.substring(0, resp.data.obj.resourcesRename.lastIndexOf("."))
             url += `ppt/${filenName}.pdf`
@@ -158,7 +159,7 @@ const SelectImage: React.FC<IProps> = (props) => {
   const onSelect: DirectoryTreeProps['onSelect'] = (keys, info: any) => {
     setSumbitDisabled(false)
     console.log('infoL:', info)
-    let url = `${APP.request.prefix}/readResourse/`
+    let url = `/readResourse/`
     if (info.node.resourcesTypeName == '幻灯片') {
       let filenName = info.node.resourcesRename.substring(0, info.node.resourcesRename.lastIndexOf("."))
       url += `ppt/${filenName}.pdf`
@@ -173,6 +174,7 @@ const SelectImage: React.FC<IProps> = (props) => {
     }
     info.node.url = url
     // setServicePath(JSON.stringify(info.node))
+    console.log("------------------------------------------------,url");
     setPath(JSON.stringify(info.node))
   };
   const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
@@ -238,7 +240,7 @@ const SelectImage: React.FC<IProps> = (props) => {
       courseId: courseId
     };
   
-    callParentMethod(); // 先执行 callParentMethod
+    callParentMethod('delresources'); // 先执行 callParentMethod
   
     Modal.confirm({
       title: '删除确认框',

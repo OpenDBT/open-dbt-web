@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { getMyCourseList, getALLCourseTemplate, removeCourse, updateIsOpen, copyCourse } from '@/services/teacher/course/course';
 import { Tabs, message, Modal } from 'antd';
 import Course from '@/pages/components/course-list/ExpertCourse';

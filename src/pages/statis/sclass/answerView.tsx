@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { message } from 'antd';
 import './less/style.less'
 import { getStuScoreById } from '@/services/teacher/clazz/sclass';

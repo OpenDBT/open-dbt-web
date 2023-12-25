@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import '@/pages/common-course/course-common.less';
 import { Tooltip, Button, Tag, Select, Input, Space } from 'antd';
 import { getKnowledgeColor } from '@/utils/utils';

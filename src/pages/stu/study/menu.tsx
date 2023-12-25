@@ -1,12 +1,14 @@
 import { Affix } from 'antd';
-import { history } from 'umi';
-
+import { history, useModel } from 'umi';
+import React from 'react';
 type IProp = {
   active: string;
   clazzId: number;
   courseId: number;
 };
 const StudentMenu = (props: IProp) => {
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
   return (
     <Affix offsetTop={56}>
       <div className="course-menu">
@@ -74,6 +76,54 @@ const StudentMenu = (props: IProp) => {
           )}
           <div>作业</div>
         </div>
+        {
+        //在线实验
+          currentUser && currentUser.roleList && currentUser.roleType == 4 &&
+          <div className={`course-menu-item ${props.active === 'experiment' ? 'item-active' : ''}`}
+            onClick={() => {
+              history.push(`/stu/start/${props.courseId}/${currentUser.code}/${currentUser.roleType}/${props.clazzId}`);
+            }}
+          >
+            {props.active === 'experiment' ? (
+              <img src={require('@/img/student/icon-shiyan-active.svg')}></img>
+            ) : (
+              <img src={require('@/img/student/icon-shiyan.svg')}></img>
+            )}
+            <div>实验</div>
+          </div>
+        }
+         {
+        //容器管理
+          currentUser && currentUser.roleList && currentUser.roleType == 4 &&
+          <div className={`course-menu-item ${props.active === 'container' ? 'item-active' : ''}`}
+            onClick={() => {
+              history.push(`/stu/container/${props.courseId}/${currentUser.code}/${currentUser.roleType}/${props.clazzId}`);
+            }}
+          >
+            {props.active === 'container' ? (
+              <img src={require('@/img/student/icon-rongqi-active.svg')}></img>
+            ) : (
+              <img src={require('@/img/student/icon-rongqi.svg')}></img>
+            )}
+            <div>容器</div>
+          </div>
+        }
+         {
+        //镜像列表
+          currentUser && currentUser.roleList && currentUser.roleType == 4 &&
+          <div className={`course-menu-item ${props.active === 'images' ? 'item-active' : ''}`}
+            onClick={() => {
+              history.push(`/stu/images/${props.courseId}/${props.clazzId}`);
+            }}
+          >
+            {props.active === 'images' ? (
+              <img src={require('@/img/student/icon-jingxiang-active.svg')}></img>
+            ) : (
+              <img src={require('@/img/student/icon-jingxiang.svg')}></img>
+            )}
+            <div>镜像</div>
+          </div>
+        }
       </div>
     </Affix>
   );

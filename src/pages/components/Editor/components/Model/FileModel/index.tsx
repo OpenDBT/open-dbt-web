@@ -1,12 +1,12 @@
+import React,{ useState, useEffect } from 'react';
 import { ContentUtils } from 'braft-utils'
-import { useState, useEffect } from 'react';
 import SuperIcon from "@/pages/components/icons";
 import { getCatalogueResourcesId } from '@/services/resources/upload';
 import './index.less'
+import * as APP from '@/app';
 // import { Document, Page, pdfjs } from "react-pdf";
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import { CHAPTER } from '@/common/entity/chapter'
-import * as APP from '@/app';
 const FileModel = (props: any) => {
   // 获取传递过来的数据
   const blockData = props.block.getData()
@@ -51,13 +51,13 @@ const FileModel = (props: any) => {
       }
     })
     // 避免不正常删除无法清除资源数据对象
-    return ()=>{
-      textContent.attachments.map((item: any) => {
-        if (item.resourcesId == dataID) {
-          item.deleteFlag = 1
-        }
-      })
-    }
+    // return ()=>{
+    //   textContent.attachments.map((item: any) => {
+    //     if (item.resourcesId == dataID) {
+    //       //item.deleteFlag = 0
+    //     }
+    //   })
+    // }
 
   }, [])
   // 注意：通过blockRendererFn定义的block，无法在编辑器中直接删除，需要在组件中增加删除按钮

@@ -1,3 +1,4 @@
+import React from 'react';
 import './index.less';
 import '@/pages/common-course/course-common.less';
 import { Form, Input, Button, Space, message } from 'antd';
@@ -11,6 +12,7 @@ import { useParams } from 'umi'
 import { ValidateIntegerParam } from '@/utils/utils'
 import { useEffect } from 'react';
 import { history } from 'umi';
+import SuperIcon from '@/pages/components/icons';
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
@@ -38,7 +40,8 @@ const addIndex = (props) => {
     const result = await saveScene(values)
     if (result.success) {
       message.success('保存成功');
-      window.location.reload();
+      //window.location.reload();
+      backup();
     } else {
       message.error(result.message);
     }
@@ -88,14 +91,21 @@ const addIndex = (props) => {
       message.error(result.message);
     }
   };
+  const backup=()=>{
+    history.push(`/scene/list/${courseId}`)
+  }
 
+    const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
   return (
     <div className='custom-single'>
       <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-        <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
+        <div className='custom-header-row' style={{ position: 'fixed', top: 0, display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <div className='header-logo'>
             <img src={logo} alt="" onClick={() => history.push('/')} />
           </div>
+          <div className='header-right'>
+            <a onClick={backup}>{customCloseIcon}</a>
+        </div>
         </div>
       </div>
 

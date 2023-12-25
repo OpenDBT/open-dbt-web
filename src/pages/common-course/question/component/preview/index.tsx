@@ -1,7 +1,6 @@
-import React from 'react'
 import Header from './header'
 import './index.less';
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import Judge from './type/judge';
 import ShortAnswer from './type/shortAnswer';
 import Space from './type/space';
@@ -42,7 +41,7 @@ const PreviewQuestion = (props: any) => {
   }, [])
   return (
     <>
-      <Header clickSave={() => { clickSave() }} />
+      <Header clickSave={() => { clickSave() }} courseId={params.courseId} parentId={params.parentId}/>
       <div className='question-create-div'>
         <div className='content'>
           {showIndex == 1 && initData && <SingleChoice ref={cRef} onInit={initData} />}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { getAllSclassByStuIdExpectCourse } from '@/services/teacher/clazz/sclass';
 import Course from '@/pages/components/course-list/StudentCourse';
 import { API } from '@/common/entity/typings';

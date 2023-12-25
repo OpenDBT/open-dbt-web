@@ -62,7 +62,7 @@ const Sql = forwardRef((props: IProps, ref) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
         // 在组件中定义状态
-    const [sceneId, setSceneId] = useState(onInit?.sceneId);
+    const [sceneId, setSceneId] = useState(onInit?.sceneId??-1);
 
     // 处理场景选中事件
     const handleSceneSelect = (value) => {
@@ -283,7 +283,8 @@ const Sql = forwardRef((props: IProps, ref) => {
         } else if (!value.exerciseName) {
             message.warning('请输入题目名称')
             return
-        } else if (!value.sceneId) {
+        } 
+        else if (!value.sceneId) {
             message.warning('请选择题目场景')
             return
         }
@@ -313,7 +314,7 @@ const Sql = forwardRef((props: IProps, ref) => {
         // 执行查看场景的逻辑，例如打开一个模态框或导航到场景详情页面
         console.log('查看场景:', sceneId);
         setButtonLoading(true);
-        getScene(sceneId).then((result) => {
+        sceneId&&getScene(sceneId).then((result) => {
             if (result.success) {
                 setButtonLoading(false);
                 setStepFormValues(result.obj);
@@ -387,7 +388,7 @@ const Sql = forwardRef((props: IProps, ref) => {
                             label="题目描述"
                             name="stemEditor"
                         >
-                            <BraftEditor className="border" placeholder="请输入正文内容" />
+                            <BraftEditor courseId={courseId}  className="border" placeholder="请输入正文内容" />
                         </Form.Item>
                         <div style={{ display: 'flex' }}>
                             <Form.Item name="standardAnswser" style={{ position: 'relative', width: '60%' }} label="正确答案">
@@ -439,7 +440,7 @@ const Sql = forwardRef((props: IProps, ref) => {
                             label="答案解析"
                             name="exerciseAnalysisEditor"
                         >
-                            <BraftEditor className="border" placeholder="请输入正文内容" />
+                            <BraftEditor  courseId={courseId} className="border" placeholder="请输入正文内容" />
                         </Form.Item>
                         <Form.Item label="难易程度" name="exerciseLevel">
                             <Select placeholder="请选择" allowClear style={{ maxWidth: '200px' }}>

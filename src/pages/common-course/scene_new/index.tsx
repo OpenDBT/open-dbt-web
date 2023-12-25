@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import './index.less';
 import { getShareScene, removeScene, exportSceneList, exportSceneById ,getScene}
   from '@/services/teacher/course/scene';
@@ -11,6 +11,7 @@ import { API } from '@/common/entity/typings';
 import logo from '@/img/logo-itol.png'
 import { useParams } from 'umi'
 import { ValidateIntegerParam } from '@/utils/utils'
+import SuperIcon from '@/pages/components/icons';
 
 
 const SceneIndex = () => {
@@ -112,7 +113,7 @@ const SceneIndex = () => {
 //查看单个场景
 const getSceneById=(sceneId: number)=>{
   setLoading(true);
-  getScene(sceneId).then((result)=>{
+  sceneId&&getScene(sceneId).then((result)=>{
     if (result.success) {
       setLoading(false);
       setStepFormValues(result.obj);
@@ -139,20 +140,29 @@ const getSceneById=(sceneId: number)=>{
       <Button type="primary" onClick={() => { handleDel(record) }} danger>删除</Button>
     </div>
   };
+
+    const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+    //返回
+    const backup=()=>{
+      history.push(`/teacher/course/question/${courseId}/0`)
+    }
   return (
     <div className='custom-single'>
       <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-        <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
+        <div className='custom-header-row' style={{ position: 'fixed', top: 0, display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <div className='header-logo'>
             <img src={logo} alt="" onClick={() => history.push('/')} />
           </div>
+          <div className='header-right'>
+          <a onClick={backup}>{customCloseIcon}</a>
+        </div>
         </div>
       </div>
 
       <div className='main-container scene'>
         <div className="title-4">场景</div>
         <div className="scene-tool">
-          <Button type="primary" onClick={() => window.open(`/scene/create/${courseId}`)}>添加场景</Button>
+          <Button type="primary" onClick={() =>history.push(`/scene/create/${courseId}`)}>添加场景</Button>
           <Button type="primary" onClick={() => handExportScene()}>导出场景</Button>
           <Button type="primary" onClick={() => setImportSceneModalVisible(true)}>导入场景</Button>
         </div>

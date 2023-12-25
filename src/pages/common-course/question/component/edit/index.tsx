@@ -1,6 +1,6 @@
 import Header from './header'
 import './index.less';
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import Judge from '../type/judge';
 import ShortAnswer from '../type/shortAnswer';
 import Space from '../type/space';

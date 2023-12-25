@@ -6,7 +6,7 @@ import SuperIcon from "@/pages/components/icons";
 import { fkRecovery, getDDLExerciseField, getDDLExerciseTable, getForeignKeyList, recovery, saveCheckForeignKey } from '@/services/teacher/course/question-create';
 import { Form, Input, Modal, Select, Space, Table, Tooltip, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React,{ forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { rule } from '../constants';
 interface IProps {
   sceneDetailId: number;

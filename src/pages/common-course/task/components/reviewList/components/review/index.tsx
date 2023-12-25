@@ -11,7 +11,8 @@ import SortContnet from './sort/index'
 import TypeContnet from './type/index'
 import { API } from '@/common/entity/typings';
 import Similarity from './duplicate/similarity';
-
+import { history } from 'umi';
+import { useParams } from 'react-router-dom';
 type IStuParam = {
   avatar: string;
   studentName: string;
@@ -25,6 +26,7 @@ const DetailByTeacher = (props: any) => {
   if (!props.match!.params.homeworkId) {
     return;
   }
+  const {  courseId, classId } = useParams();
   const studentId = props.match!.params.studentId
   const homeworkId = props.match!.params.homeworkId
   const [subExamList, setSubExamList] = useState<TASK.TaskTeacherSumbitExerciseParam[]>([]);  // 作业的习题参数列表
@@ -166,7 +168,7 @@ const DetailByTeacher = (props: any) => {
       if (res.success) {
         message.success(res.message)
         localStorage.setItem('refresh-task-review', '1')
-        setTimeout(() => window.close(), 1000)
+        setTimeout(() => backup(), 1000)
 
       } else {
         message.error(res.message)
@@ -202,12 +204,15 @@ const DetailByTeacher = (props: any) => {
       if (res.success) {
         message.success('提交成功')
         localStorage.setItem('refresh-task', '1')
-        setTimeout(() => window.close(), 1000)
+        setTimeout(() => backup(), 1000)
       } else {
         message.error(res.message)
       }
     })
   };
+  const backup=()=>{
+    history.push(`/teacher/course/task/review/courseId/classId/homeworkId/${courseId}/${classId}/${homeworkId}`)
+  }
   /**
  * 点击继续答题，刷新题目出题页面
  */

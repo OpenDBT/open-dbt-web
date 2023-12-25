@@ -3,7 +3,7 @@ import Menu from './menu';
 import Content from './content'
 import Header from './header'
 import './index.less';
-
+import { history } from 'umi';
 interface IProps {
   match: any;
 }
@@ -24,6 +24,7 @@ const ChapterEditlIndex = (props: IProps) => {
   */
   const clickSave = () => {
     cRef.current && cRef.current.clickSave()
+    //history.push(`/expert/course/chapter/${courseId}`);
   };
   /**
    * @function 预览
@@ -31,10 +32,11 @@ const ChapterEditlIndex = (props: IProps) => {
   */
   const clickPreview = () => {
     cRef.current && cRef.current.clickPreview()
+    //history.push(`/expert/course/chapter/${courseId}`);
   }
   return (
     <>
-      <Header clickSave={() => { clickSave() }} clickPreview={() => { clickPreview() }} />
+      <Header clickSave={() => { clickSave() }} clickPreview={() => { clickPreview() }} courseId={courseId}/>
       <div className="detail-menu menu-container" style={{ display: 'flex', background: '#F1F3F6' }}>
         <Menu
           courseId={courseId}

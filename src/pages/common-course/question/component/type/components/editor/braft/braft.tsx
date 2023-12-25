@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useCallback } from 'react';
+import React,{ useState, useCallback } from 'react';
 import BraftEditor, { BraftEditorProps, ControlType, EditorState, ExtendControlType } from 'braft-editor';
 import Table from 'braft-extensions/dist/table';
 import { ContentUtils } from 'braft-utils'
@@ -24,7 +23,8 @@ const options = {
 };
 
 export default function Braft(props: BraftEditorProps) {
-  const { value, readOnly, controls, onChange, ...restProps } = props;
+  const {courseId, value, readOnly, controls, onChange, ...restProps } = props;
+  console.log("courseId============",courseId);
   const [imgVisible, setImgVisible] = useState<boolean>(false); //图片弹框判断
   const [editorState, setEditorState] = useState<EditorState>(
     BraftEditor.createEditorState(value)
@@ -105,6 +105,7 @@ export default function Braft(props: BraftEditorProps) {
       {
         imgVisible && (
           <ImgModal
+            courseId={courseId}
             modalVisible={imgVisible}
             onCancel={() => { setImgVisible(false) }}
             onSubmit={(value: string) => {

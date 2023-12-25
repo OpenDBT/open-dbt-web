@@ -80,13 +80,14 @@ const SelectImage: React.FC<IProps> = (props) => {
     customRequest(data: any) {
       const formData = new FormData();
       formData.append(data.filename, data.file);
-
       formData.append('resourcesType', data.file.type)
       formData.append('resourcesName', data.file.name)
       formData.append('resourcesSize', data.file.size)
       formData.append('lastModifiedDate', data.file.lastModifiedDate)
       formData.append('courseId', courseId+'')
       const headers = data.headers;
+      debugger;
+      console.log('---------------formData',formData);
       axios.post(data.action, formData, { headers })
         .then((resp: any) => {
           if(!resp.data.success&&resp.data&&resp.data.message){

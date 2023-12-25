@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { getMyCourseList } from '@/services/teacher/course/course';
 import { getStartingSclassByTeacher, getEndedSclassByTeacher, deleteSclassById, updateClass } from '@/services/teacher/clazz/sclass';
 import { Button, message, Modal } from 'antd';

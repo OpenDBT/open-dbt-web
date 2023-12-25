@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { getStuKnowledgeExerciseInfo, getCourseProgressByStu } from '@/services/student/progress';
 import { Progress, Button, Tooltip, message } from 'antd';
 import './index.less';

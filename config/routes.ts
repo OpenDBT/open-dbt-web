@@ -62,7 +62,7 @@ export default [
       },
       {
         name: '题目预览',
-        path: '/question-bank/preview/courseId/exerciseId/:courseId/:exerciseId',
+        path: '/question-bank/preview/courseId/exerciseId/:courseId/:exerciseId/:parentId',
         component: './common-course/question/component/preview',
       },
     ],
@@ -122,12 +122,12 @@ export default [
       },
       {
         name: '查看作业',
-        path: '/task-bank/task/detail/studentId/homeworkId/:studentId/:homeworkId',
+        path: '/task-bank/task/detail/studentId/homeworkId/:studentId/:homeworkId/:courseId/:classId',
         component: './common-course/task/components/reviewList/components/detail',
       },
       {
         name: '作业批阅',
-        path: '/task-bank/task/review/studentId/homeworkId/:studentId/:homeworkId',
+        path: '/task-bank/task/review/studentId/homeworkId/:studentId/:homeworkId/:courseId/:classId',
         component: './common-course/task/components/reviewList/components/review',
       },
       {
@@ -395,10 +395,13 @@ export default [
         component: './common-course/forwordPage',
         hideInMenu: true, //菜单不显示
       },
-      { name: '题库列表', path: '/teacher/course/question/:courseId', component: './common-course/forwordPage' },
+      { name: '题库列表', path: '/teacher/course/question/:courseId/:parentId', component: './common-course/forwordPage' },
       { name: '作业', path: '/teacher/course/task/:courseId', component: './common-course/forwordPage' },
       { name: '批阅列表', path: '/teacher/course/task/review/courseId/classId/homeworkId/:courseId/:classId/:homeworkId', component: './common-course/forwordPage' },
-      {name: '实验环境',path: '/teacher/start/:courseId/:studentCode',component: './common-course/forwordPage'},
+      { name: '实验',path: '/teacher/start/:courseId/:studentCode/:roleId',component: './common-course/forwordPage'},
+      { name: '容器',path: '/teacher/container/:courseId',component: './common-course/forwordPage'},
+      { name: '镜像',path: '/teacher/images/:courseId',component: './common-course/forwordPage'},
+
     ],
   },
   // 教师
@@ -556,6 +559,21 @@ export default [
         component: './stu/study/forwordPage',
         hideInMenu: true, //菜单不显示
       },
+      { 
+        name: '实验',
+        path: '/stu/start/:courseId/:studentCode/:roleId/:clazzId',
+        component: './stu/study/forwordPage'
+      },
+      { 
+        name: '容器',
+        path: '/stu/container/:courseId/:studentCode/:roleId/:clazzId',
+        component: './stu/study/forwordPage'
+      },
+      { 
+        name: '镜像',
+        path: '/stu/images/:courseId/:clazzId',
+        component: './stu/study/forwordPage'
+      }
     ],
   },
   // 个人中心

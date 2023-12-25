@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React,{ useState } from 'react'
 import Menu from './menu';
 import Content from './content';
 import Header from './header'

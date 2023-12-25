@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { getExamList, deleteExam, updateExam, saveExamClass, getExamClassListByCourseId, 
   deleteExamClassById } from '@/services/teacher/course/exam'
 import { getSclassByCourseId } from '@/services/teacher/clazz/sclass'

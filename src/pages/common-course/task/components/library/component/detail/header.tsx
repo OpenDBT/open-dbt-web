@@ -1,4 +1,4 @@
-
+import React from 'react';
 import logo from '@/img/logo-itol.png'
 import './header.less'
 
