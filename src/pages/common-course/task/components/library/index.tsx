@@ -301,7 +301,7 @@ const TaskLibrary = () => {
     if (row.elementType == 0) {
       // 题目跳转到详情
 
-      window.open(`/task-bank/taskDetail/taskId/${row.id}`)
+      history.push(`/task-bank/taskDetail/taskId/${row.id}`)
     } else if (row.elementType == 1) {
       // 文件夹查询当前的列表
       setClickFile(() => [...clickFile, { label: row.modelName, value: row.id }])

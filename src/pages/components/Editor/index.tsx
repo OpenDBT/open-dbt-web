@@ -323,7 +323,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
           if(preview=='preview'){
             history.push(`/edit/preview/${courseId}/${clazzId}/${chapterId}`);
           }else{
-            history.push(`/expert/course/chapter/${courseId}`);
+           // history.push(`/expert/course/chapter/${courseId}`);
           }
            // 刷新页面
           //window.location.reload();
