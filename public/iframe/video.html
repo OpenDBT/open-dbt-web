@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,44 +8,41 @@
     <title>视频</title>
 </head>
 <style>
-    body,html {
+    body,
+    html {
         border: 0;
         height: 100%;
         width: 100%;
         overflow: hidden;
     }
+
     .main-div {
         height: 450px;
         width: 100%;
     }
 </style>
+
 <body>
     <div class="main-div">
-        <video
-        id="video1"
-        controls
-        width="100%"
-        height="100%"
-        muted
-      ></video>
-      <!-- <div id="click">点我</div> -->
+        <video id="video1" controls width="100%" height="100%" muted></video>
+        <!-- <div id="click">点我</div> -->
     </div>
+
+    <script>
+        // 获取 URL 查询字符串
+        const queryString = window.location.search;
+        // 创建一个 URLSearchParams 对象，用于解析查询字符串
+        const urlParams = new URLSearchParams(queryString);
+        const urlPrfix = urlParams.get('myhost');
+        //回调函数
+        function receiveMessageFromIndex(event) {
+            document.getElementById("video1").src = urlPrfix + event.data.dataURL
+
+        }
+
+        //监听message事件
+        window.addEventListener("message", receiveMessageFromIndex, false);
+    </script>
 </body>
-<script>
-   const urlPrfix = 'http://xxx.xxx.xx.xxx:xxxxx/open-dbt';
-    // document.getElementById('click').onclick=function(){
-    //     parent.postMessage('来自iframe的信息','*'); //window.postMessage
-        
-    // }
-
-//回调函数
-function receiveMessageFromIndex ( event ) {
-    // document.getElementById("click").innerHTML = event.data.dataID
-    document.getElementById("video1").src = urlPrfix + event.data.dataURL
-}
-
-//监听message事件
-window.addEventListener("message", receiveMessageFromIndex, false);
-</script>
 
 </html>

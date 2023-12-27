@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import './index.less';
 import '@/pages/common-course/course-common.less';
 import { getShareScene, removeScene, exportSceneList, exportSceneById,getScene }
@@ -109,7 +109,7 @@ const SceneIndex = (props: any) => {
 //查看单个场景
 const getSceneById=(sceneId: number)=>{
   setLoading(true);
-  getScene(sceneId).then((result)=>{
+  sceneId&&getScene(sceneId).then((result)=>{
     if (result.success) {
       setLoading(false);
       setStepFormValues(result.obj);

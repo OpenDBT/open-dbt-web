@@ -20,7 +20,8 @@ import './index.less'
 import { api_saveRichTXT } from '@/services/resources/upload';
 import { CHAPTER } from '@/common/entity/chapter';
 import * as APP from '@/app';
-
+import '@/myapp.js';
+import { history } from 'umi';
 // 在ts下需要声明window下previewWindow属性,用于预览功能
 declare const window: Window & { previewWindow: any };  // 生命window下previewWindow属性
 
@@ -135,7 +136,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
         start: `
       <div class='block-video' data-id="${dataID}" data-url="${dataURL}" data-name="${dataName}">
         <iframe id="html-iframe-${id}" onload="onLoadDataVideo('html-iframe-${id}')"  data-id="${id}" style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"
-        src= "/iframe/videoPlay.html?isSpeed=${isSpeed}&fastForward=${fastForward}&isTask=${isTask}&id=${id}&resourceId=${resourceId}&courseId=${courseId}&catalogueId=${catalogueId}&url=${dataURL}"></iframe>`,
+        src= "/iframe/videoPlay.html?isSpeed=${isSpeed}&fastForward=${fastForward}&myhost=${window.myhost}&isTask=${isTask}&id=${id}&resourceId=${resourceId}&courseId=${courseId}&catalogueId=${catalogueId}&url=${dataURL}"></iframe>`,
         end: '</div>'
       }
     }
@@ -151,9 +152,10 @@ const ContentEditor = forwardRef((props: any, ref) => {
         id = item[0].id
         url = item[0].url
       }
+      console.log('---------dataURL--------------',dataURL);
       return {
         start: `<div class='block-file' data-id="${dataID}" data-url="${dataURL}" data-name="${dataName}"><iframe id="pdf-iframe-${id}" onload="onLoadDataPdf('pdf-iframe-${id}')" data-id="${id}"
-      style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"src= "/iframe/pdfView.html?id=${id}&resourceId=${resourceId}&url=${dataURL}"></iframe>`,
+      style="border-width: 0;border: 0; width: 80%;margin: auto;display: flex;height: 500px;"src= "/iframe/pdfView.html?id=${id}&myhost=${window.myhost}&resourceId=${resourceId}&url=${APP.request.prefix+dataURL}"></iframe>`,
         end: '</div>'
       }
     }
@@ -209,8 +211,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
    * @description 打开新窗口进行编辑器内容输出HTML形式的预览
   */
   const preview = async () => {
-    await sumbitUpload()
-    window.open(`/edit/preview/${courseId}/${clazzId}/${chapterId}`);
+    await sumbitUpload('preview')
+   
     // if (window.previewWindow) {
     //   window.previewWindow.close()
     // }
@@ -292,28 +294,48 @@ const ContentEditor = forwardRef((props: any, ref) => {
    * @param editorState 编辑器数据对象，内置内容数据，用于编辑内容
   */
   const handleChange = (editorState: EditorState) => {
+
+    const contentText = editorState.toText();
+    // 检测是否是清空操作
+    if (contentText === '') {
+      handleClear();
+    }
     setEditorState(editorState)
   }
-
+  //清空操作
+  const handleClear=()=>{
+    textContent.attachments = []
+  }
   /**
    * @function 保存
    * @description 进行编辑器的html的保存
   */
-  const sumbitUpload = () => {
-    console.log('11111')
+  const sumbitUpload = (preview= undefined) => {
+    console.log('开始保存')
     const newVal = editorState.toHTML();
     console.log(newVal != '<p></p>')
     if (newVal && newVal != '<p></p>') {
       textContent.contents = newVal
       api_saveRichTXT(textContent).then((res) => {
         if (res.success) {
+          //删除资源时保存目录内容不提示不跳转
+          if(preview!='delresources'){
+          if(preview=='preview'){
+            history.push(`/edit/preview/${courseId}/${clazzId}/${chapterId}`);
+          }else{
+           // history.push(`/expert/course/chapter/${courseId}`);
+          }
+           // 刷新页面
+          //window.location.reload();
           message.success('保存成功');
+        }
         } else {
           message.error('保存失败');
         }
       })
     }
   }
+
   /**
    * @function 自定义扩展组件
   */
@@ -378,6 +400,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         imgVisible && (
           <ImgModal
             modalVisible={imgVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setImgVisible(false) }}
             onSubmit={(value: string) => {
               // 没有值，关闭弹框，避免报错
@@ -407,6 +431,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         videoVisible && (
           <VideoModal
             modalVisible={videoVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setVideoVisible(false) }}
             onSubmit={(value: CHAPTER.HistoryResource) => {
               // 没有值，关闭弹框，避免报错
@@ -445,6 +471,8 @@ const ContentEditor = forwardRef((props: any, ref) => {
         fileVisible && (
           <FileModal
             modalVisible={fileVisible}
+            courseId={courseId}
+            callParentMethod={sumbitUpload}
             onCancel={() => { setFileVisible(false) }}
             onSubmit={(value: string) => {
               if (value == '') {
@@ -452,6 +480,7 @@ const ContentEditor = forwardRef((props: any, ref) => {
                 return
               }
               let data = JSON.parse(value)
+              console.log('---------------------',data);
               // 使用自定义的文件渲染组件，用'block-video'和对应参数的div对应相应的文件组件
               setEditorState(
                 ContentUtils.insertHTML(editorState, `<p><div class='block-file' data-id="${data.id}"  data-url="${data.url}" data-name="${data.resourcesName}"></div></p>`, {

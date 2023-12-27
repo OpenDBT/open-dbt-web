@@ -59,7 +59,11 @@ export async function saveScene(params?: API.SceneListRecord) {
  * @returns 
  */
 export async function getSceneInfo(sceneId: number) {
-    return request<API.Result<API.SceneListRecord>>(`/course/getSceneDetail/${sceneId}`);
+    debugger;
+    if(sceneId){
+        return request<API.Result<API.SceneListRecord>>(`/course/getSceneDetail/${sceneId}`);
+    }
+   
 };
 
 /**
@@ -103,5 +107,9 @@ export async function importScene(params: { courseId: number; filePathList: stri
 
 // 根据id获取场景信息
 export async function getScene(sceneId: number) {
+    console.log("sceneId",sceneId);
+    if(sceneId && sceneId != undefined && sceneId != null)
     return await request<API.Result<API.SceneListRecord>>(`/scene/getScene/${sceneId}`);
+    else
+    return null;
 };

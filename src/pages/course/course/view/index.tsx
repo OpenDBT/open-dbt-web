@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import MindCanvas from './Graph/canvas-content'
 import { getCourseDetail } from '@/services/teacher/course/course'
 import { getKnowExerciseCountByCourseId } from '@/services/student/progress';

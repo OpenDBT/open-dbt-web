@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React,{ useRef } from 'react';
 import PublicMenu from '../menu';
 import './index.less';
 import '@/pages/common-course/course-common.less';

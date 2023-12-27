@@ -123,7 +123,12 @@ declare namespace QUESTION_BANK {
     exerciseStatus: number,
     showAnswer: number
   }
-
+ // 题库习题设置为练习/取消练习
+ type SharedQuestionParam = {
+  ids: number[],
+  authType: number,
+  courseId: number,
+}
   //学生练习提交
   type SubmitAnswer = {
     exerciseId: number,

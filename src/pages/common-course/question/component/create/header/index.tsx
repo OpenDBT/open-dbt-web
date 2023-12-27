@@ -1,13 +1,16 @@
 
+import React from 'react';
 import logo from '@/img/logo-itol.png'
 import './index.less'
 import { Button } from 'antd';
-// import { history } from 'umi';
+import { history } from 'umi';
 import SuperIcon from "@/pages/components/icons";
 
 interface IProps {
   clickSave: () => void;  // 保存
   continueAnswer: () => void; // 继续答题
+  courseId?: string;
+  parentId: string;
 }
 
 /**
@@ -18,9 +21,13 @@ interface IProps {
 const CreateHeader = (props: IProps) => {
   const {
     clickSave: clickSave,
-    continueAnswer: continueAnswer
+    continueAnswer: continueAnswer,
+    courseId: courseId,
+    parentId: parentId,
   } = props;
-
+   const backup=()=>{
+        history.push(`/teacher/course/question/${courseId}/${parentId}`)
+      }
   return (
     <div className='custom-single'>
       <div className='custom-header-row'>
@@ -38,6 +45,10 @@ const CreateHeader = (props: IProps) => {
           </Button>
           <Button type="primary" className='button-radius continue-button' style={{}} onClick={continueAnswer}>
             <SuperIcon type="icon-yulan" />继续出题
+          </Button>
+          
+           <Button type="primary" className='button-radius continue-button' style={{}} onClick={backup}>
+            <SuperIcon type="icon-chehui" />返回
           </Button>
         </div>
       </div>

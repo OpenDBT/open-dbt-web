@@ -1,7 +1,7 @@
 import { Form, Button, Input, message, DatePicker, Select } from 'antd';
 import styles from './index.less';
 import { updateClass } from '@/services/teacher/clazz/sclass';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import moment from 'moment'
 import { API } from '@/common/entity/typings';
 const { TextArea } = Input;

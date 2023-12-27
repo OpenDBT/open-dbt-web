@@ -1,12 +1,13 @@
-
+import React,{ } from 'react';
 import logo from '@/img/logo-itol.png'
 import './header.less'
 import { Button, Menu, Modal } from 'antd';
 import SuperIcon from "@/pages/components/icons";
-
+import { history } from 'umi';
 interface IProps {
   clickSave: () => void;
   clickPreview: () => void;
+  courseId: string;
 }
 
 /**
@@ -18,6 +19,7 @@ const EditorHeader = (props: IProps) => {
   const {
     clickSave: clickSave,
     clickPreview: clickPreview,
+    courseId
   } = props;
 
   /**
@@ -31,9 +33,10 @@ const EditorHeader = (props: IProps) => {
       cancelText: '取消',
       onOk: () => {
         clickSave()
-        window.close()
+        history.push(`/expert/course/chapter/${courseId}`);
+        //window.close()
       },
-      onCancel() {},
+      onCancel() { history.push(`/expert/course/chapter/${courseId}`);},
     });
   }
   return (

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React,{ useEffect } from 'react';
 import TabMenu from '../tabMenu';
 import { Form, Input, Button, Space, Switch, message } from 'antd';
 const { TextArea } = Input;

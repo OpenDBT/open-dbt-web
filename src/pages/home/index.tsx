@@ -3,6 +3,7 @@ import CourseExpertHome from './expert'
 import StudentHome from './student'
 import TeacherHome from './teacher'
 import Other from './other'
+import React from 'react';
 
 const HomeIndex = () => {
   const { initialState } = useModel('@@initialState');

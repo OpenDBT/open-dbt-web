@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import MindCanvas from '@/pages/course/course/view/Graph/canvas-content';
 import { Divider } from 'antd';
 import { getSclassInfoById } from '@/services/teacher/clazz/sclass';

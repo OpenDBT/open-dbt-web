@@ -6,7 +6,7 @@ import type { ColumnsType } from 'antd/es/table';
 import SuperIcon from "@/pages/components/icons";
 import { getApprovalList, getApprovalCount, taskCallBack } from '@/services/teacher/task/task';
 import type { RadioChangeEvent } from 'antd';
-import { useParams } from 'umi'
+import { history,useParams } from 'umi'
 import AddTimeModal from './addTimeModal';
 import { TASK } from '@/common/entity/task';
 import { API } from '@/common/entity/typings';
@@ -154,11 +154,11 @@ const TaskReview = (props: any) => {
   }
   // 打开查看新窗口
   const handleView = (row:any) => {
-    window.open(`/task-bank/task/detail/studentId/homeworkId/${row.studentId}/${row.homeworkId}`)
+    history.push(`/task-bank/task/detail/studentId/homeworkId/${row.studentId}/${row.homeworkId}/${row.courseId}/${row.classId}`)
   }
   // 打开批阅新窗口
   const handleReview = (row:any) => {
-    window.open(`/task-bank/task/review/studentId/homeworkId/${row.studentId}/${row.homeworkId}`)
+    history.push(`/task-bank/task/review/studentId/homeworkId/${row.studentId}/${row.homeworkId}/${row.courseId}/${row.classId}`)
   }
   // 选择已交还是未交，修改值
   const onChangeRadio = (e: RadioChangeEvent) => {

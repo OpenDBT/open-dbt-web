@@ -13,7 +13,6 @@ class viewContent extends React.Component<any, any> {
       content: '',
       visible: false
     };
-    console.log('viewContent props', props)
   }
   /**
    * 初始化

@@ -29,7 +29,8 @@ const TriggerSql = forwardRef((props: IProps, ref) => {
     const [stepFormValues, setStepFormValues] = useState<API.SceneListRecord>();
     useEffect(() => {
         //查询场景
-        getScene(initialValues.sceneId).then((result) => {
+        initialValues.sceneId&&getScene(initialValues.sceneId).then((result) => {
+            if(result&&result.obj)
             setCurrentScene(result.obj);
         });
     }, []);

@@ -2,10 +2,10 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import * as APP from '@/app';
 import axios from 'axios';
-import { Button, message, Modal, Upload, Tabs, Skeleton, Tree, Select } from 'antd';
+import { Button, message, Modal, Upload, Tabs, Skeleton, Tree, Select, Radio, Row, Col } from 'antd';
 import type { UploadProps } from 'antd';
 import type { DirectoryTreeProps } from 'antd/es/tree';
-import { listResourcesTree } from '@/services/resources/upload';
+import { listResourcesTree,updateAuthType,delResources } from '@/services/resources/upload';
 const { Option } = Select;
 import './index.less'
 
@@ -13,6 +13,8 @@ interface IProps {
   onSubmit: (values: string) => void;
   onCancel: () => void;
   modalVisible: boolean;
+  courseId: number;
+  callParentMethod: (param: any) =>void;
 }
 interface DataNode {
   id: string;
@@ -35,10 +37,19 @@ const SelectImage: React.FC<IProps> = (props) => {
   const [sumbitDisabled, setSumbitDisabled] = useState<boolean>(true);  // 确认按钮禁用判断
   const { DirectoryTree } = Tree;
   const [fileType, setFileType] = useState('1'); // 文档类型
+
+  // 在组件中定义一个新的状态用来保存共享状态和资源ID
+  const [selectedResource, setSelectedResource] = useState<{ id: number; share: boolean } | null>(null);
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [menuTitle, setMenuTitle] = useState('');
+
   const {
     onSubmit: onSubmit,
     onCancel: onCancel,
+    courseId:courseId,
     modalVisible,
+    callParentMethod
   } = props;
   const uploadProps: UploadProps = {
     name: 'file',
@@ -55,8 +66,12 @@ const SelectImage: React.FC<IProps> = (props) => {
         message.success('上传成功');
         setSumbitDisabled(false)
       } else if (info.file.status === 'error') {
-        message.success('上传失败');
-        setSumbitDisabled(true)
+        if(info.file.error&&info.file.error.message){
+          message.error(info.file.error.message);
+        }else{
+          message.error('上传失败');
+          setSumbitDisabled(true)
+        }
       }
     },
     beforeUpload(file: any) {
@@ -81,10 +96,15 @@ const SelectImage: React.FC<IProps> = (props) => {
       formData.append('resourcesName', data.file.name)
       formData.append('resourcesSize', data.file.size)
       formData.append('lastModifiedDate', data.file.lastModifiedDate)
+      formData.append('courseId', courseId+'')
+      console.log('---------------formData',formData);
       const headers = data.headers;
       axios.post(data.action, formData, { headers })
         .then((resp: any) => {
-          let url = `/readResourse/`
+          if(!resp.data.success&&resp.data&&resp.data.message){
+            throw new Error(resp.data.message);
+          }
+          let url = `/readResourse/`;
           if (resp.data.obj.resourcesTypeName == '幻灯片') {
             let filenName = resp.data.obj.resourcesRename.substring(0, resp.data.obj.resourcesRename.lastIndexOf("."))
             url += `ppt/${filenName}.pdf`
@@ -119,7 +139,8 @@ const SelectImage: React.FC<IProps> = (props) => {
    */
   const getFileListData = (value: any) => {
     const data = {
-      resourcesRetype: value
+      resourcesRetype: value,
+      courseId: courseId
     }
     listResourcesTree(data).then((res) => {
       if (res.success) {
@@ -138,7 +159,7 @@ const SelectImage: React.FC<IProps> = (props) => {
   const onSelect: DirectoryTreeProps['onSelect'] = (keys, info: any) => {
     setSumbitDisabled(false)
     console.log('infoL:', info)
-    let url = `${APP.request.prefix}/readResourse/`
+    let url = `/readResourse/`
     if (info.node.resourcesTypeName == '幻灯片') {
       let filenName = info.node.resourcesRename.substring(0, info.node.resourcesRename.lastIndexOf("."))
       url += `ppt/${filenName}.pdf`
@@ -153,6 +174,7 @@ const SelectImage: React.FC<IProps> = (props) => {
     }
     info.node.url = url
     // setServicePath(JSON.stringify(info.node))
+    console.log("------------------------------------------------,url");
     setPath(JSON.stringify(info.node))
   };
   const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
@@ -162,6 +184,83 @@ const SelectImage: React.FC<IProps> = (props) => {
     setSumbitDisabled(true)
     setFileType(value)
     getFileListData(value)
+  };
+  const hideContextMenu = () => {
+    // 隐藏右键菜单
+    setContextMenuVisible(false);
+    setLoading(true);
+    setSumbitDisabled(true)
+    getFileListData(fileType)
+
+  };
+  const onNodeRightClick = (info) => {
+    const event = info.event;
+    const node = info.node;
+    event.preventDefault();
+
+    // 获取鼠标位置
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+
+    // 设置右键菜单的位置和显示状态
+    setContextMenuPosition({ x: mouseX, y: mouseY });
+    setContextMenuVisible(true);
+    setMenuTitle(node.resourcesName);
+    // 更新选中的资源信息，包括id和共享状态
+    setSelectedResource({ id: node.id, share: 2 === node.authType });
+    console.log('resourcesId,Shareinit', node.id, 2 === node.authType);
+  }
+  const onChange = (e: RadioChangeEvent) => {
+    const newShareValue = e.target.value;
+    // 更新选中的资源的共享状态
+    setSelectedResource(prevResource => {
+      if (prevResource) {
+        console.log('resourcesIdchange,Shareinit', prevResource.id, newShareValue);
+        const data = {
+          id: prevResource.id,
+          authType: newShareValue ? 2 : 1,
+          courseId: courseId
+        }
+           updateAuthType(data).then((result) => {
+          if (result.success) {
+            
+          } else {
+            message.error(result.message);
+          }
+        });
+        return { ...prevResource, share: newShareValue };
+      }
+      return null;
+    });
+  };
+  //删除资源
+  const deleteResources = () => {
+    const data = {
+      id: selectedResource?.id,
+      courseId: courseId
+    };
+  
+    callParentMethod('delresources'); // 先执行 callParentMethod
+  
+    Modal.confirm({
+      title: '删除确认框',
+      content: '确定要删除吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+        delResources(data).then((result) => {
+          if (result.success) {
+            message.info("删除成功");
+            setContextMenuVisible(false);
+            setLoading(true);
+            setSumbitDisabled(true);
+            getFileListData(fileType)
+          } else {
+            message.error(result.message);
+          }
+        });
+      },
+    });
   };
   return (
     <Modal
@@ -228,7 +327,43 @@ const SelectImage: React.FC<IProps> = (props) => {
                     onExpand={onExpand}
                     treeData={videoList}
                     fieldNames={{ title: 'resourcesName', key: 'id', children: 'childrens' }}
+                    onRightClick={onNodeRightClick}
                   />
+                    {/* 右键菜单 */}
+                {contextMenuVisible && (
+                  <Modal
+                    className='rightMenu'
+                    title={menuTitle}
+                    visible={contextMenuVisible}
+                    onCancel={hideContextMenu}
+                    footer={null}
+                    style={{
+                      position: 'fixed',
+                      top: contextMenuPosition.y,
+                      left: contextMenuPosition.x,
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      background: '#fff',
+                      boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)',
+                      zIndex: 1000,
+                    }}
+                  >
+                    <Radio.Group value={selectedResource?.share} onChange={onChange}>
+                      <Row>
+                        <Col span={12}>
+                          <Radio value={true}><span style={{ fontWeight: "bold" }}>共享</span></Radio>
+
+                        </Col>
+                        <Col span={12}>
+                          <Radio value={false}><span style={{ fontWeight: "bold" }}>私有</span></Radio>
+                        </Col>
+                      </Row>
+                    </Radio.Group>
+                    <div style={{ marginTop: '30px' }}>
+                      <Button type='primary' onClick={deleteResources}>删除</Button>
+                    </div>
+                  </Modal>
+                )}
                 </Skeleton>
               </>
           }

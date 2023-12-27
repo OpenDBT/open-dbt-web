@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Modal, message, Space, Row, Col } from 'antd';
 import './index.less';
 import LeftColumn from './left';

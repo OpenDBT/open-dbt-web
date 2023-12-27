@@ -1,7 +1,6 @@
 import CODE_CONSTANT from '@/common/code';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
-import { DownOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Menu, Space } from 'antd';
+import { Button, Menu } from 'antd';
 import React, { useRef, useState } from 'react';
 import DDLSql from '../type/ddlSql';
 import Judge from '../type/judge';
@@ -15,6 +14,7 @@ import './index.less';
 import ViewSql from '../type/viewSql';
 import FunctionSql from '../type/functionSql';
 import TriggerSql from '../type/TriggerSql';
+import { useParams } from 'react-router-dom';
 interface IRef extends React.RefObject<HTMLDivElement> {
   clickSave: () => void;
   continueAnswer: () => void;
@@ -24,6 +24,7 @@ const CreateQuestion = () => {
   const cRef = useRef<IRef>(null);
   const [initData, setInitData] = useState<QUESTION_BANK.QuestionExercise | null>(null)
   const [selectedValue, setSelectedValue] = useState("");
+  const { courseId } = useParams();
   /**
    * @description 选择按钮回调, 进行相应组件显示
    * @param number 进行判断的类型值
@@ -60,14 +61,14 @@ const CreateQuestion = () => {
 
   return (
     <>
-      <Header clickSave={() => clickSave()} continueAnswer={() => continueAnswer()} />
+      <Header clickSave={() => clickSave()} continueAnswer={() => continueAnswer()} courseId={courseId} parentId={'0'}/>
       <div className='question-create-div'>
         <div className='content'>
           <div className='question-create-card'>
-            <span className='mb-right-20'>题型</span>
+            <span className='mb-right-20'>基础题型</span>
             {
               CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
-                if (index < 6) {
+                if (index < 5) {
                   {
                     return <Button key={index + 'Bt'}
                       className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'}
@@ -77,17 +78,22 @@ const CreateQuestion = () => {
 
               })
             }
-
+          </div>
+          <div className='question-create-card'>
+            <span className='mb-right-20'>实验题型</span>
             <div style={{ display: 'inline-block' }}>
-              <Dropdown overlay={menu}>
-                <Button>
-                  <Space>
-                    {selectedValue !== "" ? selectedValue : "DDL相关题型"}
-                    <DownOutlined />
-                  </Space>
-                </Button>
+              {
+                CODE_CONSTANT.questionType.length != 0 && CODE_CONSTANT.questionType.map((item, index) => {
+                  if (index >= 5) {
+                    {
+                      return <Button key={index + 'Bt'}
+                        className={showIndex == index + 1 ? 'answserClass mb-right-10' : 'mb-right-10'}
+                        onClick={() => { selectBUttonStatus(index + 1) }}>{item}</Button>
+                    }
+                  }
 
-              </Dropdown>
+                })
+              }
 
             </div>
           </div>

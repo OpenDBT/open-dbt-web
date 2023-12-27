@@ -348,5 +348,13 @@ declare namespace TASK {
     isCorrect: number;
     modelId: number;
   }
+
+  type duplicateCheckModel={
+    studentId: number;
+    studentName: string;
+    otherStudentId: number;
+    otherStudentName: string;
+    similarity: double;
+  }
 }
 

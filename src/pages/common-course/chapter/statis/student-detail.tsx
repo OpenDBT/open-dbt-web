@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { api_getStudentInfo } from '@/services/teacher/course/chapter';
 import { Pie } from '@ant-design/plots';
 import { sortList } from '../utils/utils'
@@ -7,7 +7,8 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { Progress } from 'antd';
 import './index.less';
 import { CHAPTER } from '@/common/entity/chapter'
-
+import SuperIcon from '@/pages/components/icons';
+import { history } from 'umi';
 interface IProps {
   courseId: number;
   chapterId: number;
@@ -139,13 +140,23 @@ const ChapterStudentDetailIndex = (props: IProps) => {
     }
   ];
 
-  console.log('chapterList', chapterList)
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+  
+   const backup=()=>{
+    console.log("=========================");
+    history.go(-1)  
+  }
+
   return (
     <div className="chapter-statis-stu">
+      <div style={{marginTop: 16,marginLeft: 'auto', marginRight: 20 }}>
+          <a style={{ cursor: 'pointer' }}  onClick={backup}>{customCloseIcon}</a>
+      </div>
       <div style={{ backgroundColor: '#FFFFFF', display: 'flex', padding: '20px 40px' }}>
         <div style={{ marginRight: 20 }}>
           <Pie data={pieData} {...config} />
         </div>
+        
         {
           data &&
           <div style={{ marginTop: 16 }}>
@@ -153,7 +164,9 @@ const ChapterStudentDetailIndex = (props: IProps) => {
             <span>{`${data?.userName}   | ${data?.className}`}  </span>
           </div>
         }
+        
       </div>
+      
       <div style={{ marginTop: 16 }}>
         {
           chapterList.length > 0 &&

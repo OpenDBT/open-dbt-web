@@ -1,17 +1,16 @@
 
 import { Col, Row } from 'antd';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { UpOutlined } from '@ant-design/icons';
-import { getCatalogueByStu } from '@/services/student/course/chapter';
 import { DownOutlined } from '@ant-design/icons';
 import { getCourseDetail } from '@/services/teacher/course/course';
-import { sortList } from '@/pages/common-course/chapter/utils/utils'
 import { API } from '@/common/entity/typings';
 import {
   CheckOutlined
 } from '@ant-design/icons';
 import { history } from 'umi';
 import { CHAPTER } from '@/common/entity/chapter'
+import SuperIcon from '@/pages/components/icons';
 
 interface IProps {
   courseId: number;
@@ -130,7 +129,7 @@ const menuTree = (props: IProps) => {
     }
     console.log('switchNodeExpand checkPanel', checkPanel)
   }
-
+ 
   return (
     <>
       <div className="chapter-edit-menu" style={{ position: 'fixed', top: 56 }}>

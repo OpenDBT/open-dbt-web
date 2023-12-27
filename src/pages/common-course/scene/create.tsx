@@ -1,3 +1,4 @@
+import React from 'react';
 import './index.less';
 import '@/pages/common-course/course-common.less';
 import { history } from 'umi';

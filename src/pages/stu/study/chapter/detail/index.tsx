@@ -1,12 +1,13 @@
 import Menu from './menu';
 import Content from './content';
 import './index.less';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { sortList } from '@/pages/common-course/chapter/utils/utils'
 import { getCatalogueByStu } from '@/services/student/course/chapter';
 import { history, useModel } from 'umi';
 import { api_getCatalogueStatisticsInfo } from '@/services/teacher/course/chapter';
 import { CHAPTER } from '@/common/entity/chapter'
+import SuperIcon from '@/pages/components/icons';
 
 /**
  * 课程-章节预览
@@ -50,10 +51,19 @@ const ChapterDealIndex = (props: any) => {
         setListData(sortList(res.obj.catalogueTreeList) as CHAPTER.CourseCatalog[])
     })
   }, []);
-
+  const backup=()=>{
+        //window.history.go(-1);
+    history.push(`/stu/course/chapter/list/${courseId}/${clazzId}`);
+  }
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+  
   //这里需要做个判断，如果参数有问题，做一个跳转
   return (
     <div style={{ height: 'calc(100vh - 56px)' }}>
+     
+     <div style={{ marginRight: '20px',textAlign: 'end' }}>
+      <div onClick={()=>backup()}>{customCloseIcon}</div>
+      </div>
       <Menu
         courseId={courseId}
         chapterId={chapterId}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { message } from 'antd';
 import { useModel } from 'umi';
 import { getNoticesNotRead, changeRead, clearNotRead } from '@/services/system/api';

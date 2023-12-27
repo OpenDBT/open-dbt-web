@@ -2,6 +2,7 @@ import { request } from 'umi';
 import { API } from '@/common/entity/typings';
 import { TASK } from '@/common/entity/task';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
+import { List } from 'lodash';
 
 export async function api_getHomeWork(data: TASK.TaskListParam) {
     return await request('/homeWork/getHomeWork', { method: 'POST', data });
@@ -205,4 +206,9 @@ export function overTime(data: TASK.TaskReviewOverTimeParam) {
 // 批阅列表-统计
 export function getApprovalCount(data: TASK.TaskReviewCountParam) {
     return request<API.Result<TASK.TaskReviewCount>>(`/homeWork/getApprovalCount`, { method: 'POST', data: data });
+}
+
+// 批阅列表-查重
+export function duplicateCheck(homeworkId: number, studentId: number) {
+    return request<API.Result<List<TASK.duplicateCheckModel>>>(`/homeWork/duplicateCheck/${homeworkId}/${studentId}`);
 }

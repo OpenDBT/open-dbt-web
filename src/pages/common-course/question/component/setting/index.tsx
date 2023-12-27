@@ -13,6 +13,17 @@ const ExerciseSetting = (props: IProps) => {
   const [value, setValue] = useState<boolean>(false);//单选框选中
   const [itemVisible, setItemVisible] = useState<boolean>(true); //任务点弹框判断
   const { onCancel: onCancel, onSubmit: onSubmit, visible, checkList } = props;
+  //如果是单个题目设置原始值
+  useEffect(() => {
+    if(checkList&&checkList.length==1){
+      setValue(checkList[0].exerciseStatus==0?true:false);
+      setItemVisible(checkList[0].showAnswer==0?true:false)
+    }
+   
+  }, [])
+
+
+
   // 确定
   const handleOk = () => {
     settingExercise()

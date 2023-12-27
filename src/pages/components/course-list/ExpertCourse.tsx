@@ -1,3 +1,4 @@
+import React from 'react';
 import { history } from 'umi';
 import '@/pages/home.less';
 import '@/pages/home/less/expert.less'
@@ -48,7 +49,7 @@ export default (props: {
             <div className="tea-course-card" style={{ marginRight: index >= 2 && index % 3 === 2 ? '0px' : '20px' }}
               onClick={() => switchClick(props.isEdit, course.courseId)} key={index}
             >
-              {course.isOpen === 0 ? <div className="course-state">未发布</div> : null}
+              {/* {course.isOpen === 0 ? <div className="course-state">未发布</div> : null} */}
               <div className="course-photo">
                 <img src={APP.request.prefix + course.coverImage}></img>
               </div>

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { getStuKnowledgeExerciseInfo, getCourseProgressByStu } from '@/services/student/progress';
-import { Progress, Button, Tooltip, message } from 'antd';
+import { Progress, Button, Tooltip, message, Modal } from 'antd';
 import './index.less';
 import { RingProgress } from '@ant-design/charts';
 import { history } from 'umi';
@@ -44,20 +44,29 @@ const knowledge = (props: IProps) => {
    * 重置
    */
   const clickResetAll = () => {
-    exerciseReset(courseId).then((res) => {
-      if (res.success) {
-        console.log(res);
-        message.success('重置成功')
-        getStuKnowledgeExerciseInfo(clazzId, courseId, 0).then((data) => {
-          if (data.obj) setExeriseProcList(data.obj);
+    Modal.confirm({
+      title: '重置练习',
+      content: `确定重置所有练习吗？（重置后所有答题信息将清零）`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        exerciseReset(courseId).then((res) => {
+          if (res.success) {
+            console.log(res);
+            message.success('重置成功')
+            getStuKnowledgeExerciseInfo(clazzId, courseId, 0).then((data) => {
+              if (data.obj) setExeriseProcList(data.obj);
+            });
+            getCourseProgressByStu(clazzId, courseId).then((data) => {
+              if (data.obj) setSclassInfo(data.obj);
+            });
+          } else {
+            console.log('失败');
+          }
         });
-        getCourseProgressByStu(clazzId, courseId).then((data) => {
-          if (data.obj) setSclassInfo(data.obj);
-        });
-      } else {
-        console.log('失败');
-      }
+      },
     });
+  
   };
   var bizConfig = {
     height: 77,

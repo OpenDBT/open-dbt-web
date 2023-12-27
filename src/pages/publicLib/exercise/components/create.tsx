@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Form, Input, Button, Space, message, Select } from 'antd';
 import ResultSetModal from './components/ResultSetModal'
 import BraftEditor from '@/pages/editor/braft';

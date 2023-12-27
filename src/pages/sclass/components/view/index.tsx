@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { Card, Tabs } from 'antd';
 import Step1 from './step1';
 import Step2 from './step2';

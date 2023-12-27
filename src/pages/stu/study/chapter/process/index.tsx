@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import { useModel } from 'umi';
 import { api_getStudentInfo } from '@/services/teacher/course/chapter';
 import './index.less';

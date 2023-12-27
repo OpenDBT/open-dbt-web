@@ -1,7 +1,7 @@
 import './index.less';
 import '@/pages/common-course/course-common.less';
 import { history } from 'umi';
-import { useEffect } from 'react';
+import React,{ useEffect } from 'react';
 import { Form, Input, Button, Space, message } from 'antd';
 import moment from 'moment';
 import BraftEditor from '@/pages/editor/braft';
