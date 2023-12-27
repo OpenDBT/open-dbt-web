@@ -16,7 +16,8 @@ import EditMenuModal from './component/file/add/index';
 import ExerciseSettingModal from './component/setting/index';
 import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface';
 import { ValidateIntegerParam } from '@/utils/utils'
-
+import SharedSettings from './component/setting/sharedSettings';
+import { history } from 'umi';
 //题目类型
 const typeList = CODE_CONSTANT.typeList;
 interface TableParams {
@@ -42,6 +43,7 @@ const defPage = {
 const QuestionsHome = (props: any) => {
   const params: any = useParams();
   const courseId = params.courseId;
+  const parentId = params.parentId??0;
   const [course, setCourse] = useState<API.CourseListItem | undefined>(undefined); //课程
   const [data, setData] = useState<{ count: number, list: QUESTION_BANK.QuestionBankRecord[] }>({ count: 0, list: [] });
   const [moveModelVisible, setMoveModelVisible] = useState(false);
@@ -52,6 +54,7 @@ const QuestionsHome = (props: any) => {
   const [checkId, setCheckId] = useState<number>(-1); //操作id
   const [editNameModalVisible, handEditNameModalVisible] = useState<boolean>(false);// 修改目录标题，开关弹框
   const [exerciseSettingVisible, handleExerciseSettingVisible] = useState<boolean>(false);// 练习题设置弹框
+  const [exerciseShareVisible, handleExerciseShareVisible] = useState<boolean>(false);// 共享习题设置弹框
   const [checkList, setCheckList] = useState<React.Key[]>([])
 
   const [renameBol, setRenameBol] = useState<boolean>(false);// 修改文件夹弹框 true: 修改 false: 新增
@@ -62,11 +65,12 @@ const QuestionsHome = (props: any) => {
   const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>('checkbox');
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: defPage,
-    parentId: 0,//目录父级id
+    parentId: parentId,//目录父级id
   });
   const [order, setOrder] = useState<string>('');  // 排序关键字
 
   useEffect(() => {
+    getClickFile();
     //非空校验
     ValidateIntegerParam(courseId);
     //查询课程名称
@@ -81,8 +85,18 @@ const QuestionsHome = (props: any) => {
     };
   }, [])
 
+  const getClickFile=()=>{
+      // 获取查询参数 clickFile
+  const query = new URLSearchParams(window.location.search);
+  const encodedClickFile = query.get('clickFile');
+  if(encodedClickFile){
+    // 解码 clickFile
+    const decodedClickFile = JSON.parse(decodeURIComponent(encodedClickFile || ''));
+    setClickFile(decodedClickFile);
+  }
+  }
+
   useEffect(() => {
-    // debugger
     courseId && fetchData();
   }, [JSON.stringify(tableParams)])
 
@@ -170,7 +184,7 @@ const QuestionsHome = (props: any) => {
             selectId == record.id && (record.elementType == 0 ?
               <>
                 <div style={{ position: 'absolute', right: '0', background: '#fff', zIndex: '5' }}>
-                  <Button type="link" onClick={() => { window.open(`/question-bank/edit/courseId/exerciseId/parentId/${Number(params.courseId)}/${record.id}/${tableParams.parentId}`) }}>编辑</Button>
+                  <Button type="link" onClick={() => { history.push(`/question-bank/edit/courseId/exerciseId/parentId/${Number(params.courseId)}/${record.id}/${tableParams.parentId}`) }}>编辑</Button>
                   <Button type="link" onClick={() => showMoveModal(record.id)}>移动</Button>
                   <Button type="link" onClick={() => copyLineData(Number(record.id))}>复制</Button>
                   <Button type="link" onClick={() => deleteLineData(Number(record.id))}>删除</Button>
@@ -194,6 +208,16 @@ const QuestionsHome = (props: any) => {
       width: '150px',
       render: (item, record) => {
         return record.elementType == 1 ? '' : (item == 0 ? <span>练习题</span> : <span>非练习题</span>)
+      }
+    },
+    {
+      title: '共享状态',
+      dataIndex: 'authType',
+      align: 'center',
+      key: 'authType',
+      width: '150px',
+      render: (item, record) => {
+        return record.elementType == 1 ? '' : (item == 2 ? <span>共享</span> : <span>私有</span>)
       }
     },
     {
@@ -393,14 +417,17 @@ const QuestionsHome = (props: any) => {
    * 创建习题
    */
   const clickCreateQuestion = () => {
-    window.open(`/question-bank/create/courseId/parentId/${Number(params.courseId)}/${Number(tableParams.parentId)}`);
+    history.push(`/question-bank/create/courseId/parentId/${Number(params.courseId)}/${Number(tableParams.parentId)}`);
+    //window.open(`/question-bank/create/courseId/parentId/${Number(params.courseId)}/${Number(tableParams.parentId)}`);
+
   }
 
   // 点击文件(进入文件夹)、题目名称(打开习题详情)
   const clickLink = (row: QUESTION_BANK.QuestionBankRecord) => {
     if (row.elementType == 0) {
+      const encodedClickFile = encodeURIComponent(JSON.stringify(clickFile));
       // 题目跳转到详情
-      window.open(`/question-bank/preview/courseId/exerciseId/${Number(params.courseId)}/${row.id}`)
+      history.push(`/question-bank/preview/courseId/exerciseId/${Number(params.courseId)}/${row.id}/${tableParams.parentId}?clickFile=${encodedClickFile}`)
     } else if (row.elementType == 1) {
       // 文件夹查询当前的列表
       setClickFile(() => [...clickFile, { label: row.exerciseName, value: row.id }])
@@ -419,19 +446,28 @@ const QuestionsHome = (props: any) => {
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: any) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      setCheckList(selectedRowKeys)
+      setCheckList(selectedRows)
     },
     getCheckboxProps: (record: any) => ({
       disabled: record.name === 'Disabled User', // Column configuration not to be checked
       name: record.name,
     }),
   };
+  //练习题设置
   const clickQestionSetting = () => {
     if (checkList.length == 0) {
       message.error("请选择习题")
       return
     }
     handleExerciseSettingVisible(true)
+  }
+//共享设置
+  const SharedSetting = () => {
+    if (checkList.length == 0) {
+      message.error("请选择习题")
+      return
+    }
+    handleExerciseShareVisible(true)
   }
   return (
     <div className='custom-single'>
@@ -452,8 +488,9 @@ const QuestionsHome = (props: any) => {
                 <Button type="primary" onClick={() => { clickCreateQuestion() }}><SuperIcon type="icon-icon-edit-3" />创建题目</Button>
                 {/* <Button style={{background: '#FDDF66'}}><SuperIcon type="icon-icon-import" />一键导入</Button> */}
                 <Button onClick={() => addNewFile()}><SuperIcon type="icon-icon-folder" />新建文件夹</Button>
-                <Button onClick={() => { window.open(`/scene/list/${params.courseId}`); }}><SuperIcon type="icon-icon-scene" />场景</Button>
-                <Button type="primary" onClick={() => { clickQestionSetting() }}><SuperIcon type="icon-icon-edit-3" />练习题设置</Button>
+                <Button onClick={() => { history.push(`/scene/list/${params.courseId}`); }}><SuperIcon type="icon-icon-scene" />场景</Button>
+                <Button  onClick={() => { clickQestionSetting() }}><SuperIcon type="icon-icon-set" />练习题设置</Button>
+                <Button  onClick={() => { SharedSetting() }}><SuperIcon type="icon-icon-share" />共享设置</Button>
               </div>
               <div className='right'>
                 {/* <Button type="text"><SuperIcon type="icon-daochu" />导出全部</Button> */}
@@ -581,7 +618,20 @@ const QuestionsHome = (props: any) => {
             queryButtonClick();
           }}></ExerciseSettingModal>
       }
-
+  {
+        checkList.length != 0 &&
+        <SharedSettings
+          visible={exerciseShareVisible}
+          courseId={courseId}
+          checkList={checkList}
+          onCancel={() => {
+            handleExerciseShareVisible(false);
+          }}
+          onSubmit={() => {
+            handleExerciseShareVisible(false);
+            queryButtonClick();
+          }}></SharedSettings>
+      }
     </div>
   );
 };

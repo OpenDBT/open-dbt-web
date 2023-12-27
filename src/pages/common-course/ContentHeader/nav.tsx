@@ -1,3 +1,4 @@
+import React from 'react';
 import { history } from 'umi';
 import { getCourseStorage } from '@/pages/common-course/utils'
 

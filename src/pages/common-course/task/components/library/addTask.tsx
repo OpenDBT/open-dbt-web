@@ -12,7 +12,7 @@ import Collect from './component/collect'
 import { QUESTION_BANK } from '@/common/entity/questionbank'
 interface IProps {
   courseId: number;
-}
+  }
 // 获取当前时间-YYYYMMddHHmmss
 const getCurrentTime = () => {
   let obj = new Date()
@@ -50,8 +50,8 @@ const getCurrentTime = () => {
   }
   return str;
 }
-const addTask = (props: IProps) => {
-  const params: any = useParams();
+const AddTask = (props: IProps) => {
+    const params: any = useParams();
   const location: any = useLocation();
   const courseId = params.courseId; // 课程id
   const parentId = params.parentId; // 父级id
@@ -119,8 +119,9 @@ const addTask = (props: IProps) => {
     completedSelectedExercises(param).then((res) => {
       if (res.success) {
         message.success(res.message)
-        history.push(`/task-bank/list/${courseId}`)
-      } else {
+        history.push(`/teacher/course/task/${courseId}`)
+        //history.push(`/task-bank/list/${courseId}`)
+              } else {
         message.error(res.message)
       }
     })
@@ -264,4 +265,4 @@ const addTask = (props: IProps) => {
   )
 }
 
-export default addTask
+export default AddTask

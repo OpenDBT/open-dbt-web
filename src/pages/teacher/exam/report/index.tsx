@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { message } from 'antd';
 import { getExamStudentReportCard, getExamDetailByExamClassId, getStudentExerciseReportCard } from '@/services/teacher/course/exam'
 import ProTable from '@ant-design/pro-table';

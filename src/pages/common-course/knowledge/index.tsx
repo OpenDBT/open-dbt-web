@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import { saveCourseStorage } from '@/pages/common-course/utils'
 import styles from './index.less';
 import './index.less';

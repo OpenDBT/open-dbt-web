@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Button, Collapse, Select, Col, Row, Switch, Progress, message, Tooltip } from 'antd';
 import { getCatalogueByStu } from '@/services/student/course/chapter';
 const { Panel } = Collapse;
@@ -102,7 +102,7 @@ const StudentChapterIndex = (props: IProp) => {
         }
       }
     }
-    window.open(`/stu/course/chapter/detail/${courseId}/${defClazzId}/${chapterId}`);
+    history.push(`/stu/course/chapter/detail/${courseId}/${defClazzId}/${chapterId}`);
   }
   /**
    * @function 查看课程进度

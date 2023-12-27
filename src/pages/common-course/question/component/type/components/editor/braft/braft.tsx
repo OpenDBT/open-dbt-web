@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React,{ useState, useCallback } from 'react';
 import BraftEditor, { BraftEditorProps, ControlType, EditorState, ExtendControlType } from 'braft-editor';
 import Table from 'braft-extensions/dist/table';
 import { ContentUtils } from 'braft-utils'
@@ -7,6 +7,11 @@ import 'braft-extensions/dist/table.css';
 import './braft.css'
 import SuperIcon from "@/pages/components/icons";
 import ImgModal from '@/pages/components/Editor/components/Modal/imageModal';
+import 'braft-editor/dist/index.css';
+import { Modal } from 'antd';
+import MathEditor from './MathEditor';
+import KaTeXBlock from './KaTeXBlock';
+import { AtomicBlockUtils } from 'draft-js';
 const options = {
   defaultColumns: 3, // 默认列数
   defaultRows: 3, // 默认行数
@@ -18,7 +23,8 @@ const options = {
 };
 
 export default function Braft(props: BraftEditorProps) {
-  const { value, readOnly, controls, onChange, ...restProps } = props;
+  const {courseId, value, readOnly, controls, onChange, ...restProps } = props;
+  console.log("courseId============",courseId);
   const [imgVisible, setImgVisible] = useState<boolean>(false); //图片弹框判断
   const [editorState, setEditorState] = useState<EditorState>(
     BraftEditor.createEditorState(value)
@@ -36,11 +42,53 @@ export default function Braft(props: BraftEditorProps) {
     'separator', 'text-align', 'separator',
     'separator',  'link', 'separator', 'clear'
   ];
-  /**
-   * @function 自定义扩展组件
-  */
-  const extendControls: ExtendControlType[] = [
-    // 插入图片
+  
+
+
+  const [showMathEditor, setShowMathEditor] = useState(false);
+  // 处理插入数学公式的逻辑
+  const handleInsertMathFormula = (mathText) => {
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity('MATH', 'IMMUTABLE', { mathText });
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+    setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' '));
+    setShowMathEditor(false);
+  };
+
+
+
+  // 定义自定义块渲染函数
+  const customBlockRenderer = (contentBlock) => {
+    const type = contentBlock.getType();
+    if (type === 'atomic') {
+      const contentState = editorState.getCurrentContent();
+      const entityKey = contentBlock.getEntityAt(0);
+      const entity = contentState.getEntity(entityKey);
+      const data = entity.getData();
+      if (data.mathText && entity.getType() === 'MATH') {
+        console.log("mathText, type =", data.mathText, entity.getType());
+        return {
+          component: KaTeXBlock,
+          editable: false,
+          props: {
+            mathText: data.mathText, // 将属性名改为 mathText
+          },
+        };
+      }
+    }
+    return null;
+  };
+  // extendControls属性用于添加自定义按钮到工具栏
+  const editorProps = {
+    extendControls: [
+      {
+        key: 'math-input',
+        type: 'button',
+        text: '插入数学公式',
+        onClick: () => setShowMathEditor(true),
+      },
+       // 插入图片
     {
       key: 'insert-img',
       type: 'button',
@@ -48,12 +96,16 @@ export default function Braft(props: BraftEditorProps) {
       text: (<SuperIcon type="icon-tupian" />),
       onClick: () => setImgVisible(true),
     },
-  ]
+    ],
+    blockRendererFn: customBlockRenderer, // 设置自定义块渲染函数
+  };
+
   return (
     <>
       {
         imgVisible && (
           <ImgModal
+            courseId={courseId}
             modalVisible={imgVisible}
             onCancel={() => { setImgVisible(false) }}
             onSubmit={(value: string) => {
@@ -77,13 +129,24 @@ export default function Braft(props: BraftEditorProps) {
       <BraftEditor
         {...restProps}
         controls={readOnly ? [] : (controls ? controls : controlsData)}
-        extendControls={extendControls}
         value={editorState}
         onChange={onEditorChange}
         className="test1"
         readOnly={readOnly}
         style={{ width: '100%' }}
+        {...editorProps}
       />
+    <Modal
+        title="数学公式编辑器"
+        visible={showMathEditor}
+        onCancel={() => setShowMathEditor(false)}
+        footer={null}
+        bodyStyle={{ padding: '12px', maxHeight: '80vh', overflow: 'auto' }}
+        width="80%"
+      >
+        <MathEditor onInsertFormula={handleInsertMathFormula} />
+      </Modal>
+
     </>
   );
 }

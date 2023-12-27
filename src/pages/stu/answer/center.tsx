@@ -1,7 +1,6 @@
 import { Card, Button, message, Tag, Space } from 'antd';
 import { isNotEmptyBraft } from '@/utils/utils';
 import { getKnowledgeColor } from '@/utils/utils';
-import Highlight from 'react-highlight';
 import 'highlight.js/styles/magula.css'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import Judge from './components/questionType/judge'

@@ -5,11 +5,10 @@ import { useModel } from 'umi';
 import Avatar from './AvatarDropdown'; // import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
 import { switchRoles } from '@/services/system/user'; // import NoticeIconView from '../NoticeIcon';
-import NoticeModal from '../NoticeModal';
 export type SiderTheme = 'light' | 'dark';
-
+import { history } from 'umi';
 const GlobalHeaderRight: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
+  const { initialState,setInitialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -69,6 +68,7 @@ const GlobalHeaderRight: React.FC = () => {
 
     if (result.success) {
       // window.location.reload();
+      key&& setInitialState({...initialState,currentUser: {...currentUser,roleType: key}});
       window.location.href = '/home';
     } else {
       message.error(result.message);
@@ -76,14 +76,14 @@ const GlobalHeaderRight: React.FC = () => {
   };
 
   const timer: any = useRef(); //计时器
-
   return (
     <Space className={className}>
       <Tooltip title="意见反馈">
-        <span className={styles.action} onClick={() => window.open(`/feedback`)}>
+        <span className={styles.action} onClick={() => history.push(`/feedback`)}>
           <QuestionCircleOutlined />
         </span>
       </Tooltip>
+     
       {/* <HeaderSearch
        className={`${styles.action} ${styles.search}`}
        placeholder="站内搜索"

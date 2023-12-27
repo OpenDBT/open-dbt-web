@@ -377,7 +377,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
         // 执行查看场景的逻辑，例如打开一个模态框或导航到场景详情页面
         console.log('查看场景:', sceneId);
         setButtonLoading(true);
-        getScene(sceneId).then((result) => {
+        sceneId&&getScene(sceneId).then((result) => {
             if (result.success) {
                 setButtonLoading(false);
                 setStepFormValues(result.obj);
@@ -394,18 +394,20 @@ const DDLSql = forwardRef((props: IProps, ref) => {
     const handEditScene = () => {
         setShowEditModal(true);
     }
-        //刷新场景
-        const refreshAllScene = (sceneId) => {
-            //查询场景列表,下拉列表使用
-            getShareScene(courseId).then((result) => {
-                setAllScene(result.obj);
-                if (sceneId) {
-                    form.setFieldsValue({ sceneId });
-                    setSceneId(sceneId);
-                    setselectSceneId(sceneId);
-                }
-            });
-        }
+    //刷新场景
+    const refreshAllScene = (sceneId) => {
+        //清理场景选中
+        clearSelect();
+        //查询场景列表,下拉列表使用
+        getShareScene(courseId).then((result) => {
+            setAllScene(result.obj);
+            if (sceneId) {
+                form.setFieldsValue({ sceneId });
+                setSceneId(sceneId);
+                setselectSceneId(sceneId);
+            }
+        });
+    }
     return (
         <>
             <div className='question-content-card'>
@@ -512,7 +514,7 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                             label="答案解析"
                             name="exerciseAnalysisEditor"
                         >
-                            <BraftEditor className="border" placeholder="请输入正文内容" />
+                            <BraftEditor courseId={courseId}  className="border" placeholder="请输入正文内容" />
                         </Form.Item>
                         <Form.Item label="难易程度" name="exerciseLevel">
                             <Select placeholder="请选择" allowClear style={{ maxWidth: '200px' }}>
@@ -566,10 +568,10 @@ const DDLSql = forwardRef((props: IProps, ref) => {
                     scene={stepFormValues}
                 />
             ) : null}
-            <Modal visible={showModal} onCancel={closeModal} footer={null} width={900} centered={true}>
+            <Modal open={showModal} onCancel={closeModal} footer={null} width={900} centered={true}>
                 <AddIndex courseId={courseId} refresh={refreshAllScene}/>
             </Modal>;
-            <Modal visible={showEditModal} onCancel={closeEditModal} footer={null} width={900} centered={true}>
+            <Modal open={showEditModal} onCancel={closeEditModal} footer={null} width={900} centered={true}>
                 <UpdateScene courseId={courseId} sceneId={form.getFieldValue('sceneId')} refresh={refreshAllScene}/>
             </Modal>;
 

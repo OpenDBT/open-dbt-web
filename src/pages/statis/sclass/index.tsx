@@ -157,7 +157,6 @@ const SclassStat: React.FC<{}> = () => {
                   rowKey="id"
                   pagination={false}
                   request={(params, sorter, filter) => {
-                    console.log(params, sorter, filter);
                     return getSclassCorrect(sclassId)
                   }}
                   columns={columnsTab1}

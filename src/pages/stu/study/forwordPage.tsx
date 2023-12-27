@@ -4,7 +4,6 @@ import './forwordPage.less'
 import { getSclassInfoById } from '@/services/teacher/clazz/sclass'
 import { getCourseDetail } from '@/services/teacher/course/course'
 import ContentHeader from './ContentHeader';
-import ExamList from './exam'
 import TaskList from './task'
 import ExamDetails from './exam/detail';
 import KnowledgeList from './knowledge';
@@ -13,6 +12,9 @@ import StatisList from './statis';
 import Chapter from './chapter'
 import Process from './chapter/process'
 import { API } from '@/common/entity/typings';
+import ExperimentIndex from '@/pages/common-course/docker/experiment';
+import Management from '@/pages/common-course/docker/containerManagement';
+import Images from '@/pages/common-course/docker/images';
 type IProps = {
   location: any;
   match: any;
@@ -101,16 +103,49 @@ class ForwordPage extends React.Component<IProps> {
         active: 'exam', courseId: courseId, clazzId: clazzId
       };
       children = <TaskList courseId={courseId} clazzId={clazzId} />
-    }
+    }else if (pathname.indexOf('/stu/start/') > -1) {
+      //作业列表
+      menuProps = {
+        active: 'experiment', courseId: courseId, clazzId: clazzId
+      };
+       //在线实验
+       let studentCode = this.props.match.params.studentCode;//学生code  
+      const roleId=this.props.match.params.roleId;
+      children = studentCode&&roleId&&<ExperimentIndex courseId={courseId} studentCode={studentCode} roleId={"4"} />
+    }else if (pathname.indexOf('/stu/container/') > -1){
+      menuProps = {
+        active: 'container', courseId: courseId, clazzId: clazzId
+      };
+      //容器管理
+      let studentCode = this.props.match.params.studentCode;//学生code  
+     children = <Management courseId={courseId} studentCode={studentCode} roleId={"4"}/>
+   }else if (pathname.indexOf('/stu/images/') > -1){
+    menuProps = {
+      active: 'images', courseId: courseId, clazzId: clazzId
+    };
+    //镜像列表
+   children = <Images courseId={courseId}/>
+ }
 
     return (
       <div className="flex stu-course">
         <StudentMenu {...menuProps} />
         <div style={{ flex: '1' }}>
           <ContentHeader course={this.state.course} />
-          <div className="course-content">
+          {
+            pathname.indexOf('/stu/course/task/') > -1 ||
+            pathname.indexOf('/stu/course/statis/') > -1 ||
+            pathname.indexOf('/stu/course/knowledge/list/') > -1
+            ?
+            <div className="course-content-homework">
             {children}
           </div>
+            :
+            <div className="course-content">
+            {children}
+          </div>
+          }
+         
         </div>
       </div >
     );

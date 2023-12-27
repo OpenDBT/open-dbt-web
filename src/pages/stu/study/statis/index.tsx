@@ -1,3 +1,4 @@
+import React from 'react';
 import './index.less';
 import { Space, Tabs } from 'antd';
 import ProTable from '@ant-design/pro-table';
@@ -31,7 +32,7 @@ const statis = (props: IProp) => {
         return <Space size="middle">
           <div className={className}>#{record.id}</div>
           {/* http://localhost:8000/stu/sclass/24/course/44/know/392/exercise/413 */}
-          <a href={`/stu/course/exercise/${courseId}/${clazzId}/0/${record.id}`} target="_blank">{record.exerciseName}</a>
+          <a href={`/stu/course/exercise/${courseId}/${clazzId}/0/${record.id}`} >{record.exerciseName}</a>
         </Space>;
       },
     },

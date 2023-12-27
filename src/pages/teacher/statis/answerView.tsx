@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { message, Space } from 'antd';
 import '@/pages/common-course/course-common.less';
 import '@/pages/home.less';

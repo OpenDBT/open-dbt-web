@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { saveCourseStorage } from '@/pages/common-course/utils'
 import { updateCourse, getCourseCoverImageList, removeCourse, updateIsOpen } 
 from '@/services/teacher/course/course';

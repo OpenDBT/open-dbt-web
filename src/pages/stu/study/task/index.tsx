@@ -6,6 +6,7 @@ import { TASK } from '@/common/entity/task';
 import SuperIcon from "@/pages/components/icons";
 import { useModel } from 'umi';
 import './index.less'
+import { history } from 'umi';
 type IProp = {
     courseId: number;
     clazzId: number;
@@ -61,15 +62,15 @@ const taskStuIndex = (props: IProp) => {
         let homeworkId = item.homeworkId
         // 达到剩余时间
         if (item.intervalTime == '0小时') {
-            window.open(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
+            history.push(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
         } else if (item.viewTime == 2 && item.homeworkStatus != 2) {  // 已提交且为提交后查看答案
-            window.open(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
+            history.push(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
         } else if (item.checkStatus == 1) {    // 已批阅
-            window.open(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
+            history.push(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
         } else if (item.allowAfter == 2) {
-            window.open(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
+            history.push(`/task-stu/detail/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
         } else {
-            window.open(`/task-stu/answser/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
+            history.push(`/task-stu/answser/studentId/homeworkId/${currentUser?.userId}/${homeworkId}`)
         }
 
     }

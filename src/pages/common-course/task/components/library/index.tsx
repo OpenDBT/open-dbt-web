@@ -11,6 +11,8 @@ import { ColumnsType, FilterValue, SorterResult } from 'antd/lib/table/interface
 import { QUESTION_BANK } from '@/common/entity/questionbank';
 import { API } from '@/common/entity/typings';
 import { getHomeWorkModel, saveHomeWorkModelFolder, copyHomeWorkModel, delHomeWorkModel, moveHomeWorkModel } from '@/services/teacher/task/task';
+const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+
 // 默认页数设置
 const defPage = {
   current: 1,
@@ -299,7 +301,7 @@ const TaskLibrary = () => {
     if (row.elementType == 0) {
       // 题目跳转到详情
 
-      window.open(`/task-bank/taskDetail/taskId/${row.id}`)
+      history.push(`/task-bank/taskDetail/taskId/${row.id}`)
     } else if (row.elementType == 1) {
       // 文件夹查询当前的列表
       setClickFile(() => [...clickFile, { label: row.modelName, value: row.id }])
@@ -325,14 +327,22 @@ const TaskLibrary = () => {
     handEditNameModalVisible(true)
     setRenameBol(false)
   }
+  //返回
+  const backup=()=>{
+    history.push(`/teacher/course/task/${courseId}`)
+  }
   return (
     <div className='custom-single'>
       <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
-        <div className='custom-header-row' style={{ position: 'fixed', top: 0 }}>
+        <div className='custom-header-row' style={{ position: 'fixed', top: 0, display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <div className='header-logo'>
             <img src={logo} alt="" onClick={() => history.push('/')} />
           </div>
+          <div className='header-right'>
+            <a onClick={backup}>{customCloseIcon}</a>
         </div>
+        </div>
+       
       </div>
 
       <div className='library-bank main-container'>
@@ -341,7 +351,7 @@ const TaskLibrary = () => {
           <div>
             <div className="library-tool library-flex">
               <div>
-                <Button type="primary" onClick={() => window.open(`/task-bank/addTask/courseId/parentId/${courseId}/${tableParams.parentId}`)}><SuperIcon type="icon-jiahao" />创建作业</Button>
+                <Button type="primary" onClick={() => history.push(`/task-bank/addTask/courseId/parentId/${courseId}/${tableParams.parentId}`)}><SuperIcon type="icon-jiahao" />创建作业</Button>
                 {/* <Button style={{ background: '#FDDF66', marginLeft: '20px' }}><SuperIcon type="icon-icon-import" />一键导入</Button> */}
                 <Button style={{ marginLeft: '20px' }} onClick={() => addNewFile()}><SuperIcon type="icon-xinjianwenjianjia" />新建文件夹</Button>
               </div>

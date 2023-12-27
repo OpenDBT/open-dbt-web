@@ -1,14 +1,14 @@
+import React, { useEffect, useState } from 'react'
 import { ContentUtils } from 'braft-utils'
 import { Card, Checkbox  } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import "video-react/dist/video-react.css"; // import css
-import { useEffect, useState } from 'react';
 import SuperIcon from "@/pages/components/icons";
 import "./index.less"
 import { CHAPTER } from '@/common/entity/chapter'
 import { getCatalogueResourcesId } from '@/services/resources/upload';
 declare const window: Window & { mesFromIframe: any };  // 生命window下previewWindow属性
-
+import '@/myapp.js';
 // 自定义组件，可加入自定义功能
 const VideoModel = (props: any) => {
   const blockData = props.block.getData()
@@ -39,6 +39,7 @@ const VideoModel = (props: any) => {
     if(!textContent.attachments) {
       textContent.attachments = []
     }
+    console.log(dataID)
     const item = textContent.attachments.filter((res:any)=>res.resourcesId == dataID)
     // 如果查不到，新增一条资源对象数据到资源数组中,查到了改变按钮显示状态
     if(item.length == 0) {
@@ -59,6 +60,9 @@ const VideoModel = (props: any) => {
       }else {
         setFarwordVisible(true)
       }
+      item[0].deleteFlag = 0
+      
+
     }
     
     /**
@@ -67,16 +71,20 @@ const VideoModel = (props: any) => {
     getCatalogueResourcesId().then((res) => {
       if(res.success) {
         resourcesData.id = res.obj
+        resourcesData.deleteFlag = 0
+       if(item.length != 0) {
+        //item[0].id = res.obj
+       }
       }
     })
    // 避免不正常删除无法清除资源数据对象
-   return ()=>{
-    textContent.attachments.map((item: any) => {
-      if (item.resourcesId == dataID) {
-        item.deleteFlag = 1
-      }
-    })
-  }
+  //  return ()=>{
+  //   textContent.attachments.map((item: any) => {
+  //     if (item.resourcesId == dataID) {
+  //       //item.deleteFlag = 0
+  //     }
+  //   })
+  // }
   },[])
   // 任务点选择函数
   const onChangeCheckboxItem = (e: CheckboxChangeEvent) => {
@@ -109,7 +117,6 @@ const VideoModel = (props: any) => {
   // 注意：通过blockRendererFn定义的block，无法在编辑器中直接删除，需要在组件中增加删除按钮
   const removeBarBlock = () => {
     textContent.attachments.map( (item:any) =>{
-      item.deleteFlag = 1
       if(item.resourcesId == dataID) {
         item.deleteFlag = 1
       }
@@ -198,7 +205,7 @@ const VideoModel = (props: any) => {
           }
           <div className="content-main" style={{width: '90%', margin: 'auto'}}>
               {/* 自定义 */}
-              <iframe id={`my-iframe-${dataID}`} onLoad={onLoad} src={`/iframe/video.html?id=${dataID}&url=${dataURL}`} style={{ width: "100%", height: "450px", border: "none", display: visible?'block':'none',marginBottom: '20px'}}></iframe>
+              <iframe id={`my-iframe-${dataID}`} onLoad={onLoad} src={`/iframe/video.html?id=${dataID}&url=${dataURL}&myhost=${window.myhost}`} style={{ width: "100%", height: "450px", border: "none", display: visible?'block':'none',marginBottom: '20px'}}></iframe>
           </div>
         </div>
       </div>

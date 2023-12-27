@@ -6,7 +6,7 @@
     "lib": ["esnext", "dom"],
     "sourceMap": true,
     "baseUrl": ".",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
@@ -20,7 +20,8 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@@/*": ["./src/.umi/*"]
+      "@@/*": ["./src/.umi/*"],
+      "@URL/*": ["./*"]
     }
   },
   "include": [

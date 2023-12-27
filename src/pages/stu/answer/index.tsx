@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 import { Modal, message, Space, notification, Row, Col, Button } from 'antd';
 import { getExerciseInfoList, getExerciseInfo } from '@/services/teacher/course/exercise';
 import { submitAnswer, stuTestRunAnswer } from '@/services/teacher/course/score';
@@ -16,6 +16,7 @@ import { exerciseAnswerNotifiedExcetion, exerciseAnswerNotifiedSucc, exerciseAns
 import { API } from '@/common/entity/typings';
 import ResultSetModalFunction from '@/pages/common-course/question/component/type/components/ResultSetModalFunction';
 import { QUESTION_BANK } from '@/common/entity/questionbank';
+import SuperIcon from '@/pages/components/icons';
 /**
  * 课程-SQL练习题-开始答题
  * @param props
@@ -295,8 +296,16 @@ const Answer = (props: any) => {
   const [columnList, setColumnList] = useState([]);
   const [datatype, setDatatype] = useState([]);
   const [resultSet, setResultSet] = useState([]);
-
+  const backup=()=>{
+     history.push(`/stu/course/knowledge/exercise/${courseId}/${clazzId}/${knowId}`)
+     //history.go(-1);
+  }
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
   return (
+    <div>
+    <div style={{float: 'right',marginRight: '20px'}}>
+    <a onClick={backup}>{customCloseIcon}</a>
+    </div>
     <div className="flex stu-answer">
       <StudentMenu {...menuProps} />
       {(exercise?.exerciseType == 1 || exercise?.exerciseType == 2 || exercise?.exerciseType == 3 || exercise?.exerciseType == 4 || exercise?.exerciseType == 5) ?
@@ -407,6 +416,7 @@ const Answer = (props: any) => {
           <p>课程已结束，不能再进行答题。</p>
         </div>
       </Modal>
+    </div>
     </div>
   );
 };

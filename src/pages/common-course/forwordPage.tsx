@@ -17,6 +17,9 @@ import ChapterStatisDetail from './chapter/statis/chapter-detail'
 import ChapterStatisStuProcess from './chapter/statis/student-detail'
 import TaskReview from './task/components/reviewList'
 import QuestionList from './question'
+import ExperimentIndex from './docker/experiment';
+import Management from './docker/containerManagement';
+import Images from './docker/images';
 class ForwordPage extends React.Component<any> {
 
   constructor(props: any) {
@@ -161,7 +164,29 @@ class ForwordPage extends React.Component<any> {
         children = <ChapterStatisStuProcess courseId={courseId} clazzId={clazzId} chapterId={chapterId} serialNum={serialNum} userId={userId} />
       else if (pathname.indexOf('/teacher/course/chapter/statis/detail') > -1)
         children = <ChapterStatisDetail courseId={courseId} clazzId={clazzId} chapterId={chapterId} serialNum={serialNum} resourcesId={resourcesId} />
-    }
+    }else if (pathname.indexOf('/teacher/start/') > -1){
+       //在线实验
+       let studentCode = this.props.match.params.studentCode;//学生code  
+      const roleId=this.props.match.params.roleId;
+       menuProps = { active: 'experiment', courseId: courseId};
+       navProps = { active: 6, courseId: courseId };
+      
+      children = studentCode&&roleId&&<ExperimentIndex courseId={courseId} studentCode={studentCode} roleId={roleId} />
+    }else if (pathname.indexOf('/teacher/container/') > -1){
+      //容器管理
+      //let studentCode = this.props.match.params.studentCode;//学生code  
+     //const roleId=this.props.match.params.roleId;
+      menuProps = { active: 'container', courseId: courseId};
+      navProps = { active: 7, courseId: courseId };
+     children = <Management courseId={courseId} roleId={"3"}/>
+   }else if (pathname.indexOf('/teacher/images/') > -1){
+    //镜像列表
+    //let studentCode = this.props.match.params.studentCode;//学生code  
+   //const roleId=this.props.match.params.roleId;
+    menuProps = { active: 'images', courseId: courseId};
+    navProps = { active: 7, courseId: courseId };
+   children = <Images courseId={courseId}/>
+ }
 
     return (
       <div className="flex course">

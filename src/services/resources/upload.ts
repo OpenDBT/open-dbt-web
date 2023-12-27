@@ -54,3 +54,21 @@ export async function getCatalogueResourcesId() {
 export async function listResourcesTree(data: object) {
   return request<API.Result<CHAPTER.HistoryResource[]>>(`/resources/listResourcesTree`, { method: 'POST', data: data });
 }
+
+/**
+ * 更新资源权限接口
+ * @param data 查询参数对象
+ * @returns 
+ */
+export async function updateAuthType(data: object) {
+  return request<API.Result<boolean>>(`/resources/updateAuthType`, { method: 'POST', data: data });
+}
+
+/**
+ * 删除资源接口
+ * @param data 查询参数对象
+ * @returns 
+ */
+export async function delResources(data: object) {
+  return request<API.Result<boolean>>(`/resources/delResources`, { method: 'POST', data: data });
+}

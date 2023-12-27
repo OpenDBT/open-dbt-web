@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React,{ useCallback } from 'react';
 import BraftEditor, { BraftEditorProps, ControlType } from 'braft-editor';
 import Table from 'braft-extensions/dist/table';
 import 'braft-editor/dist/index.css';

@@ -5,6 +5,7 @@ import { add } from '@/services/system/feedback';
 
 import '@/pages/common-course/course-common.less';
 import '@/pages/home.less';
+import SuperIcon from '../components/icons';
 const FormItem = Form.Item;
 
 const feedback: React.FC<{}> = () => {
@@ -21,11 +22,21 @@ const feedback: React.FC<{}> = () => {
       if (result.obj) message.success('感谢您的意见反馈，我们会尽快处理！', 10);
     });
   }
+  const backup=()=>{
+    history.go(-1);
+   }
+
+  const customCloseIcon = <SuperIcon type="icon-chehui" style={{fontSize: '24px',color: '#00CE9B', marginRight: '15px' }}/>;
+ 
   return (
     <div className="flex course">
       <div style={{ width: '97%' }}>
         <div className="course-content">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
           <div className="title-5">意见反馈</div>
+          <a style={{float: 'right'}} onClick={backup}>{customCloseIcon}</a>
+          </div>
+         
           {/* <p>如果您对我们的会议有任何的问题或建议，欢迎您向我们反馈：</p>    */}
           <div className="course-info">
             <Form

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Button, Collapse, Select, Col, Row, Switch, Progress, message, Tooltip } from 'antd';
 import { api_getCatalogueByClass, api_saveCatalogueAuth }
   from '@/services/teacher/course/chapter';
@@ -13,7 +13,7 @@ import SuperIcon from "@/pages/components/icons";
 import { QuestionCircleOutlined } from '@ant-design/icons';
 declare const window: Window & { previewWindow: any };  // 声明window下previewWindow属性
 import { CHAPTER } from '@/common/entity/chapter'
-
+import { history } from 'umi';
 /**
  * 课程章节
  * @param props 
@@ -102,7 +102,7 @@ const ChapterIndex = (props: any) => {
         }
       }
     }
-    window.open(`/edit/chapter/${courseId}/${defClazzId}/${chapterId}`);
+   history.push(`/edit/chapter/${courseId}/${defClazzId}/${chapterId}`);
   }
 
   /**
@@ -131,7 +131,7 @@ const ChapterIndex = (props: any) => {
    */
   const onView = (chapterId: number) => {
     // preview(courseId, chapterId)
-    window.open(`/edit/preview/${courseId}/${defClazzId}/${chapterId}`);
+    history.push(`/edit/preview/${courseId}/${defClazzId}/${chapterId}`);
 
   }
   // 预览输出模板
@@ -206,7 +206,7 @@ const ChapterIndex = (props: any) => {
    * @param chapterId 
    */
   const goStatic = (e: React.MouseEvent, chapterId: number, serialNum: string) => {
-    window.open(`/teacher/course/chapter/statis/list/${courseId}/${chapterId}/${defClazzId}/${serialNum}`);
+   history.push(`/teacher/course/chapter/statis/list/${courseId}/${chapterId}/${defClazzId}/${serialNum}`);
     e.stopPropagation();
   }
 

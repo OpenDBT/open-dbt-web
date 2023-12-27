@@ -263,7 +263,7 @@ const QuestionsHome = (props: any) => {
   const clickLink = (row: QUESTION_BANK.QuestionBankRecord) => {
     if (row.elementType == 0) {
       // 题目跳转到详情
-      window.open(`/question-bank/preview/courseId/exerciseId/${Number(params.courseId)}/${row.id}`)
+      history.push(`/question-bank/preview/courseId/exerciseId/${Number(params.courseId)}/${row.id}/${tableParams.parentId}`)
     } else if (row.elementType == 1) {
       // 文件夹查询当前的列表
       setClickFile(() => [...clickFile, { label: row.exerciseName, value: row.id }])

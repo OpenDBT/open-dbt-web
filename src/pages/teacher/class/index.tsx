@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import moment from 'moment'
 import './index.less';
 import { querySclass, updateClass, deleteSclassById, updateSclassIsOpen } from '@/services/teacher/clazz/sclass'
